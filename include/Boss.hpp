@@ -1,0 +1,23 @@
+#pragma once
+
+#include "Enemy.hpp"
+
+class Boss : public Enemy {
+public:
+  Boss(UveDX::UveDX *uveDX, unsigned int a3);
+
+  void update() override;
+  void handleHit(unsigned int playerId, int damages) override;
+  void handleHitPlayer(unsigned int playerId) override;
+
+private:
+  double x_coord;
+  double y_coord;
+  unsigned int field_AC;
+  int field_B0;
+  int field_B4;
+  int field_B8;
+  int field_BC;
+  int field_C0;
+  int field_C4;
+};

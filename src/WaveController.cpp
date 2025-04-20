@@ -1,0 +1,279 @@
+#include "WaveController.hpp"
+#include "Asteroid.hpp"
+#include "Boss.hpp"
+#include "Chicken.hpp"
+#include "Game.hpp"
+#include "Planet.hpp"
+#include "bounding_box.hpp"
+#include "rng.hpp"
+#include <format>
+
+WaveController::WaveController(UveDX::UveDX *uveDX)
+    : UveDX::UveListOwner(uveDX), StateBase(LevelState::Default),
+      bounding_box{640, 0, 0, 0}, hasSpawnedGiftThisWave(false), currentWave(0),
+      currentSystem(0), currentStage(0) {
+  this->callback = [this]() { this->handleWave(); };
+
+  sub_401688(&this->bounding_box[2], 0, 80, 0, 0);
+
+  this->switchState(LevelState::NewWave, 40);
+}
+
+void WaveController::update() {
+  this->processTick();
+
+  this->bounding_box[2] = 40 - this->bounding_box[0];
+  this->bounding_box[3] = 600 - this->bounding_box[1];
+
+  sub_4016F8(&this->bounding_box[2]);
+
+  this->bounding_box[0] = 640;
+  this->bounding_box[1] = 0;
+
+  UveListOwner::update();
+
+  if (this->previousState == LevelState::SpawningEnemies && this->isEmpty() &&
+      global::game->gameController->countAlivePlayers() > 0) {
+    if (this->currentStage == 9)
+      this->switchState(LevelState::SystemClear, 50);
+    else
+      this->switchState(LevelState::NewWave, 10);
+  }
+
+  if (global::game->gameController->areCheatsEnabled()) {
+    if (this->uveDX->uveInput->isKeyPressed(sf::Keyboard::Scancode::F6)) {
+      this->clear();
+
+      this->switchState(LevelState::NewWave, 10);
+    }
+  }
+}
+
+void WaveController::handleWave() {
+  int v1 = 2;
+  if (this->currentSystem % 2 != 0)
+    v1 = 3;
+
+  int v2 = v1;
+
+  switch (this->previousState) {
+  case LevelState::NewWave: {
+    ++this->currentWave;
+    this->hasSpawnedGiftThisWave = false;
+    this->currentStage = (this->currentWave - 1) % 10;
+    this->currentSystem = (this->currentWave - 1) / 10;
+
+    global::game->gameController->background->setScrollSpeed(-1);
+
+    global::game->messenger->showPrimaryMessage(
+        generate_random_number() % 8 == 0 ? "wake up!" : "get ready!", 0, 50,
+        0);
+
+    global::game->messenger->showSecondaryMessage(
+        std::format("wave {}", this->currentWave), 15, 20, 0);
+
+    this->switchState(LevelState::LevelMessage, 30);
+
+    break;
+  }
+
+  case LevelState::LevelMessage: {
+    if (this->currentStage == 2 || this->currentStage == 8) {
+      global::game->messenger->showPrimaryMessage("warning!", 0, 50, 0);
+
+      global::game->messenger->showSecondaryMessage("asteroids incoming!", 0,
+                                                    30, 1);
+
+      this->switchState(LevelState::SpawningEnemies, 25);
+    }
+
+    if (this->currentStage == 5) {
+      global::game->messenger->showPrimaryMessage("brace!", 0, 50, 0);
+
+      global::game->messenger->showSecondaryMessage(
+          "high-speed asteroids incoming!", 0, 30, 1);
+
+      this->switchState(LevelState::SpawningEnemies, 25);
+    }
+
+    if (this->currentStage == 6) {
+      global::game->messenger->showSecondaryMessage("be quick or be dead", 0,
+                                                    30, 1);
+
+      this->switchState(LevelState::SpawningEnemies, 25);
+    }
+
+    if (this->currentStage == 9) {
+      global::game->messenger->showSecondaryMessage("show'em who's boss!", 0,
+                                                    30, 1);
+
+      this->switchState(LevelState::SpawningEnemies, 25);
+    }
+
+    this->switchState(LevelState::SpawningEnemies, 1);
+
+    break;
+  }
+
+  case LevelState::SystemClear: {
+    if (global::game->sound_harley1->uveDX->soundEnabled)
+      global::game->sound_harley1->play();
+
+    global::game->gameController->background->setScrollSpeed(-64);
+
+    global::game->messenger->showPrimaryMessage("system clear!", 0, 50, 1);
+
+    global::game->messenger->showSecondaryMessage("prepare for warp", 0, 30, 0);
+
+    this->switchState(LevelState::NewWave, 150);
+
+    break;
+  }
+
+  case LevelState::SpawningEnemies: {
+    if (this->currentStage <= 1)
+      for (int i = 0; i < 40; ++i)
+        this->add(new Chicken{this->uveDX, 60 * (i % 8) + 50, 40 * (i / 8) + 60,
+                              0, 1, i});
+
+    if (this->currentStage == 2) {
+      for (int j = 0; j < 15; ++j) {
+        int v55 = this->currentSystem + 5;
+        auto a5 = (double)(generate_random_number() % 480 - 640);
+        auto random_number = generate_random_number();
+
+        this->add(new Asteroid{this->uveDX, (double)-(random_number % 640), a5,
+                               96, v2, 1, 2, v55});
+      }
+
+      for (int k = 0; k < 5; ++k) {
+        int v56 = this->currentSystem + 5;
+        auto a5 = (double)(generate_random_number() % 480 - 640);
+        auto random_number = generate_random_number();
+
+        this->add(new Asteroid{this->uveDX, (double)-(random_number % 640), a5,
+                               96, v2, 0, 4, v56});
+      }
+    }
+
+    if (this->currentStage == 3 || this->currentStage == 4) {
+      if (this->currentSystem % 2)
+        for (int m = 0; m < this->currentSystem + 25; ++m)
+          this->add(new Chicken{this->uveDX, 0, 0, 3, 2, 0});
+
+      else
+        for (int n = 0; n < this->currentSystem + 25; ++n)
+          this->add(new Chicken{this->uveDX, 0, 0, 3, 4, 0});
+
+      this->add(new Planet{this->uveDX, 320, 200});
+    }
+
+    if (this->currentStage == 5) {
+      for (int ii = 0; ii < 15; ++ii) {
+        int v57 = this->currentSystem + 10;
+        auto a5 = (double)-(generate_random_number() % 300);
+        auto random_number = generate_random_number() % 640;
+
+        this->add(new Asteroid{this->uveDX, (double)random_number, a5, 128, v2,
+                               1, 8, v57});
+      }
+
+      for (int jj = 0; jj < 15; ++jj) {
+        int v58 = this->currentSystem + 10;
+        auto a5 = (double)(-1000 - generate_random_number() % 300);
+        auto random_number = generate_random_number() % 640;
+
+        this->add(new Asteroid{this->uveDX, (double)random_number, a5, 128, v2,
+                               1, 8, v58});
+      }
+    }
+
+    if (this->currentStage == 6)
+      for (int kk = 0; kk < this->currentSystem + 5; ++kk)
+        this->add(new Chicken{this->uveDX, 0, 10 * kk + 60, 3, 3, kk});
+
+    if (this->currentStage == 7) {
+      for (int mm = 0; this->currentSystem + 3 > mm; ++mm) {
+        for (int nn = 0; nn < 8; ++nn)
+          this->add(new Chicken{this->uveDX, 80 * nn, -50, 3, 5, 80 * mm});
+
+        for (int i1 = 0; i1 < 8; ++i1)
+          this->add(new Chicken{this->uveDX, 80 * i1, -50, 3, 6, 80 * mm + 40});
+      }
+    }
+
+    if (this->currentStage == 8) {
+      for (int i2 = 0; i2 < 8; ++i2) {
+        int v59 = this->currentSystem + 5;
+        auto v52 = 128 - generate_random_number() % 32;
+        auto a5 = (double)-(generate_random_number() % 500);
+        auto random_number = generate_random_number() % 320;
+
+        this->add(new Asteroid{this->uveDX, (double)random_number, a5, v52, v2,
+                               1, 5, v59});
+
+        int v60 = this->currentSystem + 5;
+        auto v53 = generate_random_number() % 32 + 128;
+        a5 = (double)-(generate_random_number() % 500);
+        random_number = generate_random_number();
+
+        this->add(new Asteroid{this->uveDX, (double)(random_number % 320 + 320),
+                               a5, v53, v2, 1, 5, v60});
+
+        int v61 = this->currentSystem + 5;
+        auto v54 = generate_random_number() % 64 + 96;
+        a5 = (double)(-500 - generate_random_number() % 500);
+        random_number = generate_random_number() % 640;
+
+        this->add(new Asteroid{this->uveDX, (double)random_number, a5, v54, v2,
+                               0, 8, v61});
+      }
+    }
+
+    if (this->currentStage == 9)
+      this->add(new Boss{this->uveDX, this->currentSystem % 5});
+
+    break;
+  }
+
+  case LevelState::GameOver: {
+    if (global::game->sound_bonewah->uveDX->soundEnabled)
+      global::game->sound_bonewah->play();
+
+    global::game->messenger->showPrimaryMessage("game over!", 0, 100, 1);
+
+    this->switchState(LevelState::LevelState_6, 100);
+
+    break;
+  }
+
+  case LevelState::LevelState_6: {
+    global::game->gameController->switchState(GameState::GameOver, 1);
+
+    break;
+  }
+
+  default:
+    break;
+  }
+}
+
+bool WaveController::getHasSpawnedGiftThisWave() const {
+  return this->hasSpawnedGiftThisWave;
+}
+
+void WaveController::setHasSpawnedGiftThisWave(bool value) {
+  this->hasSpawnedGiftThisWave = value;
+}
+
+unsigned int WaveController::getCurrentWave() const {
+  return this->currentWave;
+}
+
+unsigned int WaveController::getCurrentStage() const {
+  return this->currentStage;
+}
+
+unsigned int WaveController::getCurrentSystem() const {
+  return this->currentSystem;
+}
