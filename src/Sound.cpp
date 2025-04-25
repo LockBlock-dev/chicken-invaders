@@ -1,10 +1,12 @@
 #include "Sound.hpp"
-#include "UveDX.hpp"
+
 #include <cstring>
+
 #include <format>
+#include "UveDX.hpp"
 
 namespace UveDX {
-Sound::Sound(UveDX *uveDX, const std::string &filename)
+Sound::Sound(UveDX* uveDX, const std::string& filename)
     : UveBase(uveDX), buffer(nullptr), sound(nullptr) {
   if (this->uveDX->uveSound->isReady()) {
     auto fileStream = this->uveDX->uveFileManager->openFile(filename, nullptr);
@@ -14,10 +16,11 @@ Sound::Sound(UveDX *uveDX, const std::string &filename)
     fileStream.read(wavFileHeader, sizeof(wavFileHeader));
 
     unsigned int fileSize =
-        *reinterpret_cast<unsigned int *>(&wavFileHeader[40]);
+        *reinterpret_cast<unsigned int*>(&wavFileHeader[40]);
 
     this->uveDX->log(
-        std::format("Loading sound file [{}], {} bytes.", filename, fileSize));
+        std::format("Loading sound file [{}], {} bytes.", filename, fileSize)
+    );
 
     auto wavFile = new char[sizeof(wavFileHeader) + fileSize];
 
@@ -32,7 +35,7 @@ Sound::Sound(UveDX *uveDX, const std::string &filename)
 
     delete[] wavFile;
 
-    // throw std::runtime_error("Sound::Sound(): Cannot create sound");
+    // this->uveDX->onError("Sound::Sound()", "Cannot create sound");
   } else {
     this->uveDX->log("Warning: audio device not ready, skipping sound load");
   }
@@ -48,9 +51,13 @@ Sound::~Sound() {
 
 void Sound::update() {}
 
-void Sound::play() { this->sound->play(); }
+void Sound::play() {
+  this->sound->play();
+}
 
-void Sound::stop() { this->sound->stop(); }
+void Sound::stop() {
+  this->sound->stop();
+}
 
 bool Sound::isPlaying() {
   if (!this->uveDX->soundEnabled)
@@ -62,4 +69,4 @@ bool Sound::isPlaying() {
 void Sound::setPan(int pan) {
   this->sound->setPan(static_cast<float>(pan) / 10000.0f);
 }
-} // namespace UveDX
+}  // namespace UveDX

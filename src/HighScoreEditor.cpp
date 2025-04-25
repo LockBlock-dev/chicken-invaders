@@ -1,26 +1,41 @@
 #include "HighScoreEditor.hpp"
+
 #include "Game.hpp"
 #include "RoundedRectangleShape.hpp"
 #include "UveDX.hpp"
 #include "constants.hpp"
 
-HighScoreEditor::HighScoreEditor(UveDX::UveDX *uveDX, unsigned int playerId,
-                                 int score)
-    : UveDX::UveBase(uveDX), pseudo(""), columnNumber(0), rowNumber(0),
-      playerId(playerId), score(score) {}
+HighScoreEditor::HighScoreEditor(
+    UveDX::UveDX* uveDX,
+    unsigned int playerId,
+    int score
+)
+    : UveDX::UveBase(uveDX),
+      pseudo(""),
+      columnNumber(0),
+      rowNumber(0),
+      playerId(playerId),
+      score(score) {}
 
 void HighScoreEditor::update() {
-
-  if (this->uveDX->uveInput->isKeyPressed(playerMoveLeftKeys[this->playerId]))
+  if (this->uveDX->uveInput->isKeyPressed(
+          constants::playerMoveLeftKeys[this->playerId]
+      ))
     --this->columnNumber;
 
-  if (this->uveDX->uveInput->isKeyPressed(playerMoveRightKeys[this->playerId]))
+  if (this->uveDX->uveInput->isKeyPressed(
+          constants::playerMoveRightKeys[this->playerId]
+      ))
     ++this->columnNumber;
 
-  if (this->uveDX->uveInput->isKeyPressed(playerMoveTopKeys[this->playerId]))
+  if (this->uveDX->uveInput->isKeyPressed(
+          constants::playerMoveTopKeys[this->playerId]
+      ))
     --this->rowNumber;
 
-  if (this->uveDX->uveInput->isKeyPressed(playerMoveDownKeys[this->playerId]))
+  if (this->uveDX->uveInput->isKeyPressed(
+          constants::playerMoveDownKeys[this->playerId]
+      ))
     ++this->rowNumber;
 
   if (this->columnNumber < 0)
@@ -43,7 +58,9 @@ void HighScoreEditor::update() {
       this->columnNumber = 4;
   }
 
-  if (this->uveDX->uveInput->isKeyPressed(playerShootKeys[this->playerId])) {
+  if (this->uveDX->uveInput->isKeyPressed(
+          constants::playerShootKeys[this->playerId]
+      )) {
     if (this->rowNumber >= 4 && this->columnNumber >= 3) {
       if (this->columnNumber == 3) {
         if (this->pseudo.size() > 0)
@@ -52,8 +69,9 @@ void HighScoreEditor::update() {
         if (global::game->sound_space->uveDX->soundEnabled)
           global::game->sound_space->play();
 
-        global::game->gameController->addHighScoreEntry(this->pseudo,
-                                                        this->score);
+        global::game->gameController->addHighScoreEntry(
+            this->pseudo, this->score
+        );
 
         this->hasBeenDisposed = true;
       }
@@ -74,8 +92,9 @@ void HighScoreEditor::update() {
   const float rectWidth = 35.f;
   const float rectHeight = 35.f;
 
-  sf::RoundedRectangleShape roundedRect{sf::Vector2f{rectWidth, rectHeight}, 5,
-                                        8};
+  sf::RoundedRectangleShape roundedRect{
+      sf::Vector2f{rectWidth, rectHeight}, 5, 8
+  };
 
   roundedRect.setOutlineColor(sf::Color::White);
   roundedRect.setOutlineThickness(1.f);
@@ -101,19 +120,23 @@ void HighScoreEditor::update() {
 
   global::game->font_alphabet_small->blitText(
       270 * this->playerId + 70, 140,
-      std::format("well done! {} points", this->score), 0);
-  global::game->font_alphabet->blitText(270 * this->playerId + 70, 160,
-                                        this->pseudo, 0);
+      std::format("well done! {} points", this->score), 0
+  );
+  global::game->font_alphabet->blitText(
+      270 * this->playerId + 70, 160, this->pseudo, 0
+  );
 
   for (size_t k = 0; k < 5; ++k) {
     for (size_t m = 0; m < 6; ++m) {
       if (k >= 4 && m >= 3) {
         if (m == 3)
           global::game->font_alphabet_small->blitText(
-              270 * this->playerId + 200, 40 * k + 211, "del", 0);
+              270 * this->playerId + 200, 40 * k + 211, "del", 0
+          );
         else if (m == 4)
           global::game->font_alphabet_small->blitText(
-              270 * this->playerId + 240, 40 * k + 211, "end", 0);
+              270 * this->playerId + 240, 40 * k + 211, "end", 0
+          );
       } else {
         char v42 = m + 6 * k + 97;
 
@@ -122,7 +145,8 @@ void HighScoreEditor::update() {
 
         global::game->font_alphabet_small->blitText(
             40 * m + 270 * this->playerId + 70 + 15, 40 * k + 211,
-            std::string{v42}, 0);
+            std::string{v42}, 0
+        );
       }
     }
   }

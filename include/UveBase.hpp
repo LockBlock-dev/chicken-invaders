@@ -6,10 +6,10 @@ namespace UveDX {
 class UveDX;
 
 class UveBase : public LinkedListNode {
-public:
+ public:
   UveBase();
-  UveBase(UveDX *uveDX);
-  UveDX *uveDX;
+  UveBase(UveDX* uveDX);
+  UveDX* uveDX;
   bool hasBeenDisposed;
 };
-} // namespace UveDX
+}  // namespace UveDX

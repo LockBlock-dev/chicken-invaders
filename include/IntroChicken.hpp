@@ -1,13 +1,14 @@
 #pragma once
+
 #include "Sprite.hpp"
 
 class IntroChicken : public UveDX::Sprite {
-public:
-  IntroChicken(UveDX::UveDX *uveDX);
+ public:
+  IntroChicken(UveDX::UveDX* uveDX);
 
   void update() override;
 
-private:
-  int field_98;
+ private:
   int field_94;
+  int field_98;
 };

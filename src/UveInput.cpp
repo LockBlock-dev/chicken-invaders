@@ -1,30 +1,40 @@
 #include "UveInput.hpp"
+
+#include <SFML/Graphics.hpp>
+#include <cstdlib>
+#include <utility>
+
 #include "Game.hpp"
 #include "UveDX.hpp"
-#include <SFML/Graphics.hpp>
-#include <utility>
 
 namespace UveDX {
 constexpr UveInput::AcquireDeviceFlag
 operator|(UveInput::AcquireDeviceFlag lhs, UveInput::AcquireDeviceFlag rhs) {
-  return static_cast<UveInput::AcquireDeviceFlag>(std::to_underlying(lhs) |
-                                                  std::to_underlying(rhs));
+  return static_cast<UveInput::AcquireDeviceFlag>(
+      std::to_underlying(lhs) | std::to_underlying(rhs)
+  );
 }
 
-UveInput::UveInput(UveDX *uveDX, UveInput::AcquireDeviceFlag deviceFlag)
+UveInput::UveInput(UveDX* uveDX, UveInput::AcquireDeviceFlag deviceFlag)
     : UveBase(uveDX),
       shouldAcquireKeyboard(
           (deviceFlag | UveInput::AcquireDeviceFlag::ACQUIRE_KEYBOARD_FLAG) !=
-          UveInput::AcquireDeviceFlag::NONE),
+          UveInput::AcquireDeviceFlag::NONE
+      ),
       shouldAcquireMouse(
           (deviceFlag | UveInput::AcquireDeviceFlag::ACQUIRE_MOUSE_FLAG) !=
-          UveInput::AcquireDeviceFlag::NONE),
-      currentKeyState({}), previousKeyState({}) {}
+          UveInput::AcquireDeviceFlag::NONE
+      ),
+      currentKeyState({}),
+      previousKeyState({}) {}
 
 void UveInput::update() {
   while (const std::optional event = global::game->window.pollEvent()) {
-    if (event->is<sf::Event::Closed>())
+    if (event->is<sf::Event::Closed>()) {
       global::game->window.close();
+
+      std::exit(EXIT_SUCCESS);
+    }
   }
 
   previousKeyState = currentKeyState;
@@ -32,13 +42,13 @@ void UveInput::update() {
   if (!global::game->window.hasFocus())
     return;
 
-  for (int key = 0; key < sf::Keyboard::ScancodeCount; ++key)
+  for (unsigned int key = 0; key < sf::Keyboard::ScancodeCount; ++key)
     currentKeyState[static_cast<sf::Keyboard::Scancode>(key)] =
         sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Scancode>(key));
 }
 
-void UveInput::create(UveDX *uveDX, AcquireDeviceFlag deviceFlag) {
-  uveDX->uveInput = new UveInput(uveDX, deviceFlag);
+void UveInput::create(UveDX* uveDX, AcquireDeviceFlag deviceFlag) {
+  uveDX->uveInput = new UveInput{uveDX, deviceFlag};
 }
 
 bool UveInput::isKeyPressed(sf::Keyboard::Scancode code, bool allowLongPress) {
@@ -47,7 +57,7 @@ bool UveInput::isKeyPressed(sf::Keyboard::Scancode code, bool allowLongPress) {
 }
 
 bool UveInput::isAnyKeyPressed() {
-  for (int key = 0; key <= sf::Keyboard::KeyCount; ++key)
+  for (unsigned int key = 0; key <= sf::Keyboard::KeyCount; ++key)
     if (currentKeyState.at(static_cast<sf::Keyboard::Scancode>(key)))
       return true;
 
@@ -62,7 +72,7 @@ void UveInput::waitForAllKeysRelease() {
 
     this->update();
 
-    for (int key = 0; key <= sf::Keyboard::KeyCount; ++key)
+    for (unsigned int key = 0; key <= sf::Keyboard::KeyCount; ++key)
       if (currentKeyState.at(static_cast<sf::Keyboard::Scancode>(key)))
         flag = false;
   }
@@ -80,4 +90,4 @@ void UveInput::waitForKeyPress() {
     this->update();
   }
 }
-} // namespace UveDX
+}  // namespace UveDX

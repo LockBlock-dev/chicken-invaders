@@ -4,7 +4,7 @@
 
 namespace UveDX {
 class UveTimer {
-public:
+ public:
   UveTimer(int interval = 0);
 
   void waitForTimeInterval();
@@ -12,8 +12,8 @@ public:
   void setInterval(int interval);
   int getElapsedTimeInMilliseconds();
 
-private:
+ private:
   sf::Clock clock;
   int interval;
 };
-} // namespace UveDX
+}  // namespace UveDX

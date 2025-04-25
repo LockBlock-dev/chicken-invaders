@@ -1,8 +1,10 @@
 #pragma once
 
-namespace global {
-extern double dcos[256];
-extern double dsin[256];
-} // namespace global
+#include <array>
 
-double calculate_angle(double x, double y);
+namespace global {
+inline std::array<double, 256> dcos{};
+inline std::array<double, 256> dsin{};
+}  // namespace global
+
+[[nodiscard]] double calculate_angle(double x, double y) noexcept;

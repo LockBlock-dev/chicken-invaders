@@ -1,10 +1,15 @@
 #include "Font.hpp"
+
 #include "SurfaceAnchorType.hpp"
 #include "UveDX.hpp"
 
 namespace UveDX {
-Font::Font(UveDX *uveDX, const std::string &filename)
-    : UveBase(uveDX), surfaces({}), field_190(1), spaceSize(10), field_198(0),
+Font::Font(UveDX* uveDX, const std::string& filename)
+    : UveBase(uveDX),
+      surfaces({}),
+      field_190(1),
+      spaceSize(10),
+      field_198(0),
       field_19C(0) {
   int v7 = 0;
 
@@ -14,7 +19,7 @@ Font::Font(UveDX *uveDX, const std::string &filename)
     auto surfaceFilename = std::format("{}_{}.bmp", filename, i + 33);
 
     if (this->uveDX->uveFileManager->checkFileExists(surfaceFilename)) {
-      this->surfaces.at(i) = new Surface(this->uveDX, surfaceFilename);
+      this->surfaces.at(i) = new Surface{this->uveDX, surfaceFilename};
 
       this->surfaces.at(i)->setAnchorPoint(SurfaceAnchorType::TopLeftDefault);
 
@@ -40,7 +45,7 @@ Font::~Font() {
 
 void Font::update() {}
 
-void Font::blitText(int dstX, int dstY, const std::string &text, int a4) {
+void Font::blitText(int dstX, int dstY, const std::string& text, int a4) {
   if (a4 == 6)
     dstX -= this->calculateTextWidth(text) / 2;
 
@@ -64,7 +69,7 @@ void Font::blitText(int dstX, int dstY, const std::string &text, int a4) {
   }
 }
 
-int Font::calculateTextWidth(const std::string &text) {
+int Font::calculateTextWidth(const std::string& text) {
   int dstX = -this->field_190;
 
   for (unsigned int i = 0; i < text.size(); ++i) {
@@ -84,5 +89,7 @@ int Font::calculateTextWidth(const std::string &text) {
   return dstX;
 }
 
-void Font::setField194(int val) { this->spaceSize = val; }
-} // namespace UveDX
+void Font::setField194(int val) {
+  this->spaceSize = val;
+}
+}  // namespace UveDX

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "UveBase.hpp"
 #include <fstream>
 #include <string>
 #include <vector>
+
+#include "UveBase.hpp"
 
 namespace UveDX {
 struct AssetFileHeader {
@@ -13,21 +14,21 @@ struct AssetFileHeader {
 };
 
 class UveFileManager : public UveBase {
-public:
-  UveFileManager(UveDX *uveDX);
+ public:
+  UveFileManager(UveDX* uveDX);
   ~UveFileManager();
 
   void update() override;
-  void loadAssetsList(const std::string &path);
-  std::fstream openFile(const std::string &path, unsigned int *outFileSize);
-  void checkFile(const std::string &path);
-  bool checkFileExists(const std::string &path);
-  bool verifyFileExists(const std::string &path);
+  void loadAssetsList(const std::string& path);
+  std::fstream openFile(const std::string& path, unsigned int* outFileSize);
+  void checkFile(const std::string& path);
+  bool checkFileExists(const std::string& path);
+  bool verifyFileExists(const std::string& path);
 
-private:
+ private:
   bool loaded;
   std::string filename;
   bool bypassAssetsList;
-  std::vector<AssetFileHeader *> list;
+  std::vector<AssetFileHeader*> list;
 };
-} // namespace UveDX
+}  // namespace UveDX

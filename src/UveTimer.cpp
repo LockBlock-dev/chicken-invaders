@@ -1,4 +1,5 @@
 #include "UveTimer.hpp"
+
 #include <SFML/System/Sleep.hpp>
 #include <SFML/System/Time.hpp>
 
@@ -15,11 +16,15 @@ void UveTimer::waitForTimeInterval() {
   this->clock.restart();
 }
 
-int UveTimer::getInterval() { return this->interval; }
+int UveTimer::getInterval() {
+  return this->interval;
+}
 
-void UveTimer::setInterval(int interval) { this->interval = interval; }
+void UveTimer::setInterval(int interval) {
+  this->interval = interval;
+}
 
 int UveTimer::getElapsedTimeInMilliseconds() {
   return this->clock.getElapsedTime().asMilliseconds();
 }
-} // namespace UveDX
+}  // namespace UveDX

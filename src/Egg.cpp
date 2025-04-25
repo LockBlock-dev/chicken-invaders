@@ -1,9 +1,11 @@
 #include "Egg.hpp"
+
 #include "Game.hpp"
 
-Egg::Egg(UveDX::UveDX *uveDX, int x, int y, int speed)
+Egg::Egg(UveDX::UveDX* uveDX, int x, int y, int speed)
     : UveDX::Sprite(uveDX, x, y, global::game->surface_chain_egg->getSurf(0)),
-      dword94(0), speed(speed) {}
+      dword94(0),
+      speed(speed) {}
 
 void Egg::update() {
   UveDX::Sprite::update();
@@ -12,10 +14,10 @@ void Egg::update() {
     if (++this->dword94 == 50)
       this->hasBeenDisposed = true;
   } else {
-    this->y += this->speed;
+    this->sprite_y += this->speed;
 
-    if (this->y > 450) {
-      global::game->playSound(global::game->sound_fx11, this->x);
+    if (this->sprite_y > 450) {
+      global::game->playSound(global::game->sound_fx11, this->sprite_x);
 
       this->surface = global::game->surface_chain_egg->getSurf(1);
       this->dword94 = 1;

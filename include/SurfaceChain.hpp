@@ -28,6 +28,6 @@ public:
 
 private:
   std::vector<Surface *> surfaces;
-  int totalSurfaces;
+  unsigned int totalSurfaces;
 };
 } // namespace UveDX

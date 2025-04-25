@@ -1,14 +1,13 @@
-﻿#include "Game.hpp"
+﻿#include <cstdlib>
+#include <memory>
 
-Game *global::game = nullptr;
+#include "Game.hpp"
 
 int main() {
-  global::game = new Game();
+  global::game = std::make_shared<Game>();
 
   global::game->init();
   global::game->paint();
 
-  delete global::game;
-
-  return 0;
+  return EXIT_SUCCESS;
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BoundaryBouncer.hpp"
 #include "State.hpp"
 #include "StateBase.hpp"
 #include "UveDX.hpp"
@@ -7,8 +8,8 @@
 
 class WaveController : public UveDX::UveListOwner,
                        public StateBase<LevelState> {
-public:
-  WaveController(UveDX::UveDX *uveDX);
+ public:
+  WaveController(UveDX::UveDX* uveDX);
 
   void update() override;
   void handleWave();
@@ -17,11 +18,11 @@ public:
   unsigned int getCurrentSystem() const;
   bool getHasSpawnedGiftThisWave() const;
   void setHasSpawnedGiftThisWave(bool value);
-  int bounding_box[4];
-  int field_40;
+  int field_30;
+  int field_34;
+  BoundaryBouncer boundaryBouncer;
 
-private:
-  int field_44;
+ private:
   bool hasSpawnedGiftThisWave;
   unsigned int currentWave;
   unsigned int currentStage;

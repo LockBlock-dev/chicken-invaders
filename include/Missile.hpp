@@ -3,12 +3,12 @@
 #include "Sprite.hpp"
 
 class Missile : public UveDX::Sprite {
-public:
-  Missile(UveDX::UveDX *uveDX, unsigned int playerId, double x, double y);
+ public:
+  Missile(UveDX::UveDX* uveDX, unsigned int playerId, double x, double y);
 
   void update() override;
 
-private:
+ private:
   double field_94;
   double field_9C;
   double field_A4;

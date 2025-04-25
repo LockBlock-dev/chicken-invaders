@@ -1,21 +1,28 @@
 #pragma once
 
-#include "UveBase.hpp"
 #include <string>
 
+#include "UveBase.hpp"
+
 class Messenger : public UveDX::UveBase {
-public:
-  Messenger(UveDX::UveDX *uveDX);
+ public:
+  Messenger(UveDX::UveDX* uveDX);
 
   void update() override;
-  void showPrimaryMessage(const std::string &message, int delayBeforeDisplay,
-                          unsigned int displayDuration,
-                          unsigned int blinkFrequency);
-  void showSecondaryMessage(const std::string &message, int delayBeforeDisplay,
-                            unsigned int displayDuration,
-                            unsigned int blinkFrequency);
+  void showPrimaryMessage(
+      const std::string& message,
+      int delayBeforeDisplay,
+      unsigned int displayDuration,
+      unsigned int blinkFrequency
+  );
+  void showSecondaryMessage(
+      const std::string& message,
+      int delayBeforeDisplay,
+      unsigned int displayDuration,
+      unsigned int blinkFrequency
+  );
 
-private:
+ private:
   std::string primaryMessage;
   std::string secondaryMessage;
   unsigned int primaryMessageDisplayDuration;

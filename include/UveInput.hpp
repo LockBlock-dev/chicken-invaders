@@ -1,33 +1,32 @@
 #pragma once
 
-#include "UveBase.hpp"
 #include <SFML/Window/Keyboard.hpp>
 #include <unordered_map>
 
-namespace UveDX {
-class UveDX;
+#include "UveBase.hpp"
 
+namespace UveDX {
 class UveInput : public UveBase {
-public:
+ public:
   enum class AcquireDeviceFlag : int {
     NONE = 0,
     ACQUIRE_KEYBOARD_FLAG = 1 << 0,
     ACQUIRE_MOUSE_FLAG = 1 << 1
   };
 
-  UveInput(UveDX *uveDX, UveInput::AcquireDeviceFlag deviceFlag);
+  UveInput(UveDX* uveDX, UveInput::AcquireDeviceFlag deviceFlag);
 
   void update() override;
-  static void create(UveDX *uveDX, UveInput::AcquireDeviceFlag deviceFlag);
+  static void create(UveDX* uveDX, UveInput::AcquireDeviceFlag deviceFlag);
   bool isKeyPressed(sf::Keyboard::Scancode code, bool allowLongPress = false);
   bool isAnyKeyPressed();
   void waitForAllKeysRelease();
   void waitForKeyPress();
 
-private:
+ private:
   bool shouldAcquireKeyboard;
   bool shouldAcquireMouse;
   std::unordered_map<sf::Keyboard::Scancode, bool> currentKeyState;
   std::unordered_map<sf::Keyboard::Scancode, bool> previousKeyState;
 };
-} // namespace UveDX
+}  // namespace UveDX

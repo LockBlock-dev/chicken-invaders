@@ -3,12 +3,12 @@
 #include "Sprite.hpp"
 
 class ChickenLeg : public UveDX::Sprite {
-public:
-  ChickenLeg(UveDX::UveDX *uveDX, double x, double y);
+ public:
+  ChickenLeg(UveDX::UveDX* uveDX, double x, double y);
 
   void update() override;
 
-private:
+ private:
   double double94;
   double double9C;
   double doubleA4;

@@ -1,17 +1,26 @@
 #include "Missile.hpp"
+
+#include <cstring>
+
 #include "Enemy.hpp"
 #include "Explosion.hpp"
 #include "Game.hpp"
 #include "Smoke.hpp"
 #include "trigonometry.hpp"
-#include <cstring>
 
-Missile::Missile(UveDX::UveDX *uveDX, unsigned int playerId, double x, double y)
-    : UveDX::Sprite(uveDX, 0, 0,
-                    global::game->surface_chain_missile->getSurf(0)),
-      playerId(playerId), field_94(x), field_9C(y), field_A4(0),
-      field_B0(
-          calculate_angle(320.0 - this->field_94, 200.0 - this->field_9C)) {}
+Missile::Missile(UveDX::UveDX* uveDX, unsigned int playerId, double x, double y)
+    : UveDX::Sprite(
+          uveDX,
+          0,
+          0,
+          global::game->surface_chain_missile->getSurf(0)
+      ),
+      field_94(x),
+      field_9C(y),
+      field_A4(0),
+      playerId(playerId),
+      field_B0(calculate_angle(320.0 - this->field_94, 200.0 - this->field_9C)
+      ) {}
 
 void Missile::update() {
   int v1 = this->field_B0 + 128;
@@ -44,17 +53,17 @@ void Missile::update() {
 
   this->surface = global::game->surface_chain_missile->getSurf(surfaceNumber);
 
-  void *memSmoke = std::malloc(0x2344);
+  void* memSmoke = std::malloc(0x2344);
   std::memset(memSmoke, 0, 0x2344);
 
-  global::game->gameController->asteroid_explosion_smoke_list->add(
-      new (memSmoke)
-          Smoke{this->uveDX, (int)(global::dcos[v1] * 14.0 + this->field_94),
-                (int)(global::dsin[v1] * 14.0 + this->field_9C), 15, 512, v1,
-                128, true});
+  global::game->gameController->asteroid_explosion_smoke_list->add(new (memSmoke
+  ) Smoke{
+      this->uveDX, (int)(global::dcos[v1] * 14.0 + this->field_94),
+      (int)(global::dsin[v1] * 14.0 + this->field_9C), 15, 512, v1, 128, true
+  });
 
-  this->x = (int)this->field_94;
-  this->y = (int)this->field_9C;
+  this->sprite_x = (int)this->field_94;
+  this->sprite_y = (int)this->field_9C;
 
   UveDX::Sprite::update();
 
@@ -66,7 +75,7 @@ void Missile::update() {
       if (!currentHead)
         break;
 
-      Enemy *originalHead = dynamic_cast<Enemy *>(currentHead);
+      Enemy* originalHead = dynamic_cast<Enemy*>(currentHead);
       currentHead = currentHead->next;
 
       originalHead->handleHit(this->playerId, 50);
@@ -77,12 +86,13 @@ void Missile::update() {
     if (global::game->sound_fx113->uveDX->soundEnabled)
       global::game->sound_fx113->play();
 
-    void *memExplosion = std::malloc(0x2344);
+    void* memExplosion = std::malloc(0x2344);
     std::memset(memExplosion, 0, 0x2344);
 
-    global::game->gameController->explosion_smoke_list->add(
-        new (memExplosion)
-            Explosion{this->uveDX, this->x, this->y, 200, 1280, 0, 256, true});
+    global::game->gameController->explosion_smoke_list->add(new (memExplosion
+    ) Explosion{
+        this->uveDX, this->sprite_x, this->sprite_y, 200, 1280, 0, 256, true
+    });
 
     this->hasBeenDisposed = true;
   }

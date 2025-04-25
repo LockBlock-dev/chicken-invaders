@@ -11,8 +11,8 @@ This project concerns only the original 1999 version, not the remastered 2023 re
 -   [Documentation](#documentation)
 -   [Current state of the project](#current-state-of-the-project)
 -   [Additional features](#additional-features)
--   [License](#license)
 -   [Acknowledgments](#acknowledgments)
+-   [License](#license)
 
 ## Disclaimer
 

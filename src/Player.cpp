@@ -1,92 +1,128 @@
 #include "Player.hpp"
+
+#include <cstring>
+#include <string>
+
+#include "BoundaryBouncer.hpp"
 #include "Bullet.hpp"
 #include "Enemy.hpp"
 #include "Explosion.hpp"
 #include "Game.hpp"
 #include "Missile.hpp"
 #include "Smoke.hpp"
-#include "bounding_box.hpp"
 #include "constants.hpp"
 #include "rng.hpp"
-#include <cstring>
-#include <string>
 
-Player::Player(UveDX::UveDX *uveDX, unsigned int playerId)
-    : UveDX::Sprite(uveDX, 320, 500,
-                    global::game->surface_chain_fighter->getSurf(4)),
-      x_coord(320), y_coord(400), horizontalVelocity(0), playerId(playerId),
-      spaceshipAngle(4), invisibilityTimeout(0), shieldTimeout(50), lives(3),
-      lasersLevel(0), missilesCount(0), consumedChickenLegs(0), score(0),
-      scoreDisplayed(0), shotAtPreviousFrame(false)
-
-{
-  sub_401688(&this->unknown_1, 0, 10, 0, 0);
-}
+Player::Player(UveDX::UveDX* uveDX, unsigned int playerId)
+    : UveDX::Sprite(
+          uveDX,
+          320,
+          500,
+          global::game->surface_chain_fighter->getSurf(4)
+      ),
+      x_coord(this->sprite_x),
+      y_coord(400),
+      horizontalVelocity(0),
+      playerId(playerId),
+      spaceshipAngle(4),
+      boundaryBouncer(0, 10, 0),
+      invisibilityTimeout(0),
+      shieldTimeout(50),
+      lives(3),
+      lasersLevel(0),
+      missilesCount(0),
+      consumedChickenLegs(0),
+      scoreDisplayed(0),
+      score(0),
+      shotAtPreviousFrame(false) {}
 
 void Player::update() {
   if (this->invisibilityTimeout <= 0) {
-    if (this->uveDX->uveInput->isKeyPressed(playerMoveLeftKeys[playerId],
-                                            true)) {
+    if (this->uveDX->uveInput->isKeyPressed(
+            constants::playerMoveLeftKeys[playerId], true
+        )) {
       this->horizontalVelocity -= 3;
       this->spaceshipAngle -= 2;
     }
 
-    if (this->uveDX->uveInput->isKeyPressed(playerMoveRightKeys[playerId],
-                                            true)) {
+    if (this->uveDX->uveInput->isKeyPressed(
+            constants::playerMoveRightKeys[playerId], true
+        )) {
       this->horizontalVelocity += 3;
       this->spaceshipAngle += 2;
     }
 
     bool isShootKeyPressed =
-        this->uveDX->uveInput->isKeyPressed(playerShootKeys[playerId]);
+        this->uveDX->uveInput->isKeyPressed(constants::playerShootKeys[playerId]
+        );
 
     if (isShootKeyPressed && !this->shotAtPreviousFrame) {
-      global::game->playSound(global::game->sound_tr3_239, this->x);
+      global::game->playSound(global::game->sound_tr3_239, this->sprite_x);
 
-      this->y += 10;
+      this->sprite_y += 10;
 
       if (this->lasersLevel != 1 && this->lasersLevel != 4 &&
           this->lasersLevel != 6)
-        global::game->gameController->bullet_missile_list->add(
-            new Bullet{this->uveDX, this->playerId, this->x, this->y - 20, 0});
+        global::game->gameController->bullet_missile_list->add(new Bullet{
+            this->uveDX, this->playerId, this->sprite_x, this->sprite_y - 20, 0
+        });
 
       if (this->lasersLevel == 1 || this->lasersLevel == 2) {
         global::game->gameController->bullet_missile_list->add(new Bullet{
-            this->uveDX, this->playerId, this->x - 10, this->y - 10, 0});
+            this->uveDX, this->playerId, this->sprite_x - 10,
+            this->sprite_y - 10, 0
+        });
         global::game->gameController->bullet_missile_list->add(new Bullet{
-            this->uveDX, this->playerId, this->x + 10, this->y - 10, 0});
+            this->uveDX, this->playerId, this->sprite_x + 10,
+            this->sprite_y - 10, 0
+        });
       }
 
       if (this->lasersLevel >= 3) {
         global::game->gameController->bullet_missile_list->add(new Bullet{
-            this->uveDX, this->playerId, this->x - 10, this->y - 15, 248});
+            this->uveDX, this->playerId, this->sprite_x - 10,
+            this->sprite_y - 15, 248
+        });
         global::game->gameController->bullet_missile_list->add(new Bullet{
-            this->uveDX, this->playerId, this->x + 10, this->y - 15, 8});
+            this->uveDX, this->playerId, this->sprite_x + 10,
+            this->sprite_y - 15, 8
+        });
       }
 
       if (this->lasersLevel >= 4) {
         global::game->gameController->bullet_missile_list->add(new Bullet{
-            this->uveDX, this->playerId, this->x - 20, this->y - 10, 240});
+            this->uveDX, this->playerId, this->sprite_x - 20,
+            this->sprite_y - 10, 240
+        });
         global::game->gameController->bullet_missile_list->add(new Bullet{
-            this->uveDX, this->playerId, this->x + 20, this->y - 10, 16});
+            this->uveDX, this->playerId, this->sprite_x + 20,
+            this->sprite_y - 10, 16
+        });
       }
 
       if (this->lasersLevel >= 6) {
         global::game->gameController->bullet_missile_list->add(new Bullet{
-            this->uveDX, this->playerId, this->x - 5, this->y - 18, 252});
+            this->uveDX, this->playerId, this->sprite_x - 5,
+            this->sprite_y - 18, 252
+        });
         global::game->gameController->bullet_missile_list->add(new Bullet{
-            this->uveDX, this->playerId, this->x + 5, this->y - 18, 4});
+            this->uveDX, this->playerId, this->sprite_x + 5,
+            this->sprite_y - 18, 4
+        });
       }
     }
 
     this->shotAtPreviousFrame = isShootKeyPressed;
 
-    if (this->missilesCount > 0 &&
-        this->uveDX->uveInput->isKeyPressed(playerMissileKeys[playerId])) {
+    if (this->missilesCount > 0 && this->uveDX->uveInput->isKeyPressed(
+                                       constants::playerMissileKeys[playerId]
+                                   )) {
       global::game->gameController->bullet_missile_list->add(new Missile{
-          this->uveDX, this->playerId, (double)(this->x), (double)(this->y)});
+          this->uveDX, this->playerId, (double)(this->sprite_x),
+          (double)(this->sprite_y)
+      });
 
-      global::game->playSound(global::game->sound_gpolice_12, this->x);
+      global::game->playSound(global::game->sound_gpolice_12, this->sprite_x);
 
       --this->missilesCount;
     }
@@ -135,8 +171,8 @@ void Player::update() {
 
     this->surface =
         global::game->surface_chain_fighter->getSurf(this->spaceshipAngle);
-    this->x = (this->x_coord + this->x) / 2;
-    this->y = (this->y_coord + this->y) / 2;
+    this->sprite_x = (this->x_coord + this->sprite_x) / 2;
+    this->sprite_y = (this->y_coord + this->sprite_y) / 2;
 
     int v40 = 4 - this->spaceshipAngle;
     int v41 = (v40 < 0) ? (v40 - 1) / 2 : v40 / 2;
@@ -146,45 +182,53 @@ void Player::update() {
     if (v41 < 0)
       v41 += 1;
 
-    int v57 = this->y + 12;
+    int v57 = this->sprite_y + 12;
 
-    int v54 = this->x - (10 - v41);
+    int v54 = this->sprite_x - (10 - v41);
 
     auto exhaust_surface = global::game->surface_chain_exhaust->getSurf(
-        this->uveDX->totalFramesRendered % 2 + 2 * this->playerId);
+        this->uveDX->totalFramesRendered % 2 + 2 * this->playerId
+    );
 
     exhaust_surface->blit(v54, v57, nullptr, 1.0);
 
-    int v55 = this->x + 10 - v41;
+    int v55 = this->sprite_x + 10 - v41;
 
     exhaust_surface->blit(v55, v57, nullptr, 1.0);
 
     if (this->shieldTimeout > 0) {
       --this->shieldTimeout;
 
-      sub_4016F8(&this->unknown_1);
+      this->boundaryBouncer.update();
 
-      global::game->surface_chain_shield->getSurf(this->shieldSurfaceNumber)
-          ->blit(this->x, this->y, nullptr, 1.0);
+      global::game->surface_chain_shield
+          ->getSurf(this->boundaryBouncer.currentSurfaceIndex)
+          ->blit(this->sprite_x, this->sprite_y, nullptr, 1.0);
     }
 
     UveDX::Sprite::update();
 
     if (global::game->gameController->getWaveController()->previousState ==
         LevelState::SystemClear) {
-      void *memExplosion = std::malloc(0x2344);
+      void* memExplosion = std::malloc(0x2344);
       std::memset(memExplosion, 0, 0x2344);
 
       global::game->gameController->asteroid_explosion_smoke_list->add(
-          new (memExplosion) Explosion{this->uveDX, this->x - 10, this->y + 18,
-                                       10, 1280, 128, 32, true});
+          new (memExplosion) Explosion{
+              this->uveDX, this->sprite_x - 10, this->sprite_y + 18, 10, 1280,
+              128, 32, true
+          }
+      );
 
-      void *memExplosionTwo = std::malloc(0x2344);
+      void* memExplosionTwo = std::malloc(0x2344);
       std::memset(memExplosionTwo, 0, 0x2344);
 
-      global::game->gameController->asteroid_explosion_smoke_list->add(new (
-          memExplosionTwo) Explosion{this->uveDX, this->x + 10, this->y + 18,
-                                     10, 1280, 128, 32, true});
+      global::game->gameController->asteroid_explosion_smoke_list->add(
+          new (memExplosionTwo) Explosion{
+              this->uveDX, this->sprite_x + 10, this->sprite_y + 18, 10, 1280,
+              128, 32, true
+          }
+      );
     }
 
     this->handleBonus();
@@ -212,22 +256,27 @@ void Player::drawInterface() {
     v1 = -10;
 
   for (size_t i = 0; i < this->lives; ++i)
-    global::game->surface_heart->blit(12 * i + 590 * this->playerId + 10, 15,
-                                      nullptr, 1.0);
+    global::game->surface_heart->blit(
+        12 * i + 590 * this->playerId + 10, 15, nullptr, 1.0
+    );
 
   for (size_t j = 0; j < this->missilesCount; ++j)
     global::game->surface_chain_missile->getSurf(0)->blit(
-        j * v1 + 620 * this->playerId + 10, 460, nullptr, 1.0);
+        j * v1 + 620 * this->playerId + 10, 460, nullptr, 1.0
+    );
 
   if (this->playerId > 0)
     global::game->font_alphabet_small->blitText(
         540 * this->playerId + 50 -
             global::game->font_alphabet_small->calculateTextWidth(
-                std::to_string(this->scoreDisplayed)),
-        8, std::to_string(this->scoreDisplayed), 0);
+                std::to_string(this->scoreDisplayed)
+            ),
+        8, std::to_string(this->scoreDisplayed), 0
+    );
   else
     global::game->font_alphabet_small->blitText(
-        50, 8, std::to_string(this->scoreDisplayed), 0);
+        50, 8, std::to_string(this->scoreDisplayed), 0
+    );
 }
 
 void Player::handleBonus() {
@@ -237,7 +286,7 @@ void Player::handleBonus() {
     if (!currentHead)
       break;
 
-    Sprite *originalHead = dynamic_cast<Sprite *>(currentHead);
+    Sprite* originalHead = dynamic_cast<Sprite*>(currentHead);
     currentHead = currentHead->next;
 
     if (originalHead->checkCollisionsWith(this)) {
@@ -246,8 +295,7 @@ void Player::handleBonus() {
 
       originalHead->hasBeenDisposed = true;
 
-      if (++this->lasersLevel < 0)
-        this->lasersLevel = 0;
+      ++this->lasersLevel;
 
       return;
     }
@@ -261,11 +309,11 @@ void Player::handleChickenLeg() {
     if (!currentHead)
       break;
 
-    Sprite *originalHead = dynamic_cast<Sprite *>(currentHead);
+    Sprite* originalHead = dynamic_cast<Sprite*>(currentHead);
     currentHead = currentHead->next;
 
     if (originalHead->checkCollisionsWith(this)) {
-      global::game->playSound(global::game->sound_chomp, this->x);
+      global::game->playSound(global::game->sound_chomp, this->sprite_x);
 
       originalHead->hasBeenDisposed = true;
 
@@ -286,20 +334,21 @@ void Player::handleChickenLeg() {
 }
 
 void Player::handleHit() {
-  global::game->playSound(global::game->sound_fx113, this->x);
+  global::game->playSound(global::game->sound_fx113, this->sprite_x);
 
-  void *memSmoke = std::malloc(0x2344);
+  void* memSmoke = std::malloc(0x2344);
   std::memset(memSmoke, 0, 0x2344);
 
-  global::game->gameController->explosion_smoke_list->add(new (memSmoke) Smoke{
-      this->uveDX, this->x, this->y, 100, 768, 0, 256, true});
+  global::game->gameController->explosion_smoke_list->add(new (memSmoke
+  ) Smoke{this->uveDX, this->sprite_x, this->sprite_y, 100, 768, 0, 256, true});
 
-  void *memExplosion = std::malloc(0x2344);
+  void* memExplosion = std::malloc(0x2344);
   std::memset(memExplosion, 0, 0x2344);
 
-  global::game->gameController->explosion_smoke_list->add(
-      new (memExplosion)
-          Explosion{this->uveDX, this->x, this->y, 100, 768, 0, 256, true});
+  global::game->gameController->explosion_smoke_list->add(new (memExplosion
+  ) Explosion{
+      this->uveDX, this->sprite_x, this->sprite_y, 100, 768, 0, 256, true
+  });
 
   int random_number = generate_random_number();
 
@@ -315,7 +364,7 @@ void Player::handleHit() {
 
   this->lasersLevel /= 2;
 
-  this->y = 500;
+  this->sprite_y = 500;
   this->invisibilityTimeout = 50;
   this->shieldTimeout = 50;
 
@@ -330,7 +379,7 @@ void Player::handleHitByEnemy() {
     if (!currentHead)
       break;
 
-    Enemy *originalHead = dynamic_cast<Enemy *>(currentHead);
+    Enemy* originalHead = dynamic_cast<Enemy*>(currentHead);
     currentHead = currentHead->next;
 
     if (originalHead->checkCollisionsWith(this)) {
@@ -348,7 +397,7 @@ void Player::handleHitByEgg() {
     if (!currentHead)
       break;
 
-    Sprite *originalHead = dynamic_cast<Sprite *>(currentHead);
+    Sprite* originalHead = dynamic_cast<Sprite*>(currentHead);
     currentHead = currentHead->next;
 
     if (originalHead->checkCollisionsWith(this)) {
@@ -361,8 +410,14 @@ void Player::handleHitByEgg() {
   }
 }
 
-unsigned int Player::getLives() { return this->lives; }
+unsigned int Player::getLives() {
+  return this->lives;
+}
 
-int Player::getScore() { return this->score; }
+int Player::getScore() {
+  return this->score;
+}
 
-void Player::increaseScoreBy(int amount) { this->score += amount; }
+void Player::increaseScoreBy(int amount) {
+  this->score += amount;
+}

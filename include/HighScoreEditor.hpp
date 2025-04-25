@@ -1,11 +1,12 @@
 #pragma once
 
-#include "UveBase.hpp"
 #include <string>
 
+#include "UveBase.hpp"
+
 class HighScoreEditor : public UveDX::UveBase {
-public:
-  HighScoreEditor(UveDX::UveDX *uveDX, unsigned int playerId, int score);
+ public:
+  HighScoreEditor(UveDX::UveDX* uveDX, unsigned int playerId, int score);
 
   void update() override;
 

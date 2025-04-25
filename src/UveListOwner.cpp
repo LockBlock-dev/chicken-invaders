@@ -1,13 +1,14 @@
 #include "UveListOwner.hpp"
 
 namespace UveDX {
-
 UveListOwner::UveListOwner() : UveBase(), head(nullptr), tail(nullptr) {}
 
-UveListOwner::UveListOwner(UveDX *uveDX)
+UveListOwner::UveListOwner(UveDX* uveDX)
     : UveBase(uveDX), head(nullptr), tail(nullptr) {}
 
-UveListOwner::~UveListOwner() { this->clear(); }
+UveListOwner::~UveListOwner() {
+  this->clear();
+}
 
 void UveListOwner::update() {
   auto currentHead = this->head;
@@ -16,7 +17,7 @@ void UveListOwner::update() {
     if (!currentHead)
       break;
 
-    UveBase *originalHead = dynamic_cast<UveBase *>(currentHead);
+    UveBase* originalHead = dynamic_cast<UveBase*>(currentHead);
     currentHead = currentHead->next;
 
     originalHead->update();
@@ -29,7 +30,7 @@ void UveListOwner::update() {
   }
 }
 
-void UveListOwner::add(LinkedListNode *node) {
+void UveListOwner::add(LinkedListNode* node) {
   if (!node)
     return;
 
@@ -47,8 +48,10 @@ void UveListOwner::add(LinkedListNode *node) {
   }
 }
 
-void UveListOwner::emplaceAfter(LinkedListNode *newNode,
-                                LinkedListNode *existingNode) {
+void UveListOwner::emplaceAfter(
+    LinkedListNode* newNode,
+    LinkedListNode* existingNode
+) {
   newNode->next = existingNode->next;
 
   newNode->prev = existingNode;
@@ -61,12 +64,12 @@ void UveListOwner::emplaceAfter(LinkedListNode *newNode,
     this->tail = newNode;
 }
 
-void UveListOwner::remove(LinkedListNode *node) {
+void UveListOwner::remove(LinkedListNode* node) {
   if (!node)
     return;
 
   if (node == this->head) {
-    LinkedListNode *newHead = this->head->next;
+    LinkedListNode* newHead = this->head->next;
     this->head = newHead;
 
     if (newHead)
@@ -74,7 +77,7 @@ void UveListOwner::remove(LinkedListNode *node) {
     else
       this->tail = nullptr;
   } else if (node == this->tail) {
-    LinkedListNode *newTail = this->tail->prev;
+    LinkedListNode* newTail = this->tail->prev;
     this->tail = newTail;
 
     if (newTail)
@@ -82,8 +85,8 @@ void UveListOwner::remove(LinkedListNode *node) {
     else
       this->head = nullptr;
   } else {
-    LinkedListNode *previousNode = node->prev;
-    LinkedListNode *nextNode = node->next;
+    LinkedListNode* previousNode = node->prev;
+    LinkedListNode* nextNode = node->next;
 
     if (previousNode)
       previousNode->next = nextNode;
@@ -108,7 +111,9 @@ void UveListOwner::clear() {
   }
 }
 
-bool UveListOwner::isEmpty() { return !this->head; }
+bool UveListOwner::isEmpty() {
+  return !this->head;
+}
 
 unsigned int UveListOwner::size() {
   unsigned int i;
@@ -120,7 +125,11 @@ unsigned int UveListOwner::size() {
   return i;
 }
 
-const LinkedListNode *UveListOwner::getHead() const { return this->head; }
+const LinkedListNode* UveListOwner::getHead() const {
+  return this->head;
+}
 
-LinkedListNode *UveListOwner::getHead() { return this->head; }
-} // namespace UveDX
+LinkedListNode* UveListOwner::getHead() {
+  return this->head;
+}
+}  // namespace UveDX

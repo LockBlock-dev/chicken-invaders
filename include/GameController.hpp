@@ -1,5 +1,8 @@
 #pragma once
 
+#include <array>
+#include <string>
+
 #include "Background.hpp"
 #include "Player.hpp"
 #include "State.hpp"
@@ -7,12 +10,10 @@
 #include "UveDX.hpp"
 #include "UveListOwner.hpp"
 #include "WaveController.hpp"
-#include <string>
-#include <vector>
 
 class GameController : public UveDX::UveListOwner, public StateBase<GameState> {
-public:
-  GameController(UveDX::UveDX *uveDX);
+ public:
+  GameController(UveDX::UveDX* uveDX);
   ~GameController();
 
   void update() override;
@@ -21,31 +22,28 @@ public:
   unsigned int countAlivePlayers();
   void addPlayer(unsigned int playerId);
   void handlePostLevelTransition();
-  void addHighScoreEntry(const std::string &pseudo, int score);
+  void addHighScoreEntry(const std::string& pseudo, int score);
   bool areCheatsEnabled() const;
   bool getGraphicsQuality() const;
-  WaveController *getWaveController();
-  Background *background;
-  Player *player1;
-  Player *player2;
-  bool player1Spawned;
-  bool player2Spawned;
-  WaveController *waveController;
-  UveDX::UveListOwner *bullet_missile_list;
-  UveDX::UveListOwner *egg_list;
-  UveDX::UveListOwner *chicken_leg_list;
-  UveDX::UveListOwner *feather_list;
-  UveDX::UveListOwner *explosion_smoke_list;
-  UveDX::UveListOwner *asteroid_explosion_smoke_list;
-  UveDX::UveListOwner *bonus_list;
-  UveDX::UveListOwner *highscoreEditor_list;
+  WaveController* getWaveController();
+  Background* background;
+  std::array<Player*, 2> players;
+  std::array<bool, 2> playerSpawned;
+  WaveController* waveController;
+  UveDX::UveListOwner* bullet_missile_list;
+  UveDX::UveListOwner* egg_list;
+  UveDX::UveListOwner* chicken_leg_list;
+  UveDX::UveListOwner* feather_list;
+  UveDX::UveListOwner* explosion_smoke_list;
+  UveDX::UveListOwner* asteroid_explosion_smoke_list;
+  UveDX::UveListOwner* bonus_list;
+  UveDX::UveListOwner* highscoreEditor_list;
 
-private:
+ private:
   bool graphicsQuality;
   bool cheatsEnabled;
-  std::vector<std::string> highscorePseudos;
-  std::vector<int> highscores;
-  int player1score;
-  int player2score;
+  std::array<std::string, 5> highscorePseudos;
+  std::array<int, 5> highscores;
+  std::array<int, 2> playerScores;
   int field_98;
 };

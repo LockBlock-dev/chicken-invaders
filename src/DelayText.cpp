@@ -1,12 +1,20 @@
 #include "DelayText.hpp"
+
 #include "Game.hpp"
 #include "UveDX.hpp"
 
-DelayText::DelayText(UveDX::UveDX *uveDX, int dstY, const std::string &text,
-                     int delayBeforeDisplay, int displayDuration)
-    : UveDX::UveBase(uveDX), dstY(dstY), text(text),
-      delayBeforeDisplay(delayBeforeDisplay), displayDuration(displayDuration) {
-}
+DelayText::DelayText(
+    UveDX::UveDX* uveDX,
+    int dstY,
+    const std::string& text,
+    int delayBeforeDisplay,
+    int displayDuration
+)
+    : UveDX::UveBase(uveDX),
+      text(text),
+      dstY(dstY),
+      delayBeforeDisplay(delayBeforeDisplay),
+      displayDuration(displayDuration) {}
 
 void DelayText::update() {
   if (this->delayBeforeDisplay <= 0) {

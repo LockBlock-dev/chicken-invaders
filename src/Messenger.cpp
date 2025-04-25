@@ -1,11 +1,16 @@
 #include "Messenger.hpp"
+
 #include "Game.hpp"
 
-Messenger::Messenger(UveDX::UveDX *uveDX)
-    : UveDX::UveBase(uveDX), primaryMessage(""), secondaryMessage(""),
-      primaryMessageDisplayDuration(0), secondaryMessageDisplayDuration(0),
+Messenger::Messenger(UveDX::UveDX* uveDX)
+    : UveDX::UveBase(uveDX),
+      primaryMessage(""),
+      secondaryMessage(""),
+      primaryMessageDisplayDuration(0),
+      secondaryMessageDisplayDuration(0),
       primaryMessageDelayBeforeDisplay(0),
-      secondaryMessageDelayBeforeDisplay(0), primaryMessageBlinkFrequency(0),
+      secondaryMessageDelayBeforeDisplay(0),
+      primaryMessageBlinkFrequency(0),
       secondaryMessageBlinkFrequency(0) {}
 
 void Messenger::update() {
@@ -15,8 +20,9 @@ void Messenger::update() {
 
       if (blinkFrequency == 0 ||
           this->primaryMessageDisplayDuration / blinkFrequency % 2 == 0)
-        global::game->font_alphabet->blitText(320, 150, this->primaryMessage,
-                                              6);
+        global::game->font_alphabet->blitText(
+            320, 150, this->primaryMessage, 6
+        );
 
       --this->primaryMessageDisplayDuration;
     }
@@ -29,8 +35,9 @@ void Messenger::update() {
 
       if (blinkFrequency == 0 ||
           this->secondaryMessageDisplayDuration / blinkFrequency % 2 == 0)
-        global::game->font_alphabet_small->blitText(320, 190,
-                                                    this->secondaryMessage, 6);
+        global::game->font_alphabet_small->blitText(
+            320, 190, this->secondaryMessage, 6
+        );
 
       --this->secondaryMessageDisplayDuration;
     }
@@ -38,20 +45,24 @@ void Messenger::update() {
     --this->secondaryMessageDelayBeforeDisplay;
 }
 
-void Messenger::showPrimaryMessage(const std::string &message,
-                                   int delayBeforeDisplay,
-                                   unsigned int displayDuration,
-                                   unsigned int blinkFrequency) {
+void Messenger::showPrimaryMessage(
+    const std::string& message,
+    int delayBeforeDisplay,
+    unsigned int displayDuration,
+    unsigned int blinkFrequency
+) {
   this->primaryMessage = message;
   this->primaryMessageDelayBeforeDisplay = delayBeforeDisplay;
   this->primaryMessageDisplayDuration = displayDuration;
   this->primaryMessageBlinkFrequency = blinkFrequency;
 }
 
-void Messenger::showSecondaryMessage(const std::string &message,
-                                     int delayBeforeDisplay,
-                                     unsigned int displayDuration,
-                                     unsigned int blinkFrequency) {
+void Messenger::showSecondaryMessage(
+    const std::string& message,
+    int delayBeforeDisplay,
+    unsigned int displayDuration,
+    unsigned int blinkFrequency
+) {
   this->secondaryMessage = message;
   this->secondaryMessageDelayBeforeDisplay = delayBeforeDisplay;
   this->secondaryMessageDisplayDuration = displayDuration;

@@ -4,14 +4,14 @@
 
 namespace UveDX {
 class UveSound : public UveBase {
-public:
-  UveSound(UveDX *uveDX);
+ public:
+  UveSound(UveDX* uveDX);
 
   void update() override;
-  static void create(UveDX *uveDX);
+  static void create(UveDX* uveDX);
   bool isReady() const;
 
-private:
+ private:
   bool ready;
 };
-} // namespace UveDX
+}  // namespace UveDX

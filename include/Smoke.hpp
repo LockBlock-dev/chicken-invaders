@@ -3,13 +3,21 @@
 #include "UveBase.hpp"
 
 class Smoke : public UveDX::UveBase {
-public:
-  Smoke(UveDX::UveDX *uveDX, int x, int y, int a5, int a6, int a7, int a8,
-        bool a9);
+ public:
+  Smoke(
+      UveDX::UveDX* uveDX,
+      int x,
+      int y,
+      int a5,
+      int a6,
+      int a7,
+      int a8,
+      bool a9
+  );
 
   void update() override;
 
-private:
+ private:
   bool field_14;
   int field_18;
   int field_1C;

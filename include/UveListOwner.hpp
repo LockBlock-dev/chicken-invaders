@@ -5,24 +5,24 @@
 
 namespace UveDX {
 class UveListOwner : public UveBase {
-public:
+ public:
   UveListOwner();
-  UveListOwner(UveDX *uveDX);
+  UveListOwner(UveDX* uveDX);
   ~UveListOwner();
 
   void update() override;
-  void add(LinkedListNode *node);
-  void emplaceAfter(LinkedListNode *newNode, LinkedListNode *existingNode);
-  void remove(LinkedListNode *node);
+  void add(LinkedListNode* node);
+  void emplaceAfter(LinkedListNode* newNode, LinkedListNode* existingNode);
+  void remove(LinkedListNode* node);
   void clear();
   bool isEmpty();
   unsigned int size();
 
-  const LinkedListNode *getHead() const;
-  LinkedListNode *getHead();
+  const LinkedListNode* getHead() const;
+  LinkedListNode* getHead();
 
-private:
-  LinkedListNode *head;
-  LinkedListNode *tail;
+ private:
+  LinkedListNode* head;
+  LinkedListNode* tail;
 };
-} // namespace UveDX
+}  // namespace UveDX

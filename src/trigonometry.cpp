@@ -1,10 +1,8 @@
 #include "trigonometry.hpp"
+
 #include <cmath>
 
-double global::dcos[256] = {0};
-double global::dsin[256] = {0};
-
-double calculate_angle(double x, double y) {
+double calculate_angle(double x, double y) noexcept {
   if (std::abs(x) < 0.05)
     return y;
 

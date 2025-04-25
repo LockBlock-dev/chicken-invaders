@@ -1,16 +1,18 @@
 #include "Boss.hpp"
+
+#include <cmath>
+#include <cstring>
+
 #include "Bonus.hpp"
+#include "BoundaryBouncer.hpp"
 #include "ChickenLeg.hpp"
 #include "Egg.hpp"
 #include "Explosion.hpp"
 #include "Feather.hpp"
 #include "Game.hpp"
 #include "Smoke.hpp"
-#include "bounding_box.hpp"
 #include "rng.hpp"
 #include "trigonometry.hpp"
-#include <cmath>
-#include <cstring>
 
 int dword_44D33C[25] = {320, 540, 100, 440, 200, 320, 540, 100,
                         320, 320, 320, 320, 540, 100, 320, 320,
@@ -20,19 +22,26 @@ int dword_44D3A0[25] = {200, 200, 200, 400, 100, 250, 400, 250,
                         100, 200, 100, 400, 100, 400, 100, 400,
                         100, 400, 100, 400, 100, 400, 100, 400};
 
-Boss::Boss(UveDX::UveDX *uveDX, unsigned int a3)
-    : Enemy(uveDX, 0, 0, global::game->surface_chain_chicken_boss->getSurf(0),
-            0),
-      field_B4(0), field_AC(a3),
-      x_coord((double)(generate_random_number() % 640)), y_coord(-100.0),
-      field_B0(128) {
-  sub_401688(&this->field_B8, 0, 9, -1, 0);
-
-  this->x = this->x_coord;
-  this->y = this->y_coord;
-  this->health = 10 * global::game->gameController->getWaveController()
-                          ->getCurrentSystem() +
-                 40;
+Boss::Boss(UveDX::UveDX* uveDX, unsigned int a3)
+    : Enemy(
+          uveDX,
+          0,
+          0,
+          global::game->surface_chain_chicken_boss->getSurf(0),
+          0
+      ),
+      x_coord((double)(generate_random_number() % 640)),
+      y_coord(-100.0),
+      field_AC(a3),
+      field_B0(128),
+      field_B4(0),
+      boundaryBouncer(0, 9) {
+  this->sprite_x = this->x_coord;
+  this->sprite_y = this->y_coord;
+  this->health =
+      10 * global::game->gameController->getWaveController()->getCurrentSystem(
+           ) +
+      40;
 }
 
 void Boss::update() {
@@ -67,12 +76,13 @@ void Boss::update() {
   if (std::fabs(v14) + v13 < 25.0 && ++this->field_B4 > 4)
     this->field_B4 = 0;
 
-  sub_4016F8(&this->field_B8);
+  this->boundaryBouncer.update();
 
-  this->surface =
-      global::game->surface_chain_chicken_boss->getSurf(this->field_C0);
-  this->x = this->x_coord;
-  this->y = this->y_coord;
+  this->surface = global::game->surface_chain_chicken_boss->getSurf(
+      this->boundaryBouncer.currentSurfaceIndex
+  );
+  this->sprite_x = this->x_coord;
+  this->sprite_y = this->y_coord;
 
   UveDX::Sprite::update();
 
@@ -80,34 +90,36 @@ void Boss::update() {
     unsigned int currentSystem =
         global::game->gameController->getWaveController()->getCurrentSystem();
 
-    int v8 = currentSystem == -5
+    int v8 = currentSystem + 5 == 0
                  ? 0
                  : generate_random_number() % (currentSystem + 5);
 
-    global::game->gameController->egg_list->add(
-        new Egg{this->uveDX, this->x + generate_random_number() % 100 - 50,
-                this->y + generate_random_number() % 50, v8 + 2});
+    global::game->gameController->egg_list->add(new Egg{
+        this->uveDX, this->sprite_x + generate_random_number() % 100 - 50,
+        this->sprite_y + generate_random_number() % 50, v8 + 2
+    });
 
-    global::game->playSound(global::game->sound_fx110, this->x);
+    global::game->playSound(global::game->sound_fx110, this->sprite_x);
   }
 }
 
 void Boss::handleHit(unsigned int playerId, int damages) {
   if (this->health > 0 && this->invisibilityTimeout <= 0) {
     this->health -= damages;
-    this->y -= 5;
+    this->sprite_y -= 5;
 
-    global::game->playSound(global::game->sound_rdfx31_boss, this->x);
+    global::game->playSound(global::game->sound_rdfx31_boss, this->sprite_x);
 
-    auto player = *(&global::game->gameController->player1 + playerId);
+    auto player = global::game->gameController->players.at(playerId);
 
     if (player)
       player->increaseScoreBy(250);
 
     if (global::game->gameController->getGraphicsQuality()) {
       for (size_t i = 0; i < 2; ++i) {
-        global::game->gameController->feather_list->add(
-            new Feather{this->uveDX, (double)this->x, (double)this->y});
+        global::game->gameController->feather_list->add(new Feather{
+            this->uveDX, (double)this->sprite_x, (double)this->sprite_y
+        });
       }
     }
 
@@ -120,33 +132,38 @@ void Boss::handleHit(unsigned int playerId, int damages) {
       for (size_t j = 0; j < 20; ++j) {
         global::game->gameController->chicken_leg_list->add(new ChickenLeg{
             this->uveDX,
-            (double)(this->x + generate_random_number() % 100 - 32),
-            (double)(this->y + generate_random_number() % 100 - 50)});
+            (double)(this->sprite_x + generate_random_number() % 100 - 32),
+            (double)(this->sprite_y + generate_random_number() % 100 - 50)
+        });
       }
 
       for (size_t k = 0; k < 10; ++k) {
-        void *memSmoke = std::malloc(0x2344);
+        void* memSmoke = std::malloc(0x2344);
         std::memset(memSmoke, 0, 0x2344);
 
-        global::game->gameController->explosion_smoke_list->add(
-            new (memSmoke) Smoke{this->uveDX,
-                                 this->x + generate_random_number() % 100 - 50,
-                                 this->y + generate_random_number() % 100 - 50,
-                                 50, 1024, 0, 256, true});
+        global::game->gameController->explosion_smoke_list->add(new (memSmoke
+        ) Smoke{
+            this->uveDX, this->sprite_x + generate_random_number() % 100 - 50,
+            this->sprite_y + generate_random_number() % 100 - 50, 50, 1024, 0,
+            256, true
+        });
 
-        void *memExplosion = std::malloc(0x2344);
+        void* memExplosion = std::malloc(0x2344);
         std::memset(memExplosion, 0, 0x2344);
 
-        global::game->gameController->explosion_smoke_list->add(
-            new (memExplosion) Explosion{this->uveDX, this->x, this->y, 200,
-                                         1280, 0, 256, true});
+        global::game->gameController->explosion_smoke_list->add(new (
+            memExplosion
+        ) Explosion{
+            this->uveDX, this->sprite_x, this->sprite_y, 200, 1280, 0, 256, true
+        });
       }
 
       if (player)
         player->increaseScoreBy(
             1000 * global::game->gameController->getWaveController()
                        ->getCurrentSystem() +
-            10000);
+            10000
+        );
 
       this->hasBeenDisposed = true;
 
@@ -155,15 +172,17 @@ void Boss::handleHit(unsigned int playerId, int damages) {
       if (!waveController->getHasSpawnedGiftThisWave() &&
           generate_random_number() % 5 == 0) {
         global::game->gameController->bonus_list->add(
-            new Bonus{this->uveDX, this->x, this->y});
+            new Bonus{this->uveDX, this->sprite_x, this->sprite_y}
+        );
 
         waveController->setHasSpawnedGiftThisWave(true);
       }
 
       if (global::game->gameController->getGraphicsQuality()) {
         for (size_t m = 0; m < 20; ++m) {
-          global::game->gameController->feather_list->add(
-              new Feather{this->uveDX, (double)this->x, (double)this->y});
+          global::game->gameController->feather_list->add(new Feather{
+              this->uveDX, (double)this->sprite_x, (double)this->sprite_y
+          });
         }
       }
     }
@@ -171,5 +190,5 @@ void Boss::handleHit(unsigned int playerId, int damages) {
 }
 
 void Boss::handleHitPlayer(unsigned int playerId) {
-  (*(&global::game->gameController->player1 + playerId))->handleHit();
+  global::game->gameController->players.at(playerId)->handleHit();
 }

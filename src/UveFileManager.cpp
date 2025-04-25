@@ -1,10 +1,12 @@
 #include "UveFileManager.hpp"
-#include "UveDX.hpp"
+
 #include <cstring>
 #include <filesystem>
 
+#include "UveDX.hpp"
+
 namespace UveDX {
-std::streampos getFileSize(std::fstream &file) {
+std::streampos getFileSize(std::fstream& file) {
   std::streampos currentPos = file.tellg();
 
   file.seekg(0, std::ios::end);
@@ -16,8 +18,11 @@ std::streampos getFileSize(std::fstream &file) {
   return fileSize;
 }
 
-UveFileManager::UveFileManager(UveDX *uveDX)
-    : UveBase(uveDX), loaded(false), filename(""), bypassAssetsList(false),
+UveFileManager::UveFileManager(UveDX* uveDX)
+    : UveBase(uveDX),
+      loaded(false),
+      filename(""),
+      bypassAssetsList(false),
       list({}) {
   this->loadAssetsList("");
 }
@@ -29,7 +34,7 @@ UveFileManager::~UveFileManager() {
 
 void UveFileManager::update() {}
 
-void UveFileManager::loadAssetsList(const std::string &path) {
+void UveFileManager::loadAssetsList(const std::string& path) {
   this->filename = path;
 
   if (path == "") {
@@ -42,17 +47,17 @@ void UveFileManager::loadAssetsList(const std::string &path) {
   std::fstream s{this->filename, s.binary | s.in};
 
   if (!s.is_open())
-    throw std::runtime_error(
-        "UveFileManager::loadAssetsList: Cannot open file");
+    throw std::runtime_error("UveFileManager::loadAssetsList: Cannot open file"
+    );
 
   unsigned int count = 0;
 
-  s.read(reinterpret_cast<char *>(&count), sizeof(count));
+  s.read(reinterpret_cast<char*>(&count), sizeof(count));
 
   for (size_t i = 0; i < count; i++) {
-    AssetFileHeader *assetFileHeader = new AssetFileHeader{};
+    AssetFileHeader* assetFileHeader = new AssetFileHeader{};
 
-    s.read(reinterpret_cast<char *>(assetFileHeader), sizeof(AssetFileHeader));
+    s.read(reinterpret_cast<char*>(assetFileHeader), sizeof(AssetFileHeader));
 
     this->list.push_back(assetFileHeader);
   }
@@ -60,8 +65,8 @@ void UveFileManager::loadAssetsList(const std::string &path) {
   this->loaded = true;
 }
 
-std::fstream UveFileManager::openFile(const std::string &path,
-                                      unsigned int *outFileSize) {
+std::fstream
+UveFileManager::openFile(const std::string& path, unsigned int* outFileSize) {
   std::fstream s;
 
   this->checkFile(path);
@@ -87,10 +92,11 @@ std::fstream UveFileManager::openFile(const std::string &path,
   }
 
   if (this->bypassAssetsList) {
-    AssetFileHeader *header = new AssetFileHeader;
+    AssetFileHeader* header = new AssetFileHeader;
 
-    std::strncpy(header->filename, path.c_str(), sizeof(header->filename));
+    std::strncpy(header->filename, path.c_str(), sizeof(header->filename) - 1);
 
+    header->filename[sizeof(header->filename) - 1] = '\0';
     header->size = static_cast<unsigned int>(getFileSize(s));
     header->offset = 0;
 
@@ -105,13 +111,14 @@ std::fstream UveFileManager::openFile(const std::string &path,
   return s;
 }
 
-void UveFileManager::checkFile(const std::string &path) {
+void UveFileManager::checkFile(const std::string& path) {
   if (!this->checkFileExists(path))
-    this->uveDX->onError("UveFileManager::checkFile()",
-                         std::format("Cannot open file {}", path));
+    this->uveDX->onError(
+        "UveFileManager::checkFile()", std::format("Cannot open file {}", path)
+    );
 }
 
-bool UveFileManager::checkFileExists(const std::string &path) {
+bool UveFileManager::checkFileExists(const std::string& path) {
   if (this->loaded) {
     for (auto assetFileHeader : this->list) {
       if (assetFileHeader->filename == path)
@@ -124,7 +131,7 @@ bool UveFileManager::checkFileExists(const std::string &path) {
   return this->verifyFileExists(path);
 }
 
-bool UveFileManager::verifyFileExists(const std::string &path) {
+bool UveFileManager::verifyFileExists(const std::string& path) {
   return std::filesystem::exists(path);
 }
-} // namespace UveDX
+}  // namespace UveDX

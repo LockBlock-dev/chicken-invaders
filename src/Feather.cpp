@@ -1,20 +1,25 @@
 #include "Feather.hpp"
+
+#include "BoundaryBouncer.hpp"
 #include "Game.hpp"
-#include "bounding_box.hpp"
 #include "rng.hpp"
 
-Feather::Feather(UveDX::UveDX *uveDX, double x, double y)
-    : UveDX::Sprite(uveDX, 0, 0,
-                    global::game->surface_chain_feather->getSurf(0)),
-      x_coord(x), y_coord(y), field_B4(generate_random_number() % 50 + 50),
+Feather::Feather(UveDX::UveDX* uveDX, double x, double y)
+    : UveDX::Sprite(
+          uveDX,
+          0,
+          0,
+          global::game->surface_chain_feather->getSurf(0)
+      ),
+      x_coord(x),
+      y_coord(y),
       field_A4((double)(generate_random_number() % 20 - 10)),
-      field_AC((double)(generate_random_number() % 20 - 10)), field_BC(0),
-      field_C0(0), field_C4(0) {
-  sub_401688(&this->field_B4 + 1, 0, 15, -1, 0);
-}
+      field_AC((double)(generate_random_number() % 20 - 10)),
+      field_B4(generate_random_number() % 50 + 50),
+      boundaryBouncer(0, 15) {}
 
 void Feather::update() {
-  sub_4016F8(&this->field_B8);
+  this->boundaryBouncer.update();
 
   if (this->field_A4 > 0.0)
     this->field_A4 = this->field_A4 - 0.5;
@@ -31,10 +36,10 @@ void Feather::update() {
   this->x_coord = this->field_A4 + this->x_coord;
   this->y_coord = this->field_AC + 2.0 + this->y_coord;
 
-  this->x = this->x_coord;
-  this->y = this->y_coord;
+  this->sprite_x = this->x_coord;
+  this->sprite_y = this->y_coord;
 
-  auto surfaceNumber = this->field_C0 / 2;
+  auto surfaceNumber = this->boundaryBouncer.currentSurfaceIndex / 2;
 
   if (surfaceNumber < 0)
     surfaceNumber += 1;

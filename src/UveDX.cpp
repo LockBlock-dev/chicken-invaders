@@ -1,23 +1,42 @@
 #include "UveDX.hpp"
-#include "Animator.hpp"
-#include "Game.hpp"
-#include "UveTimer.hpp"
+
+#include <tinyfiledialogs.h>
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <print>
-#include <tinyfiledialogs.h>
+
+#include "Animator.hpp"
+#include "Game.hpp"
+#include "UveTimer.hpp"
 
 namespace UveDX {
 
-UveDX::UveDX(bool isFullscreen, unsigned int width, unsigned int height,
-             unsigned int bpp)
-    : UveListOwner(this), backSurface(new Surface(this)), uveSound(nullptr),
-      uveInput(nullptr), uveFileManager(new UveFileManager(this)),
-      soundEnabled(true), pauseEngine(false), debugMode(DebugLevel::NONE),
-      isFullscreen(isFullscreen), width(width), height(height), bpp(bpp),
-      timeDiffStartEngineUpdate(0), timeDiffAfterEngineUpdate(0),
-      timeDiffAfterEngineFrame(0), totalFramesRendered(0), xOffset(0),
-      yOffset(0), pixelFormat(0), timer(0) {
+UveDX::UveDX(
+    bool isFullscreen,
+    unsigned int width,
+    unsigned int height,
+    unsigned int bpp
+)
+    : UveListOwner(this),
+      backSurface(new Surface{this}),
+      uveSound(nullptr),
+      uveInput(nullptr),
+      uveFileManager(new UveFileManager{this}),
+      soundEnabled(true),
+      pauseEngine(false),
+      debugMode(DebugLevel::NONE),
+      width(width),
+      height(height),
+      bpp(bpp),
+      xOffset(0),
+      yOffset(0),
+      isFullscreen(isFullscreen),
+      timeDiffAfterEngineUpdate(0),
+      timeDiffStartEngineUpdate(0),
+      timeDiffAfterEngineFrame(0),
+      totalFramesRendered(0),
+      pixelFormat(0),
+      timer(0) {
   this->backSurface->createAsBackSurface();
 
   /*
@@ -90,12 +109,19 @@ void UveDX::update() {
     this->uveInput->update();
 }
 
-void UveDX::frame() { global::game->window.display(); }
+void UveDX::frame() {
+  global::game->window.display();
+}
 
-void UveDX::log(const std::string &text) { std::println("{}", text); }
+void UveDX::log(const std::string& text) {
+  std::println("{}", text);
+}
 
-void UveDX::loadAnimations(const std::string &filename, unsigned int offsetX,
-                           unsigned int offsetY) {
+void UveDX::loadAnimations(
+    const std::string& filename,
+    unsigned int offsetX,
+    unsigned int offsetY
+) {
   UveTimer timer{};
   Animator animator{this, filename, 0};
 
@@ -124,8 +150,11 @@ void UveDX::loadAnimations(const std::string &filename, unsigned int offsetX,
   } while (!animator.isFinished);
 }
 
-void UveDX::onError(const std::string &functionName, const std::string &message,
-                    int code) {
+void UveDX::onError(
+    const std::string& functionName,
+    const std::string& message,
+    int code
+) {
   this->showError(functionName, message, code);
 
   this->pauseEngine = true;
@@ -133,14 +162,20 @@ void UveDX::onError(const std::string &functionName, const std::string &message,
   std::exit(-1);
 }
 
-void UveDX::showError(const std::string &functionName,
-                      const std::string &message, int code) {
+void UveDX::showError(
+    const std::string& functionName,
+    const std::string& message,
+    int code
+) {
   tinyfd_messageBox(
       "UveDX Error",
-      std::format("Function {} failed with error: '{}', error code: {} ({})",
-                  functionName, message, code, "No description")
+      std::format(
+          "Function {} failed with error: '{}', error code: {} ({})",
+          functionName, message, code, "No description"
+      )
           .c_str(),
-      "ok", "error", 1);
+      "ok", "error", 1
+  );
 }
 
 void UveDX::waitForEscapeKey(unsigned int sleepTimeMs) {
@@ -156,7 +191,11 @@ void UveDX::waitForEscapeKey(unsigned int sleepTimeMs) {
   }
 }
 
-unsigned int UveDX::getWidth() const { return this->width; }
+unsigned int UveDX::getWidth() const {
+  return this->width;
+}
 
-unsigned int UveDX::getHeight() const { return this->height; }
-} // namespace UveDX
+unsigned int UveDX::getHeight() const {
+  return this->height;
+}
+}  // namespace UveDX

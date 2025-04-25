@@ -1,14 +1,23 @@
 #include "ChickenLeg.hpp"
+
+#include <cmath>
+
 #include "Game.hpp"
 #include "rng.hpp"
 #include "trigonometry.hpp"
-#include <cmath>
 
-ChickenLeg::ChickenLeg(UveDX::UveDX *uveDX, double x, double y)
-    : UveDX::Sprite(uveDX, x, y,
-                    global::game->surface_chain_chicken_leg->getSurf(0)),
-      double94(x), double9C(y), intB4(generate_random_number() % 256),
-      intB8(generate_random_number() % 64 - 32), intBC(0) {
+ChickenLeg::ChickenLeg(UveDX::UveDX* uveDX, double x, double y)
+    : UveDX::Sprite(
+          uveDX,
+          x,
+          y,
+          global::game->surface_chain_chicken_leg->getSurf(0)
+      ),
+      double94(x),
+      double9C(y),
+      intB4(generate_random_number() % 256),
+      intB8(generate_random_number() % 64 - 32),
+      intBC(0) {
   int v4 = generate_random_number() % 256;
   int v5 = generate_random_number() % 10;
 
@@ -44,8 +53,8 @@ void ChickenLeg::update() {
   if (this->intB4 > 255)
     this->intB4 -= 256;
 
-  this->x = this->double94;
-  this->y = this->double9C;
+  this->sprite_x = this->double94;
+  this->sprite_y = this->double9C;
   this->surface =
       global::game->surface_chain_chicken_leg->getSurf(this->intB4 / 8);
 

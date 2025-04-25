@@ -1,12 +1,14 @@
 #include "rng.hpp"
+
 #include <random>
 
 int generate_random_number() {
-  std::random_device r;
+  static std::default_random_engine engine{std::random_device{}()};
 
-  std::default_random_engine engine{r()};
-
-  std::uniform_int_distribution<unsigned int> uniform_dist{0, 0x7FFFFFFF};
+  static std::uniform_int_distribution<unsigned int> uniform_dist{
+      0,
+      0x7FFFFFFF,
+  };
 
   return uniform_dist(engine);
 }

@@ -2,11 +2,15 @@
 
 #include <functional>
 
-template <typename StateType> class StateBase {
-public:
+template <typename StateType>
+class StateBase {
+ public:
   StateBase(StateType previousState)
-      : callback(nullptr), previousState(previousState), elapsedTicks(0),
-        currentState(this->previousState), switchToNextStateTimeout(0) {}
+      : callback(nullptr),
+        previousState(previousState),
+        elapsedTicks(0),
+        currentState(this->previousState),
+        switchToNextStateTimeout(0) {}
 
   void switchState(StateType desiredState, int switchToNextStateTimeout) {
     if (desiredState != this->currentState) {

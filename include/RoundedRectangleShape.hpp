@@ -35,7 +35,7 @@ namespace sf {
 /// with rounded corners
 ////////////////////////////////////////////////////////////
 class RoundedRectangleShape : public sf::Shape {
-public:
+ public:
   ////////////////////////////////////////////////////////////
   /// \brief Default constructor
   ///
@@ -44,9 +44,11 @@ public:
   /// \param cornerPointCount Number of points of each corner
   ///
   ////////////////////////////////////////////////////////////
-  explicit RoundedRectangleShape(const Vector2f &size = Vector2f(0, 0),
-                                 float radius = 0,
-                                 unsigned int cornerPointCount = 0);
+  explicit RoundedRectangleShape(
+      const Vector2f& size = Vector2f(0, 0),
+      float radius = 0,
+      unsigned int cornerPointCount = 0
+  );
 
   ////////////////////////////////////////////////////////////
   /// \brief Set the size of the rounded rectangle
@@ -56,7 +58,7 @@ public:
   /// \see getSize
   ///
   ////////////////////////////////////////////////////////////
-  void setSize(const Vector2f &size);
+  void setSize(const Vector2f& size);
 
   ////////////////////////////////////////////////////////////
   /// \brief Get the size of the rounded rectangle
@@ -66,7 +68,7 @@ public:
   /// \see setSize
   ///
   ////////////////////////////////////////////////////////////
-  const Vector2f &getSize() const;
+  const Vector2f& getSize() const;
 
   ////////////////////////////////////////////////////////////
   /// \brief Set the radius of the rounded corners
@@ -119,7 +121,7 @@ public:
   ////////////////////////////////////////////////////////////
   virtual sf::Vector2f getPoint(std::size_t index) const;
 
-private:
+ private:
   ////////////////////////////////////////////////////////////
   // Member data
   ////////////////////////////////////////////////////////////
@@ -127,7 +129,7 @@ private:
   float myRadius;
   unsigned int myCornerPointCount;
 };
-} // namespace sf
+}  // namespace sf
 
 ////////////////////////////////////////////////////////////
 /// \class sf::RoundedRectangleShape
