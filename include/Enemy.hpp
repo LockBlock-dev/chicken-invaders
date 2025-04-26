@@ -8,10 +8,11 @@ class Enemy : public UveDX::Sprite {
  public:
   Enemy(
       UveDX::UveDX* uveDX,
-      unsigned int x,
-      unsigned int y,
+      int x,
+      int y,
       UveDX::Surface* surface,
-      int invisibilityTimeout
+      int invisibilityTimeout,
+      int health = 0
   );
 
   int getInvisibilityTimeout() const;

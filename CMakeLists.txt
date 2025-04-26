@@ -137,7 +137,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 )
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX /permissive /we4062)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX /permissive /we4062 /wd4244 /wd4267 /wd4458 /wd6387 /wd26495 /wd4996)
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -Wpedantic -Wswitch-enum)
 endif()

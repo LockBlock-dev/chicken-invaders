@@ -42,8 +42,8 @@ void Bullet::update() {
   this->field_9C =
       (double)this->field_A8 * global::dsin[this->angle] + this->field_9C;
 
-  this->sprite_x = this->field_94;
-  this->sprite_y = this->field_9C;
+  this->sprite_x = static_cast<int>(this->field_94);
+  this->sprite_y = static_cast<int>(this->field_9C);
 
   UveDX::Sprite::update();
 

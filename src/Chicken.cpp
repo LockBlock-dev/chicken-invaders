@@ -24,7 +24,8 @@ Chicken::Chicken(
           10 * x - 2880,
           -4 * y,
           global::game->surface_chain_chickenb->getSurf(0),
-          invisibilityTimeout
+          invisibilityTimeout,
+          global::game->gameController->getWaveController()->getCurrentSystem() + 1
       ),
       xCoordBase(x),
       yCoordBase(y),
@@ -36,9 +37,6 @@ Chicken::Chicken(
       chickenFlyType(chickenFlyType),
       chickenType(chickenType),
       boundaryBouncer(0, this->chickenType == 3 ? 7 : 9) {
-  this->health =
-      global::game->gameController->getWaveController()->getCurrentSystem() + 1;
-
   if (this->chickenFlyType == 5) {
     this->sprite_x = this->xCoordBase;
     this->sprite_y = this->yCoordBase;
@@ -58,7 +56,7 @@ Chicken::Chicken(
 }
 
 void Chicken::update() {
-  int v1;
+  int v1 = 0;
 
   if (this->invisibilityTimeout <= 0) {
     this->x_coord = this->sprite_x;
@@ -109,10 +107,10 @@ void Chicken::update() {
       this->sprite_x = (this->xCoordBase + this->sprite_x) / 2;
       this->sprite_y = (this->yCoordBase + this->sprite_y) / 2;
 
-      v1 = calculate_angle(
+      v1 = static_cast<int>(calculate_angle(
           (double)(this->xCoordBase - this->x_coord),
           (double)(this->yCoordBase - this->y_coord)
-      );
+      ));
     }
 
     if (this->chickenFlyType == 3) {
@@ -129,7 +127,7 @@ void Chicken::update() {
       this->sprite_x = (this->xCoordBase + this->sprite_x) / 2;
       this->sprite_y = (this->yCoordBase + this->sprite_y) / 2;
 
-      v1 = this->field_AC + 0x40;
+      v1 = this->field_AC + 64;
     }
 
     if (this->chickenFlyType == 4) {
@@ -149,7 +147,7 @@ void Chicken::update() {
       this->sprite_x = (this->xCoordBase + this->sprite_x) / 2;
       this->sprite_y = (this->yCoordBase + this->sprite_y) / 2;
 
-      v1 = this->field_AC + 0x40;
+      v1 = this->field_AC + 64;
     }
 
     if (this->chickenFlyType == 5 || this->chickenFlyType == 6) {

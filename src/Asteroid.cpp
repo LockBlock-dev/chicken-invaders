@@ -19,7 +19,7 @@ Asteroid::Asteroid(
     int minspeed,
     int maxspeed
 )
-    : Enemy(uveDX, 0, 0, nullptr, 0),
+    : Enemy(uveDX, 0, 0, nullptr, 0, 10),
       x_coord(x),
       y_coord(y),
       face(face),
@@ -49,14 +49,10 @@ Asteroid::Asteroid(
         generate_random_number() % 32
     );
 
-  int health = 10;
-
   if (this->size == 0 &&
       global::game->gameController->getWaveController()->getCurrentSystem() ==
           0)
-    health = 5;
-
-  this->health = health;
+    this->health = 5;
 }
 
 void Asteroid::update() {
@@ -138,8 +134,8 @@ void Asteroid::update() {
     }
   }
 
-  this->sprite_x = this->x_coord;
-  this->sprite_y = this->y_coord;
+  this->sprite_x = static_cast<int>(this->x_coord);
+  this->sprite_y = static_cast<int>(this->y_coord);
 
   UveDX::Sprite::update();
 }

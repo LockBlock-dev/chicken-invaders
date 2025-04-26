@@ -9,8 +9,8 @@
 ChickenLeg::ChickenLeg(UveDX::UveDX* uveDX, double x, double y)
     : UveDX::Sprite(
           uveDX,
-          x,
-          y,
+          static_cast<int>(x),
+          static_cast<int>(y),
           global::game->surface_chain_chicken_leg->getSurf(0)
       ),
       double94(x),
@@ -53,8 +53,8 @@ void ChickenLeg::update() {
   if (this->intB4 > 255)
     this->intB4 -= 256;
 
-  this->sprite_x = this->double94;
-  this->sprite_y = this->double9C;
+  this->sprite_x = static_cast<int>(this->double94);
+  this->sprite_y = static_cast<int>(this->double9C);
   this->surface =
       global::game->surface_chain_chicken_leg->getSurf(this->intB4 / 8);
 

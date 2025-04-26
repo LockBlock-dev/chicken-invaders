@@ -28,7 +28,8 @@ Boss::Boss(UveDX::UveDX* uveDX, unsigned int a3)
           0,
           0,
           global::game->surface_chain_chicken_boss->getSurf(0),
-          0
+          0,
+          10 * global::game->gameController->getWaveController()->getCurrentSystem() + 40
       ),
       x_coord((double)(generate_random_number() % 640)),
       y_coord(-100.0),
@@ -36,12 +37,8 @@ Boss::Boss(UveDX::UveDX* uveDX, unsigned int a3)
       field_B0(128),
       field_B4(0),
       boundaryBouncer(0, 9) {
-  this->sprite_x = this->x_coord;
-  this->sprite_y = this->y_coord;
-  this->health =
-      10 * global::game->gameController->getWaveController()->getCurrentSystem(
-           ) +
-      40;
+  this->sprite_x = static_cast<int>(this->x_coord);
+  this->sprite_y = static_cast<int>(this->y_coord);
 }
 
 void Boss::update() {
@@ -50,7 +47,7 @@ void Boss::update() {
   double v12 = this->x_coord - (double)dword_44D33C[5 * this->field_AC + v2];
   double v14 = this->y_coord - (double)dword_44D3A0[5 * this->field_AC + v2];
 
-  int v3 = calculate_angle(-v12, -v14);
+  int v3 = static_cast<int>(calculate_angle(-v12, -v14));
   int v4 = v3;
   int v5 = this->field_B0;
 
@@ -60,7 +57,7 @@ void Boss::update() {
   if (v5 - v4 < -128)
     v4 -= 256;
 
-  this->field_B0 = ((double)v5 * 0.9 + (double)v4 * 0.1);
+  this->field_B0 = static_cast<int>((double)v5 * 0.9 + (double)v4 * 0.1);
 
   if (this->field_B0 < 0)
     this->field_B0 += 256;
@@ -71,7 +68,7 @@ void Boss::update() {
   this->x_coord = global::dcos[this->field_B0] * 5.0 + this->x_coord;
   this->y_coord = global::dsin[this->field_B0] * 5.0 + this->y_coord;
 
-  int v13 = std::fabs(v12);
+  double v13 = std::fabs(v12);
 
   if (std::fabs(v14) + v13 < 25.0 && ++this->field_B4 > 4)
     this->field_B4 = 0;
@@ -81,8 +78,8 @@ void Boss::update() {
   this->surface = global::game->surface_chain_chicken_boss->getSurf(
       this->boundaryBouncer.currentSurfaceIndex
   );
-  this->sprite_x = this->x_coord;
-  this->sprite_y = this->y_coord;
+  this->sprite_x = static_cast<int>(this->x_coord);
+  this->sprite_y = static_cast<int>(this->y_coord);
 
   UveDX::Sprite::update();
 

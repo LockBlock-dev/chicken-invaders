@@ -36,8 +36,8 @@ void Feather::update() {
   this->x_coord = this->field_A4 + this->x_coord;
   this->y_coord = this->field_AC + 2.0 + this->y_coord;
 
-  this->sprite_x = this->x_coord;
-  this->sprite_y = this->y_coord;
+  this->sprite_x = static_cast<int>(this->x_coord);
+  this->sprite_y = static_cast<int>(this->y_coord);
 
   auto surfaceNumber = this->boundaryBouncer.currentSurfaceIndex / 2;
 
