@@ -74,41 +74,51 @@ void GameController::update() {
     case GameState::Menu: {
       global::game->surface_logo_small->blit(320, 75, nullptr, 1.0);
 
-      global::game->font_3x7->blitText(10, 440, "a-d move left-right", 0);
+      global::game->font_3x7->blitText(10, 440, "a-d move left-right");
 
-      global::game->font_3x7->blitText(10, 450, "left shift fires", 0);
-
-      global::game->font_3x7->blitText(
-          10, 460, "left control or s fires missile", 0
-      );
-
-      global::game->font_3x7->blitText(630, 440, "arrows move left-right", 2);
-
-      global::game->font_3x7->blitText(630, 450, "right shift fires", 2);
+      global::game->font_3x7->blitText(10, 450, "left shift fires");
 
       global::game->font_3x7->blitText(
-          630, 460, "right control or enter fires missile", 2
+          10, 460, "left control or s fires missile"
       );
 
-      global::game->font_3x7->blitText(320, 460, "f1 toggles detail level", 6);
+      global::game->font_3x7->blitText(
+          630, 440, "arrows move left-right", UveDX::Font::TextAlignment::Right
+      );
+
+      global::game->font_3x7->blitText(
+          630, 450, "right shift fires", UveDX::Font::TextAlignment::Right
+      );
+
+      global::game->font_3x7->blitText(
+          630, 460, "right control or enter fires missile",
+          UveDX::Font::TextAlignment::Right
+      );
+
+      global::game->font_3x7->blitText(
+          320, 460, "f1 toggles detail level",
+          UveDX::Font::TextAlignment::Center
+      );
 
       if (this->field_98 / 100 % 2) {
         if (this->uveDX->totalFramesRendered / 8 % 2 == 0)
           global::game->font_alphabet_small->blitText(
-              320, 250, "press fire to start", 6
+              320, 250, "press fire to start",
+              UveDX::Font::TextAlignment::Center
           );
       } else {
         for (std::size_t i = 0; i < this->highscorePseudos.size(); ++i) {
           global::game->font_alphabet_small->blitText(
-              310, 25 * i + 200, this->highscorePseudos.at(i), 2
+              310, 25 * i + 200, this->highscorePseudos.at(i),
+              UveDX::Font::TextAlignment::Right
           );
 
           global::game->font_alphabet_small->blitText(
-              320, 25 * i + 200, "...", 6
+              320, 25 * i + 200, "...", UveDX::Font::TextAlignment::Center
           );
 
           global::game->font_alphabet_small->blitText(
-              330, 25 * i + 200, std::to_string(this->highscores.at(i)), 0
+              330, 25 * i + 200, std::to_string(this->highscores.at(i))
           );
         }
       }
@@ -156,14 +166,14 @@ void GameController::update() {
           if (!(this->uveDX->totalFramesRendered / 8 % 2)) {
             if (this->playerSpawned.at(playerId))
               global::game->font_3x7->blitText(
-                  590 * playerId + 8, 5, "game over!", 0
+                  590 * playerId + 8, 5, "game over!"
               );
             else {
               global::game->font_3x7->blitText(
-                  590 * playerId + 8, 5, "press fire", 0
+                  590 * playerId + 8, 5, "press fire"
               );
               global::game->font_3x7->blitText(
-                  592 * playerId + 10, 13, "to join in", 0
+                  592 * playerId + 10, 13, "to join in"
               );
             }
           }
@@ -182,7 +192,7 @@ void GameController::update() {
                 "wave {}",
                 std::to_string(this->waveController->getCurrentWave())
             ),
-            6
+            UveDX::Font::TextAlignment::Center
         );
 
         global::game->font_3x7->blitText(
@@ -191,7 +201,7 @@ void GameController::update() {
                 "stage {}",
                 std::to_string(this->waveController->getCurrentStage())
             ),
-            6
+            UveDX::Font::TextAlignment::Center
         );
 
         global::game->font_3x7->blitText(
@@ -200,7 +210,7 @@ void GameController::update() {
                 "system {}",
                 std::to_string(this->waveController->getCurrentSystem())
             ),
-            6
+            UveDX::Font::TextAlignment::Center
         );
       }
 
@@ -227,9 +237,9 @@ void GameController::update() {
 
   if (this->cheatsEnabled &&
       this->uveDX->uveInput->isKeyPressed(sf::Keyboard::Scancode::F5)) {
-    global::game->font_3x7->blitText(10, 50, "f6: skip wave", 0);
-    global::game->font_3x7->blitText(10, 60, "f7: more weapons", 0);
-    global::game->font_3x7->blitText(10, 70, "f8: extra life", 0);
+    global::game->font_3x7->blitText(10, 50, "f6: skip wave");
+    global::game->font_3x7->blitText(10, 60, "f7: more weapons");
+    global::game->font_3x7->blitText(10, 70, "f8: extra life");
   }
 
   if (this->uveDX->uveInput->isKeyPressed(sf::Keyboard::Scancode::F1)) {

@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-double calculate_angle(double x, double y) noexcept {
+[[nodiscard]] double calculate_angle(double x, double y) noexcept {
   if (std::abs(x) < 0.05)
     return y;
 

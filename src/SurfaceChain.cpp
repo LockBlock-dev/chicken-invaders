@@ -1,5 +1,6 @@
 #include "SurfaceChain.hpp"
 
+#include <cstddef>
 #include <format>
 
 #include "UveDX.hpp"
@@ -49,33 +50,30 @@ void SurfaceChain::linkSurfaces(
     unsigned int startIndex,
     int numSurfaces
 ) {
-  int totalSurfaces = numSurfaces;
+  const size_t totalSurfacesToProcess =
+      numSurfaces == -1 ? this->totalSurfaces : numSurfaces;
 
-  if (numSurfaces == -1)
-    totalSurfaces = this->totalSurfaces;
+  const size_t lastSurfaceIndex = std::min(
+      this->totalSurfaces - 1, totalSurfacesToProcess + startIndex - 1
+  );
 
-  auto v5 = totalSurfaces + startIndex - 1;
-  unsigned int i = 0;
-
-  if (v5 > this->totalSurfaces - 1)
-    v5 = this->totalSurfaces - 1;
-
-  for (i = startIndex; v5 > i; ++i)
+  for (size_t i = startIndex; i < lastSurfaceIndex; ++i)
     this->getSurf(i)->setNextSurface(this->getSurf(i + 1));
 
-  switch (linkType) {
-    case SurfaceLinkType::Zero:
-      this->getSurf(i)->setNextSurface(nullptr);
-      break;
-    case SurfaceLinkType::One:
-      this->getSurf(i)->setNextSurface(this->getSurf(i));
-      break;
-    case SurfaceLinkType::Two:
-      this->getSurf(i)->setNextSurface(this->getSurf(startIndex));
-      break;
-    default:
-      break;
-  }
+  if (auto lastSurface = this->getSurf(lastSurfaceIndex))
+    switch (linkType) {
+      case SurfaceLinkType::End:
+        lastSurface->setNextSurface(nullptr);
+        break;
+      case SurfaceLinkType::Self:
+        lastSurface->setNextSurface(lastSurface);
+        break;
+      case SurfaceLinkType::Loop:
+        lastSurface->setNextSurface(this->getSurf(startIndex));
+        break;
+      default:
+        break;
+    }
 }
 
 void SurfaceChain::applyAnchorPointToAllSurfaces(SurfaceAnchorType anchorType) {

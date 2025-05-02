@@ -17,7 +17,7 @@ void Background::update() {
     ++this->field_14;
 
   if (this->field_14 > this->scrollSpeed)
-    this->field_14 -= 1;
+    --this->field_14;
 
   this->field_1C += this->field_20 + this->field_14;
 
@@ -34,11 +34,7 @@ void Background::update() {
   if (this->field_20)
     this->uveDX->yOffset = -this->field_20;
 
-  if (this->field_1C < 0)
-    this->field_1C += 480;
-
-  if (this->field_1C > 479)
-    this->field_1C -= 480;
+  this->field_1C = (this->field_1C + 480) % 480;
 
   sf::IntRect rect{
       sf::Vector2i{0, this->field_1C},

@@ -25,7 +25,8 @@ Chicken::Chicken(
           -4 * y,
           global::game->surface_chain_chickenb->getSurf(0),
           invisibilityTimeout,
-          global::game->gameController->getWaveController()->getCurrentSystem() + 1
+          global::game->gameController->getWaveController()->getCurrentSystem(
+          ) + 1
       ),
       xCoordBase(x),
       yCoordBase(y),
@@ -89,17 +90,8 @@ void Chicken::update() {
     }
 
     if (this->chickenFlyType == 2) {
-      if (++this->field_AC < 0)
-        this->field_AC += 256;
-
-      if (this->field_AC > 255)
-        this->field_AC -= 256;
-
-      if (++this->field_B0 < 0)
-        this->field_B0 += 256;
-
-      if (this->field_B0 > 255)
-        this->field_B0 -= 256;
+      this->field_AC = (this->field_AC + 1 + 256) % 256;
+      this->field_B0 = (this->field_B0 + 1 + 256) % 256;
 
       this->xCoordBase = (int)(global::dcos[this->field_AC] * 300.0 + 320.0);
       this->yCoordBase = (int)(global::dsin[this->field_B0] * 160.0 + 200.0);
@@ -114,11 +106,7 @@ void Chicken::update() {
     }
 
     if (this->chickenFlyType == 3) {
-      if (++this->field_AC < 0)
-        this->field_AC += 256;
-
-      if (this->field_AC > 255)
-        this->field_AC -= 256;
+      this->field_AC = (this->field_AC + 1 + 256) % 256;
 
       this->xCoordBase = (int)(global::dcos[this->field_AC] * 300.0 + 320.0);
 
@@ -131,11 +119,7 @@ void Chicken::update() {
     }
 
     if (this->chickenFlyType == 4) {
-      if (++this->field_AC < 0)
-        this->field_AC += 256;
-
-      if (this->field_AC > 255)
-        this->field_AC -= 256;
+      this->field_AC = (this->field_AC + 1 + 256) % 256;
 
       this->xCoordBase =
           (int)((long double)this->field_B4 * global::dcos[this->field_AC] +

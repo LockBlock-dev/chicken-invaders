@@ -7,33 +7,35 @@ namespace UveDX {
 Font::Font(UveDX* uveDX, const std::string& filename)
     : UveBase(uveDX),
       surfaces({}),
-      field_190(1),
-      spaceSize(10),
-      field_198(0),
-      field_19C(0) {
-  int v7 = 0;
+      charSpacing(1),
+      spaceWidth(10),
+      averageCharWidth(0),
+      averageCharHeight(0) {
+  this->surfaces.fill(nullptr);
 
-  for (unsigned int i = 0; i < 95; ++i) {
-    this->surfaces.push_back(nullptr);
+  size_t loadedCharsCount = 0;
 
+  for (unsigned int i = 0; i < PRINTABLE_ASCII_COUNT; ++i) {
     auto surfaceFilename = std::format("{}_{}.bmp", filename, i + 33);
 
     if (this->uveDX->uveFileManager->checkFileExists(surfaceFilename)) {
-      this->surfaces.at(i) = new Surface{this->uveDX, surfaceFilename};
+      auto surface = new Surface{this->uveDX, surfaceFilename};
 
-      this->surfaces.at(i)->setAnchorPoint(SurfaceAnchorType::TopLeftDefault);
+      surface->setAnchorPoint(SurfaceAnchorType::TopLeftDefault);
 
-      this->field_198 += this->surfaces.at(i)->getWidth();
-      this->field_19C += this->surfaces.at(i)->getHeight();
-      ++v7;
+      this->averageCharWidth += surface->getWidth();
+      this->averageCharHeight += surface->getHeight();
+
+      this->surfaces.at(i) = surface;
+
+      ++loadedCharsCount;
     }
   }
 
-  if (v7 > 0) {
-    this->field_19C /= v7;
-    this->field_198 /= v7;
-    this->spaceSize =
-        static_cast<int>(static_cast<double>(this->field_198) * 0.75);
+  if (loadedCharsCount > 0) {
+    this->averageCharHeight /= loadedCharsCount;
+    this->averageCharWidth /= loadedCharsCount;
+    this->spaceWidth = static_cast<int>(this->averageCharWidth * 0.75);
   }
 }
 
@@ -45,51 +47,59 @@ Font::~Font() {
 
 void Font::update() {}
 
-void Font::blitText(int dstX, int dstY, const std::string& text, int a4) {
-  if (a4 == 6)
-    dstX -= this->calculateTextWidth(text) / 2;
+void Font::blitText(
+    int x,
+    int y,
+    const std::string& text,
+    TextAlignment alignment
+) {
+  switch (alignment) {
+    case TextAlignment::Center: {
+      x -= this->calculateTextWidth(text) / 2;
+      break;
+    }
+    case TextAlignment::Right: {
+      x -= this->calculateTextWidth(text);
+      break;
+    }
+    case TextAlignment::Left:
+    default:
+      break;
+  }
 
-  if (a4 == 2)
-    dstX -= this->calculateTextWidth(text);
-
-  for (unsigned int i = 0; i < text.size(); ++i) {
-    char c = text.at(i);
-
+  for (char c : text) {
     if (c == ' ')
-      dstX += this->spaceSize;
+      x += this->spaceWidth;
     else if (c >= 33) {
       auto surface = this->surfaces.at(c - 33);
 
       if (surface) {
-        surface->blit(dstX, dstY, nullptr, 1.0);
+        surface->blit(x, y, nullptr, 1.0);
 
-        dstX += this->field_190 + surface->getWidth();
+        x += this->charSpacing + surface->getWidth();
       }
     }
   }
 }
 
 int Font::calculateTextWidth(const std::string& text) {
-  int dstX = -this->field_190;
+  int totalWidth = -this->charSpacing;
 
-  for (unsigned int i = 0; i < text.size(); ++i) {
-    char c = text.at(i);
-
+  for (char c : text) {
     if (c == ' ')
-      dstX += this->spaceSize;
+      totalWidth += this->spaceWidth;
     else if (c >= 33) {
       auto surface = this->surfaces.at(c - 33);
 
-      if (surface) {
-        dstX += this->field_190 + surface->getWidth();
-      }
+      if (surface)
+        totalWidth += this->charSpacing + surface->getWidth();
     }
   }
 
-  return dstX;
+  return totalWidth;
 }
 
-void Font::setField194(int val) {
-  this->spaceSize = val;
+void Font::setSpaceWidth(unsigned int width) {
+  this->spaceWidth = width;
 }
 }  // namespace UveDX

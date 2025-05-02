@@ -25,11 +25,7 @@ Missile::Missile(UveDX::UveDX* uveDX, unsigned int playerId, double x, double y)
 void Missile::update() {
   int v1 = this->field_B0 + 128;
 
-  if (v1 < 0)
-    v1 += 256;
-
-  if (v1 > 255)
-    v1 -= 256;
+  v1 = (v1 + 256) % 256;
 
   this->field_A4 += 0.25;
 
@@ -45,11 +41,7 @@ void Missile::update() {
 
   int surfaceNumber = v2 / 8;
 
-  if (surfaceNumber < 0)
-    surfaceNumber += 32;
-
-  if (surfaceNumber > 31)
-    surfaceNumber -= 32;
+  surfaceNumber = (surfaceNumber + 32) % 32;
 
   this->surface = global::game->surface_chain_missile->getSurf(surfaceNumber);
 

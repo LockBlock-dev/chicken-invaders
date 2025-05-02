@@ -29,12 +29,14 @@ Boss::Boss(UveDX::UveDX* uveDX, unsigned int a3)
           0,
           global::game->surface_chain_chicken_boss->getSurf(0),
           0,
-          10 * global::game->gameController->getWaveController()->getCurrentSystem() + 40
+          10 * global::game->gameController->getWaveController()
+                      ->getCurrentSystem() +
+              40
       ),
-      x_coord((double)(generate_random_number() % 640)),
+      x_coord(static_cast<double>(generate_random_number() % 640)),
       y_coord(-100.0),
       field_AC(a3),
-      field_B0(128),
+      angle(128),
       field_B4(0),
       boundaryBouncer(0, 9) {
   this->sprite_x = static_cast<int>(this->x_coord);
@@ -42,14 +44,14 @@ Boss::Boss(UveDX::UveDX* uveDX, unsigned int a3)
 }
 
 void Boss::update() {
-  int v2 = this->field_B4;
-
-  double v12 = this->x_coord - (double)dword_44D33C[5 * this->field_AC + v2];
-  double v14 = this->y_coord - (double)dword_44D3A0[5 * this->field_AC + v2];
+  double v12 =
+      this->x_coord - (double)dword_44D33C[5 * this->field_AC + this->field_B4];
+  double v14 =
+      this->y_coord - (double)dword_44D3A0[5 * this->field_AC + this->field_B4];
 
   int v3 = static_cast<int>(calculate_angle(-v12, -v14));
   int v4 = v3;
-  int v5 = this->field_B0;
+  int v5 = this->angle;
 
   if (v5 - v3 > 128)
     v4 = v3 + 256;
@@ -57,20 +59,14 @@ void Boss::update() {
   if (v5 - v4 < -128)
     v4 -= 256;
 
-  this->field_B0 = static_cast<int>((double)v5 * 0.9 + (double)v4 * 0.1);
+  this->angle = static_cast<int>((double)v5 * 0.9 + (double)v4 * 0.1);
 
-  if (this->field_B0 < 0)
-    this->field_B0 += 256;
+  this->angle = (this->angle + 256) % 256;
 
-  if (this->field_B0 > 255)
-    this->field_B0 -= 256;
+  this->x_coord = global::dcos[this->angle] * 5.0 + this->x_coord;
+  this->y_coord = global::dsin[this->angle] * 5.0 + this->y_coord;
 
-  this->x_coord = global::dcos[this->field_B0] * 5.0 + this->x_coord;
-  this->y_coord = global::dsin[this->field_B0] * 5.0 + this->y_coord;
-
-  double v13 = std::fabs(v12);
-
-  if (std::fabs(v14) + v13 < 25.0 && ++this->field_B4 > 4)
+  if (std::fabs(v14) + std::fabs(v12) < 25.0 && ++this->field_B4 > 4)
     this->field_B4 = 0;
 
   this->boundaryBouncer.update();

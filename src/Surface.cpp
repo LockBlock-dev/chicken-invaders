@@ -14,7 +14,7 @@ Surface::Surface(UveDX* uveDX)
       height(0),
       offsetX(0),
       offsetY(0),
-      field28(1),
+      animationDelay(1),
       scaleFactor(1.0),
       texture(nullptr),
       sprite(nullptr) {}
@@ -208,8 +208,8 @@ double Surface::getScaleFactor() const {
   return this->scaleFactor;
 }
 
-int Surface::getField28() const {
-  return this->field28;
+unsigned int Surface::getAnimationDelay() const {
+  return this->animationDelay;
 }
 
 Surface* Surface::getNextSurface() {
@@ -220,8 +220,8 @@ void Surface::setScaleFactor(double scale) {
   this->scaleFactor = scale;
 }
 
-void Surface::setField28(int val) {
-  this->field28 = val;
+void Surface::setAnimationDelay(unsigned int delay) {
+  this->animationDelay = delay;
 }
 
 void Surface::setAnchorPoint(SurfaceAnchorType anchorType) {

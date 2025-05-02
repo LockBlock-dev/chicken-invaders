@@ -12,7 +12,7 @@ Explosion::Explosion(
     int x,
     int y,
     int a5,
-    int a6,
+    unsigned int a6,
     int a7,
     int a8,
     bool a9
@@ -86,11 +86,8 @@ void Explosion::update() {
 
       int surfaceNumber = a2 + angle / 8;
 
-      // ToDo: not in original code but it does that sometimes
-      if (surfaceNumber < 0)
-        surfaceNumber = 0;
-      else if (surfaceNumber >= 128)
-        surfaceNumber = 127;
+      // ToDo: not in original code but it is invalid sometimes
+      surfaceNumber = std::clamp(surfaceNumber, 0, 127);
 
       sprite.setSurface(global::game->surface_chain_sparc->getSurf(surfaceNumber
       ));

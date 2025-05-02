@@ -21,7 +21,7 @@ void Messenger::update() {
       if (blinkFrequency == 0 ||
           this->primaryMessageDisplayDuration / blinkFrequency % 2 == 0)
         global::game->font_alphabet->blitText(
-            320, 150, this->primaryMessage, 6
+            320, 150, this->primaryMessage, UveDX::Font::TextAlignment::Center
         );
 
       --this->primaryMessageDisplayDuration;
@@ -36,7 +36,7 @@ void Messenger::update() {
       if (blinkFrequency == 0 ||
           this->secondaryMessageDisplayDuration / blinkFrequency % 2 == 0)
         global::game->font_alphabet_small->blitText(
-            320, 190, this->secondaryMessage, 6
+            320, 190, this->secondaryMessage, UveDX::Font::TextAlignment::Center
         );
 
       --this->secondaryMessageDisplayDuration;

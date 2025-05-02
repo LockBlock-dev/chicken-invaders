@@ -29,11 +29,11 @@ class Surface : public UveBase {
   int getOffsetX() const;
   int getOffsetY() const;
   double getScaleFactor() const;
-  int getField28() const;
+  unsigned int getAnimationDelay() const;
   Surface* getNextSurface();
 
   void setScaleFactor(double scale);
-  void setField28(int val);
+  void setAnimationDelay(unsigned int delay);
   void setAnchorPoint(SurfaceAnchorType anchorType);
   void setNextSurface(Surface* nextSurface);
 
@@ -43,7 +43,7 @@ class Surface : public UveBase {
   int height;
   int offsetX;
   int offsetY;
-  int field28;
+  unsigned int animationDelay;
   double scaleFactor;
   sf::Texture* texture;
   sf::Sprite* sprite;

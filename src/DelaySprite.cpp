@@ -16,10 +16,10 @@ void DelaySprite::update() {
   if (this->field_94 <= 0) {
     UveDX::Sprite::update();
 
-    this->field_98 -= 1;
+    --this->field_98;
 
     if (this->field_98 <= 0)
       this->hasBeenDisposed = true;
   } else
-    this->field_94 -= 1;
+    --this->field_94;
 }

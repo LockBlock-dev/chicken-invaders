@@ -1,5 +1,6 @@
 #include "DelayText.hpp"
 
+#include "Font.hpp"
 #include "Game.hpp"
 #include "UveDX.hpp"
 
@@ -18,7 +19,9 @@ DelayText::DelayText(
 
 void DelayText::update() {
   if (this->delayBeforeDisplay <= 0) {
-    global::game->font_alphabet->blitText(320, this->dstY, this->text, 6);
+    global::game->font_alphabet->blitText(
+        320, this->dstY, this->text, UveDX::Font::TextAlignment::Center
+    );
 
     if (--this->displayDuration <= 0)
       this->hasBeenDisposed = true;

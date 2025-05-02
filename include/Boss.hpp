@@ -15,7 +15,7 @@ class Boss : public Enemy {
   double x_coord;
   double y_coord;
   unsigned int field_AC;
-  int field_B0;
+  int angle;
   int field_B4;
   BoundaryBouncer boundaryBouncer;
 };

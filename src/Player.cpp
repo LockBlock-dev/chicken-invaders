@@ -149,25 +149,12 @@ void Player::update() {
     if (this->spaceshipAngle < 4)
       ++this->spaceshipAngle;
 
-    if (this->horizontalVelocity < -10)
-      this->horizontalVelocity = -10;
-
-    if (this->horizontalVelocity > 10)
-      this->horizontalVelocity = 10;
-
-    if (this->spaceshipAngle < 0)
-      this->spaceshipAngle = 0;
-
-    if (this->spaceshipAngle > 8)
-      this->spaceshipAngle = 8;
+    this->horizontalVelocity = std::clamp(this->horizontalVelocity, -10, 10);
+    this->spaceshipAngle = std::clamp(this->spaceshipAngle, 0, 8);
 
     this->x_coord += this->horizontalVelocity;
 
-    if (this->x_coord < 20)
-      this->x_coord = 20;
-
-    if (this->x_coord > 620)
-      this->x_coord = 620;
+    this->x_coord = std::clamp(this->x_coord, 20, 620);
 
     this->surface =
         global::game->surface_chain_fighter->getSurf(this->spaceshipAngle);
@@ -180,10 +167,9 @@ void Player::update() {
     v41 /= 2;
 
     if (v41 < 0)
-      v41 += 1;
+      ++v41;
 
     int v57 = this->sprite_y + 12;
-
     int v54 = this->sprite_x - (10 - v41);
 
     auto exhaust_surface = global::game->surface_chain_exhaust->getSurf(
@@ -240,10 +226,9 @@ void Player::update() {
 
     this->handleChickenLeg();
 
-    int newScoreDisplayed = (this->score + this->scoreDisplayed) / 2;
-    this->scoreDisplayed = newScoreDisplayed;
+    this->scoreDisplayed = (this->score + this->scoreDisplayed) / 2;
 
-    if (newScoreDisplayed == this->score - 1)
+    if (this->scoreDisplayed == this->score - 1)
       this->scoreDisplayed = this->score;
   } else
     --this->invisibilityTimeout;
@@ -271,11 +256,11 @@ void Player::drawInterface() {
             global::game->font_alphabet_small->calculateTextWidth(
                 std::to_string(this->scoreDisplayed)
             ),
-        8, std::to_string(this->scoreDisplayed), 0
+        8, std::to_string(this->scoreDisplayed)
     );
   else
     global::game->font_alphabet_small->blitText(
-        50, 8, std::to_string(this->scoreDisplayed), 0
+        50, 8, std::to_string(this->scoreDisplayed)
     );
 }
 

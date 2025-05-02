@@ -20,20 +20,10 @@ Bullet::Bullet(
       field_A4(playerId),
       field_A8(0),
       angle(angle) {
-  int v6 = this->angle + 4;
+  auto surfaceNumber = (this->angle + 4) / 8;
 
-  if (v6 < 0)
-    v6 += 7;
-
-  v6 /= 8;
-
-  if (v6 < 0)
-    v6 += 32;
-
-  if (v6 > 31)
-    v6 -= 32;
-
-  this->surface = global::game->surface_chain_crystal->getSurf(v6);
+  this->surface =
+      global::game->surface_chain_crystal->getSurf(surfaceNumber % 32);
 }
 
 void Bullet::update() {
@@ -49,40 +39,41 @@ void Bullet::update() {
 
   this->handleHitEnemy();
 
-  int v1;
+  bool flag = false;
 
   if (this->surface) {
-    int x_coord =
-        this->ukwn_2 ? this->sprite_x : this->sprite_x - this->uveDX->xOffset;
+    int x_coord = this->isAbsolutePosition
+                      ? this->sprite_x
+                      : this->sprite_x - this->uveDX->xOffset;
 
     int v3 = x_coord - this->surface->getOffsetX();
-    v1 = 1;
+    flag = true;
 
     if (v3 < 0 || v3 >= static_cast<int>(this->uveDX->getWidth())) {
       int v4 = v3 + this->surface->getWidth();
 
       if (v4 < 0 || v4 >= static_cast<int>(this->uveDX->getWidth()))
-        v1 = 0;
+        flag = false;
     }
-  } else
-    v1 = 0;
+  }
 
-  int v5;
+  bool v5;
   int v7;
   int v8;
   int y_coord;
 
-  if (!v1 ||
+  if (!flag ||
       (this->surface
-           ? ((!this->ukwn_2 ? (y_coord = this->sprite_y - this->uveDX->yOffset)
-                             : (y_coord = this->sprite_y),
+           ? ((!this->isAbsolutePosition
+                   ? (y_coord = this->sprite_y - this->uveDX->yOffset)
+                   : (y_coord = this->sprite_y),
                ((v7 = y_coord - this->surface->getOffsetY(), v7 >= 0) &&
                 v7 < static_cast<int>(this->uveDX->getHeight())) ||
                    ((v8 = v7 + this->surface->getHeight(), v8 >= 0) &&
                     v8 < static_cast<int>(this->uveDX->getHeight())))
-                  ? (v5 = 1)
-                  : (v5 = 0))
-           : (v5 = 0),
+                  ? (v5 = true)
+                  : (v5 = false))
+           : (v5 = false),
        !v5))
     this->hasBeenDisposed = true;
 }

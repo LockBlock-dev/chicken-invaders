@@ -1,33 +1,36 @@
 #pragma once
 
-#include "Surface.hpp"
-#include "UveBase.hpp"
 #include <string>
 #include <vector>
+#include "Surface.hpp"
+#include "UveBase.hpp"
 
 namespace UveDX {
 
 class SurfaceChain : public UveBase {
-public:
+ public:
   enum class SurfaceLinkType {
-    Zero = 0,
-    One = 1,
-    Two = 2,
+    End = 0,
+    Self = 1,
+    Loop = 2,
   };
 
-  SurfaceChain(UveDX *uveDX, const std::string &filename);
+  SurfaceChain(UveDX* uveDX, const std::string& filename);
   ~SurfaceChain();
 
   void update() override;
   void scaleAllSurfaces(double scale);
-  void linkSurfaces(SurfaceChain::SurfaceLinkType linkType,
-                    unsigned int startIndex, int numSurfaces);
+  void linkSurfaces(
+      SurfaceChain::SurfaceLinkType linkType,
+      unsigned int startIndex,
+      int numSurfaces
+  );
   void applyAnchorPointToAllSurfaces(SurfaceAnchorType anchorType);
 
-  Surface *getSurf(unsigned int surfaceNumber);
+  Surface* getSurf(unsigned int surfaceNumber);
 
-private:
-  std::vector<Surface *> surfaces;
-  unsigned int totalSurfaces;
+ private:
+  std::vector<Surface*> surfaces;
+  size_t totalSurfaces;
 };
-} // namespace UveDX
+}  // namespace UveDX

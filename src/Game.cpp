@@ -146,18 +146,24 @@ void Game::paint() {
 
   this->uveDX->backSurface->blitWithColor();
 
-  this->font_alphabet_small->blitText(320, 180, "did you know...", 6);
   this->font_alphabet_small->blitText(
-      320, 210, "you can compare yourself against", 6
+      320, 180, "did you know...", UveDX::Font::TextAlignment::Center
   );
   this->font_alphabet_small->blitText(
-      320, 230, "people from all over the world", 6
+      320, 210, "you can compare yourself against",
+      UveDX::Font::TextAlignment::Center
   );
   this->font_alphabet_small->blitText(
-      320, 250, "by uploading your high scores", 6
+      320, 230, "people from all over the world",
+      UveDX::Font::TextAlignment::Center
   );
   this->font_alphabet_small->blitText(
-      320, 270, "to the chicken invaders internet high score tables!", 6
+      320, 250, "by uploading your high scores",
+      UveDX::Font::TextAlignment::Center
+  );
+  this->font_alphabet_small->blitText(
+      320, 270, "to the chicken invaders internet high score tables!",
+      UveDX::Font::TextAlignment::Center
   );
 
   this->uveDX->frame();
@@ -168,15 +174,18 @@ void Game::paint() {
 
   this->font_alphabet_small->blitText(
       320, 180,
-      "the chickens are back and they're taking over the solar system!", 6
+      "the chickens are back and they're taking over the solar system!",
+      UveDX::Font::TextAlignment::Center
   );
   this->font_alphabet_small->blitText(
-      320, 200, "continue your adventure in", 6
+      320, 200, "continue your adventure in", UveDX::Font::TextAlignment::Center
   );
 
   this->uveDX->backSurface->loadBMP("gfx/ci2.bmp", 0xFFFF8000, 230);
 
-  this->font_alphabet_small->blitText(320, 270, "the next wave!", 6);
+  this->font_alphabet_small->blitText(
+      320, 270, "the next wave!", UveDX::Font::TextAlignment::Center
+  );
 
   this->uveDX->frame();
 
@@ -184,9 +193,15 @@ void Game::paint() {
 
   this->uveDX->backSurface->blitWithColor();
 
-  this->font_alphabet_small->blitText(320, 190, "visit", 6);
-  this->font_alphabet->blitText(320, 220, "www.interactionstudios.com", 6);
-  this->font_alphabet_small->blitText(320, 265, "for more information", 6);
+  this->font_alphabet_small->blitText(
+      320, 190, "visit", UveDX::Font::TextAlignment::Center
+  );
+  this->font_alphabet->blitText(
+      320, 220, "www.interactionstudios.com", UveDX::Font::TextAlignment::Center
+  );
+  this->font_alphabet_small->blitText(
+      320, 265, "for more information", UveDX::Font::TextAlignment::Center
+  );
 
   this->uveDX->frame();
 
@@ -334,7 +349,7 @@ void Game::loadGameResources() {
   this->uveDX->frame();
 
   this->surface_chain_egg->linkSurfaces(
-      UveDX::SurfaceChain::SurfaceLinkType::One, 1, -1
+      UveDX::SurfaceChain::SurfaceLinkType::Self, 1, -1
   );
 
   this->surface_chain_chicken_leg = new UveDX::SurfaceChain{
@@ -358,7 +373,7 @@ void Game::loadGameResources() {
   this->uveDX->frame();
 
   this->surface_chain_gift_box->linkSurfaces(
-      UveDX::SurfaceChain::SurfaceLinkType::Two, 0, -1
+      UveDX::SurfaceChain::SurfaceLinkType::Loop, 0, -1
   );
 
   this->surface_chain_asteroid_big_rock = new UveDX::SurfaceChain{
@@ -372,7 +387,7 @@ void Game::loadGameResources() {
   this->uveDX->frame();
 
   this->surface_chain_asteroid_big_rock->linkSurfaces(
-      UveDX::SurfaceChain::SurfaceLinkType::Two, 0, -1
+      UveDX::SurfaceChain::SurfaceLinkType::Loop, 0, -1
   );
 
   this->surface_chain_asteroid_small_rock = new UveDX::SurfaceChain{
@@ -386,7 +401,7 @@ void Game::loadGameResources() {
   this->uveDX->frame();
 
   this->surface_chain_asteroid_small_rock->linkSurfaces(
-      UveDX::SurfaceChain::SurfaceLinkType::Two, 0, -1
+      UveDX::SurfaceChain::SurfaceLinkType::Loop, 0, -1
   );
 
   this->surface_chain_asteroid_big_fire = new UveDX::SurfaceChain{
@@ -400,7 +415,7 @@ void Game::loadGameResources() {
   this->uveDX->frame();
 
   this->surface_chain_asteroid_big_fire->linkSurfaces(
-      UveDX::SurfaceChain::SurfaceLinkType::Two, 0, -1
+      UveDX::SurfaceChain::SurfaceLinkType::Loop, 0, -1
   );
 
   this->surface_chain_asteroid_small_fire = new UveDX::SurfaceChain{
@@ -414,7 +429,7 @@ void Game::loadGameResources() {
   this->uveDX->frame();
 
   this->surface_chain_asteroid_small_fire->linkSurfaces(
-      UveDX::SurfaceChain::SurfaceLinkType::Two, 0, -1
+      UveDX::SurfaceChain::SurfaceLinkType::Loop, 0, -1
   );
 
   this->surface_chain_feather = new UveDX::SurfaceChain{
@@ -458,10 +473,10 @@ void Game::loadGameResources() {
   this->uveDX->frame();
 
   this->surface_chain_burger->linkSurfaces(
-      UveDX::SurfaceChain::SurfaceLinkType::Two, 0, -1
+      UveDX::SurfaceChain::SurfaceLinkType::Loop, 0, -1
   );
-  this->surface_chain_burger->getSurf(0)->setField28(10);
-  this->surface_chain_burger->getSurf(1)->setField28(10);
+  this->surface_chain_burger->getSurf(0)->setAnimationDelay(10);
+  this->surface_chain_burger->getSurf(1)->setAnimationDelay(10);
 
   this->surface_chain_talkbubble = new UveDX::SurfaceChain{
       this->uveDX,
@@ -655,7 +670,7 @@ void Game::loadGameResources() {
   this->drawProgressBar(218, 230, 168, 200, 20);
   this->uveDX->frame();
 
-  this->font_alphabet_small->setField194(6);
+  this->font_alphabet_small->setSpaceWidth(6);
 
   this->font_3x7 = new UveDX::Font{this->uveDX, "gfx/font3x7"};
   this->fontsList->add(this->font_3x7);
@@ -664,7 +679,7 @@ void Game::loadGameResources() {
   this->drawProgressBar(218, 230, 172, 200, 20);
   this->uveDX->frame();
 
-  this->font_3x7->setField194(2);
+  this->font_3x7->setSpaceWidth(2);
 
   this->uveDX->backSurface->blitWithColor();
   this->drawProgressBar(218, 230, 176, 200, 20);
@@ -918,7 +933,8 @@ bool Game::handlePauseScreen() {
   this->uveDX->backSurface->blitWithColor();
 
   this->font_alphabet_small->blitText(
-      320, 235, "press esc to go back or any other key to quit", 6
+      320, 235, "press esc to go back or any other key to quit",
+      UveDX::Font::TextAlignment::Center
   );
 
   this->uveDX->frame();

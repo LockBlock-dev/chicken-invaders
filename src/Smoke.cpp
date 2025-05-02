@@ -12,7 +12,7 @@ Smoke::Smoke(
     int x,
     int y,
     int a5,
-    int a6,
+    unsigned int a6,
     int a7,
     int a8,
     bool a9

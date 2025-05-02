@@ -42,7 +42,7 @@ void Feather::update() {
   auto surfaceNumber = this->boundaryBouncer.currentSurfaceIndex / 2;
 
   if (surfaceNumber < 0)
-    surfaceNumber += 1;
+    ++surfaceNumber;
 
   this->surface = global::game->surface_chain_feather->getSurf(surfaceNumber);
 

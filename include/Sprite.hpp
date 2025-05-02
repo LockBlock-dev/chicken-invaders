@@ -17,9 +17,9 @@ class Sprite : public UveBase {
 
  protected:
   Surface* surface;
-  int ukwn_1;
-  char ukwn_2;
-  char ukwn_3;
+  unsigned int animationCounter;
+  bool isAbsolutePosition;
+  bool isHidden;
   double size;
 };
 }  // namespace UveDX

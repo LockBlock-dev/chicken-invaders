@@ -11,9 +11,9 @@ class Asteroid : public Enemy {
       double y,
       int face,
       int type,
-      int size,
-      int minspeed,
-      int maxspeed
+      bool size,
+      unsigned int minspeed,
+      unsigned int maxspeed
   );
 
   void update() override;
@@ -24,9 +24,9 @@ class Asteroid : public Enemy {
   double x_coord;
   double y_coord;
   int face;
-  int speed;
+  unsigned int speed;
   double dx;
   double dy;
   int type;
-  int size;
+  bool size;
 };

@@ -47,11 +47,7 @@ void ChickenLeg::update() {
 
   this->intB4 += this->intB8;
 
-  if (this->intB4 < 0)
-    this->intB4 += 256;
-
-  if (this->intB4 > 255)
-    this->intB4 -= 256;
+  this->intB4 = (this->intB4 + 256) % 256;
 
   this->sprite_x = static_cast<int>(this->double94);
   this->sprite_y = static_cast<int>(this->double9C);

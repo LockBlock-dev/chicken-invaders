@@ -1,7 +1,7 @@
 #pragma once
 
+#include <array>
 #include <string>
-#include <vector>
 
 #include "Surface.hpp"
 #include "UveBase.hpp"
@@ -9,20 +9,33 @@
 namespace UveDX {
 class Font : public UveBase {
  public:
+  enum class TextAlignment {
+    Left = 0,
+    Right = 2,
+    Center = 6,
+  };
+
   Font(UveDX* uveDX, const std::string& filename);
   ~Font();
 
   void update() override;
-  void blitText(int dstX, int dstY, const std::string& text, int a4);
+  void blitText(
+      int x,
+      int y,
+      const std::string& text,
+      TextAlignment alignment = TextAlignment::Left
+  );
   int calculateTextWidth(const std::string& text);
 
-  void setField194(int val);
+  void setSpaceWidth(unsigned int width);
 
  private:
-  std::vector<Surface*> surfaces;
-  int field_190;
-  int spaceSize;
-  int field_198;
-  int field_19C;
+  static constexpr size_t PRINTABLE_ASCII_COUNT = 95;
+
+  std::array<Surface*, PRINTABLE_ASCII_COUNT> surfaces;
+  int charSpacing;
+  unsigned int spaceWidth;
+  int averageCharWidth;
+  int averageCharHeight;
 };
 }  // namespace UveDX

@@ -38,25 +38,11 @@ void HighScoreEditor::update() {
       ))
     ++this->rowNumber;
 
-  if (this->columnNumber < 0)
-    this->columnNumber += 6;
+  this->columnNumber = (this->columnNumber + 6) % 6;
+  this->rowNumber = (this->rowNumber + 5) % 5;
 
-  if (this->columnNumber > 5)
-    this->columnNumber -= 6;
-
-  if (this->rowNumber < 0)
-    this->rowNumber += 5;
-
-  if (this->rowNumber > 4)
-    this->rowNumber -= 5;
-
-  if (this->rowNumber == 4) {
-    if (this->columnNumber < 0)
-      this->columnNumber = 0;
-
-    if (this->columnNumber > 4)
-      this->columnNumber = 4;
-  }
+  if (this->rowNumber == 4)
+    this->columnNumber = std::clamp(this->columnNumber, 0, 4);
 
   if (this->uveDX->uveInput->isKeyPressed(
           constants::playerShootKeys[this->playerId]
@@ -120,10 +106,10 @@ void HighScoreEditor::update() {
 
   global::game->font_alphabet_small->blitText(
       270 * this->playerId + 70, 140,
-      std::format("well done! {} points", this->score), 0
+      std::format("well done! {} points", this->score)
   );
   global::game->font_alphabet->blitText(
-      270 * this->playerId + 70, 160, this->pseudo, 0
+      270 * this->playerId + 70, 160, this->pseudo
   );
 
   for (size_t k = 0; k < 5; ++k) {
@@ -131,11 +117,11 @@ void HighScoreEditor::update() {
       if (k >= 4 && m >= 3) {
         if (m == 3)
           global::game->font_alphabet_small->blitText(
-              270 * this->playerId + 200, 40 * k + 211, "del", 0
+              270 * this->playerId + 200, 40 * k + 211, "del"
           );
         else if (m == 4)
           global::game->font_alphabet_small->blitText(
-              270 * this->playerId + 240, 40 * k + 211, "end", 0
+              270 * this->playerId + 240, 40 * k + 211, "end"
           );
       } else {
         char v42 = m + 6 * k + 97;
@@ -145,7 +131,7 @@ void HighScoreEditor::update() {
 
         global::game->font_alphabet_small->blitText(
             40 * m + 270 * this->playerId + 70 + 15, 40 * k + 211,
-            std::string{v42}, 0
+            std::string{v42}
         );
       }
     }

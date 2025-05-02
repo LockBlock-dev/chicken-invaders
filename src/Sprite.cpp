@@ -8,31 +8,31 @@ Sprite::Sprite(UveDX* uveDX, int x, int y, Surface* surface)
       sprite_x(x),
       sprite_y(y),
       surface(surface),
-      ukwn_1(0),
-      ukwn_2(0),
-      ukwn_3(0),
+      animationCounter(0),
+      isAbsolutePosition(false),
+      isHidden(false),
       size(1.0) {}
 
 void Sprite::update() {
-  if (this->surface && !this->ukwn_3) {
-    int xCoord = 0;
-    int yCoord = 0;
+  if (this->surface && !this->isHidden) {
+    int x = 0;
+    int y = 0;
     bool v3 = false;
 
-    if (this->ukwn_2)
-      xCoord = this->sprite_x;
+    if (this->isAbsolutePosition)
+      x = this->sprite_x;
     else
-      xCoord = this->sprite_x - this->uveDX->xOffset;
+      x = this->sprite_x - this->uveDX->xOffset;
 
-    if (this->ukwn_2)
-      yCoord = this->sprite_y;
+    if (this->isAbsolutePosition)
+      y = this->sprite_y;
     else
-      yCoord = this->sprite_y - this->uveDX->yOffset;
+      y = this->sprite_y - this->uveDX->yOffset;
 
     if (this->surface) {
       int v4 = 0;
 
-      if (this->ukwn_2)
+      if (this->isAbsolutePosition)
         v4 = this->sprite_x;
       else
         v4 = this->sprite_x - this->uveDX->xOffset;
@@ -54,8 +54,9 @@ void Sprite::update() {
       if (this->surface) {
         int v9 = 0;
 
-        int v8 = this->ukwn_2 ? this->sprite_y
-                              : this->sprite_y - this->uveDX->yOffset;
+        int v8 = this->isAbsolutePosition
+                     ? this->sprite_y
+                     : this->sprite_y - this->uveDX->yOffset;
         v7 =
             ((v9 = v8 - this->surface->getOffsetY(), v9 >= 0) &&
              v9 < static_cast<int>(this->uveDX->height)) ||
@@ -64,16 +65,16 @@ void Sprite::update() {
       }
 
       if (v7) {
-        this->surface->blit(xCoord, yCoord, nullptr, this->size);
+        this->surface->blit(x, y, nullptr, this->size);
 
         if (this->uveDX->debugMode ==
             UveDX::DebugLevel::FRAME_TIME_AND_DEBUG_SHAPE)
-          this->surface->drawDebugShape(xCoord, yCoord);
+          this->surface->drawDebugShape(x, y);
       }
     }
 
-    if (this->surface->getField28() <= ++this->ukwn_1) {
-      this->ukwn_1 = 0;
+    if (this->surface->getAnimationDelay() <= ++this->animationCounter) {
+      this->animationCounter = 0;
 
       auto nextSurface = this->surface->getNextSurface();
 

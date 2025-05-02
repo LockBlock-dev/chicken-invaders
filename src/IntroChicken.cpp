@@ -13,17 +13,9 @@ IntroChicken::IntroChicken(UveDX::UveDX* uveDX)
 void IntroChicken::update() {
   int v1 = 20 - this->field_94 / 50;
 
-  if (v1 < 15)
-    v1 = 15;
+  v1 = std::clamp(v1, 15, 20);
 
-  if (v1 > 20)
-    v1 = 20;
-
-  if (++this->field_98 < 0)
-    this->field_98 += 256;
-
-  if (this->field_98 > 255)
-    this->field_98 -= 256;
+  this->field_98 = (this->field_98 + 1 + 256) % 256;
 
   this->field_94 -= this->field_94 / 50 + 1;
 

@@ -154,22 +154,22 @@ void WaveController::handleWave() {
 
       if (this->currentStage == 2) {
         for (int j = 0; j < 15; ++j) {
-          int v55 = this->currentSystem + 5;
           auto a5 = (double)(generate_random_number() % 480 - 640);
           auto random_number = generate_random_number();
 
           this->add(new Asteroid{
-              this->uveDX, (double)-(random_number % 640), a5, 96, v2, 1, 2, v55
+              this->uveDX, (double)-(random_number % 640), a5, 96, v2, true, 2,
+              this->currentSystem + 5
           });
         }
 
         for (int k = 0; k < 5; ++k) {
-          int v56 = this->currentSystem + 5;
           auto a5 = (double)(generate_random_number() % 480 - 640);
           auto random_number = generate_random_number();
 
           this->add(new Asteroid{
-              this->uveDX, (double)-(random_number % 640), a5, 96, v2, 0, 4, v56
+              this->uveDX, (double)-(random_number % 640), a5, 96, v2, false, 4,
+              this->currentSystem + 5
           });
         }
       }
@@ -188,22 +188,22 @@ void WaveController::handleWave() {
 
       if (this->currentStage == 5) {
         for (int ii = 0; ii < 15; ++ii) {
-          int v57 = this->currentSystem + 10;
           auto a5 = (double)-(generate_random_number() % 300);
           auto random_number = generate_random_number() % 640;
 
           this->add(new Asteroid{
-              this->uveDX, (double)random_number, a5, 128, v2, 1, 8, v57
+              this->uveDX, (double)random_number, a5, 128, v2, true, 8,
+              this->currentSystem + 10
           });
         }
 
         for (int jj = 0; jj < 15; ++jj) {
-          int v58 = this->currentSystem + 10;
           auto a5 = (double)(-1000 - generate_random_number() % 300);
           auto random_number = generate_random_number() % 640;
 
           this->add(new Asteroid{
-              this->uveDX, (double)random_number, a5, 128, v2, 1, 8, v58
+              this->uveDX, (double)random_number, a5, 128, v2, true, 8,
+              this->currentSystem + 10
           });
         }
       }
@@ -231,32 +231,31 @@ void WaveController::handleWave() {
 
       if (this->currentStage == 8) {
         for (int i2 = 0; i2 < 8; ++i2) {
-          int v59 = this->currentSystem + 5;
           auto v52 = 128 - generate_random_number() % 32;
           auto a5 = (double)-(generate_random_number() % 500);
           auto random_number = generate_random_number() % 320;
 
           this->add(new Asteroid{
-              this->uveDX, (double)random_number, a5, v52, v2, 1, 5, v59
+              this->uveDX, (double)random_number, a5, v52, v2, true, 5,
+              this->currentSystem + 5
           });
 
-          int v60 = this->currentSystem + 5;
           auto v53 = generate_random_number() % 32 + 128;
           a5 = (double)-(generate_random_number() % 500);
           random_number = generate_random_number();
 
           this->add(new Asteroid{
-              this->uveDX, (double)(random_number % 320 + 320), a5, v53, v2, 1,
-              5, v60
+              this->uveDX, (double)(random_number % 320 + 320), a5, v53, v2,
+              true, 5, this->currentSystem + 5
           });
 
-          int v61 = this->currentSystem + 5;
           auto v54 = generate_random_number() % 64 + 96;
           a5 = (double)(-500 - generate_random_number() % 500);
           random_number = generate_random_number() % 640;
 
           this->add(new Asteroid{
-              this->uveDX, (double)random_number, a5, v54, v2, 0, 8, v61
+              this->uveDX, (double)random_number, a5, v54, v2, false, 8,
+              this->currentSystem + 5
           });
         }
       }
