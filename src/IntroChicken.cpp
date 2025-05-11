@@ -7,29 +7,29 @@
 
 IntroChicken::IntroChicken(UveDX::UveDX* uveDX)
     : UveDX::Sprite(uveDX, 0, 0, nullptr),
-      field_94(generate_random_number() % 256),
-      field_98(generate_random_number() % 5000 + 2000) {}
+      velocity(random_range(0u, 256u)),
+      angle(random_range(2000u, 7000u)) {}
 
 void IntroChicken::update() {
-  int v1 = 20 - this->field_94 / 50;
+  unsigned int surfaceNumber = 20 - this->velocity / 50;
 
-  v1 = std::clamp(v1, 15, 20);
+  surfaceNumber = std::clamp(surfaceNumber, 15u, 20u);
 
-  this->field_98 = (this->field_98 + 1 + 256) % 256;
+  this->angle = (this->angle + 1 + 256) % 256;
 
-  this->field_94 -= this->field_94 / 50 + 1;
+  this->velocity -= this->velocity / 50 + 1;
 
   this->sprite_x = static_cast<int>(
-      static_cast<double>(this->field_94) * global::dcos[this->field_98] + 320.0
+      static_cast<double>(this->velocity) * global::dcos[this->angle] + 320.0
   );
   this->sprite_y = static_cast<int>(
-      static_cast<double>(this->field_94) * global::dsin[this->field_98] + 240.0
+      static_cast<double>(this->velocity) * global::dsin[this->angle] + 240.0
   );
 
-  this->surface = global::game->surface_chain_smoke->getSurf(v1);
+  this->surface = global::game->surface_chain_smoke->getSurf(surfaceNumber);
 
   UveDX::Sprite::update();
 
-  if (this->field_94 < 20)
+  if (this->velocity < 20)
     this->hasBeenDisposed = 1;
 }

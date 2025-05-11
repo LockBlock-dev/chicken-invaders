@@ -13,28 +13,28 @@ Feather::Feather(UveDX::UveDX* uveDX, double x, double y)
       ),
       x_coord(x),
       y_coord(y),
-      field_A4((double)(generate_random_number() % 20 - 10)),
-      field_AC((double)(generate_random_number() % 20 - 10)),
-      field_B4(generate_random_number() % 50 + 50),
+      velocityX(static_cast<double>(random_range(-10, 10))),
+      velocityY(static_cast<double>(random_range(-10, 10))),
+      disposeCountdown(random_range(50, 100)),
       boundaryBouncer(0, 15) {}
 
 void Feather::update() {
   this->boundaryBouncer.update();
 
-  if (this->field_A4 > 0.0)
-    this->field_A4 = this->field_A4 - 0.5;
+  if (this->velocityX > 0.0)
+    this->velocityX = this->velocityX - 0.5;
 
-  if (this->field_A4 < 0.0)
-    this->field_A4 = this->field_A4 + 0.5;
+  if (this->velocityX < 0.0)
+    this->velocityX = this->velocityX + 0.5;
 
-  if (this->field_AC > 0.0)
-    this->field_AC = this->field_AC - 0.5;
+  if (this->velocityY > 0.0)
+    this->velocityY = this->velocityY - 0.5;
 
-  if (this->field_AC < 0.0)
-    this->field_AC = this->field_AC + 0.5;
+  if (this->velocityY < 0.0)
+    this->velocityY = this->velocityY + 0.5;
 
-  this->x_coord = this->field_A4 + this->x_coord;
-  this->y_coord = this->field_AC + 2.0 + this->y_coord;
+  this->x_coord += this->velocityX;
+  this->y_coord += this->velocityY + 2.0;
 
   this->sprite_x = static_cast<int>(this->x_coord);
   this->sprite_y = static_cast<int>(this->y_coord);
@@ -48,6 +48,6 @@ void Feather::update() {
 
   UveDX::Sprite::update();
 
-  if (--this->field_B4 <= 0)
+  if (--this->disposeCountdown <= 0)
     this->hasBeenDisposed = true;
 }

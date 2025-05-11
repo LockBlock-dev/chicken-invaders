@@ -12,8 +12,8 @@ class Feather : public UveDX::Sprite {
  private:
   double x_coord;
   double y_coord;
-  double field_A4;
-  double field_AC;
-  int field_B4;
+  double velocityX;
+  double velocityY;
+  int disposeCountdown;
   BoundaryBouncer boundaryBouncer;
 };

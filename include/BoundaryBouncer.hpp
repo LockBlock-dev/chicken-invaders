@@ -9,16 +9,16 @@ enum class BounceDirection : int {
 class BoundaryBouncer {
  public:
   BoundaryBouncer(
-      int firstSurfaceIndex,
-      int lastSurfaceIndex,
+      unsigned int firstSurfaceIndex,
+      unsigned int lastSurfaceIndex,
       int initialSurfaceIndex = -1,
       BounceDirection initialDirection = BounceDirection::Random
   );
 
   void update();
 
-  int firstSurfaceIndex;
-  int lastSurfaceIndex;
+  unsigned int firstSurfaceIndex;
+  unsigned int lastSurfaceIndex;
   int currentSurfaceIndex;
 
  private:

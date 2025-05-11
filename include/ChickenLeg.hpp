@@ -9,11 +9,11 @@ class ChickenLeg : public UveDX::Sprite {
   void update() override;
 
  private:
-  double double94;
-  double double9C;
-  double doubleA4;
-  double doubleAC;
-  int intB4;
-  int intB8;
-  int intBC;
+  double x;
+  double y;
+  double velocityX;
+  double velocityY;
+  int animationFrame;
+  int rotationSpeed;
+  int disposeCountdown;
 };

@@ -4,11 +4,11 @@
 
 class Egg : public UveDX::Sprite {
  public:
-  Egg(UveDX::UveDX* uveDX, int x, int y, int speed);
+  Egg(UveDX::UveDX* uveDX, int x, int y, unsigned int speed);
 
   void update() override;
 
  private:
-  int dword94;
-  int speed;
+  unsigned int brokenStateFrameCount;
+  unsigned int speed;
 };

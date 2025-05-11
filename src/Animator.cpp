@@ -84,7 +84,8 @@ void Animator::process() {
 
         if (frameSize >= this->frameDataBufferSize)
           this->uveDX->onError(
-              "Animator::process()", "Frame size bigger than buffer!", frameSize
+              "Animator::process()", "Frame size bigger than buffer!",
+              static_cast<int>(frameSize)
           );
 
         this->fileStream.read(this->frameDataBuffer, frameSize);

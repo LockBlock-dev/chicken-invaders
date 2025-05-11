@@ -107,7 +107,9 @@ void Surface::blitWithColor(sf::IntRect* rect, sf::Color color) {
   rectangle.setFillColor(color);
 
   if (rect) {
-    rectangle.setSize(sf::Vector2f(rect->size.x, rect->size.y));
+    rectangle.setSize(sf::Vector2f(
+        static_cast<float>(rect->size.x), static_cast<float>(rect->size.y)
+    ));
     rectangle.setPosition(sf::Vector2f(
         static_cast<float>(rect->position.x),
         static_cast<float>(rect->position.y)
@@ -158,8 +160,8 @@ void Surface::loadBMP(
 }
 
 void Surface::drawDebugShape(int x, int y) {
-  int halfWidth = this->width / 2;
-  int halfHeight = this->height / 2;
+  unsigned int halfWidth = this->width / 2;
+  unsigned int halfHeight = this->height / 2;
 
   int adjustedX = halfWidth + x - this->offsetX;
   int adjustedY = halfHeight + y - this->offsetY;
@@ -188,11 +190,11 @@ void Surface::drawDebugShape(int x, int y) {
   global::game->window.draw(roundedRect);
 }
 
-int Surface::getWidth() const {
+unsigned int Surface::getWidth() const {
   return this->width;
 }
 
-int Surface::getHeight() const {
+unsigned int Surface::getHeight() const {
   return this->height;
 }
 

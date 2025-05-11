@@ -24,8 +24,8 @@ class Surface : public UveBase {
   void loadBMP(const std::string& filename, unsigned int x, unsigned int y);
   void drawDebugShape(int x, int y);
 
-  int getWidth() const;
-  int getHeight() const;
+  unsigned int getWidth() const;
+  unsigned int getHeight() const;
   int getOffsetX() const;
   int getOffsetY() const;
   double getScaleFactor() const;
@@ -39,8 +39,8 @@ class Surface : public UveBase {
 
  private:
   Surface* nextSurface;
-  int width;
-  int height;
+  unsigned int width;
+  unsigned int height;
   int offsetX;
   int offsetY;
   unsigned int animationDelay;

@@ -25,13 +25,13 @@ Explosion::Explosion(
     int v10 = 9 * i;
     *(double*)(&this->field_1C + v10) = (double)x;
     *(double*)(&this->field_24 + v10) = (double)y;
-    int v16 = generate_random_number() % a8 - a8 / 2;
+    int v16 = random_range(0, a8) - a8 / 2;
     int v11 = v16 + a7 + (v16 + a7 < 0 ? 256 : 0);
 
     if (v11 > 255)
       v11 -= 256;
 
-    int v12 = a6 == 1 ? 0 : generate_random_number() % (a6 - 1);
+    int v12 = a6 == 1 ? 0 : random_range<int>(0, a6 - 1);
 
     int v13 = v12 + 1;
 
@@ -81,10 +81,10 @@ void Explosion::update() {
 
       auto angle = calculate_angle(*((double*)v2 - 2), *((double*)v2 - 1));
 
-      if (angle >= 0)
-        angle += 7;
+      // if (angle >= 0)
+      //   angle += 7;
 
-      int surfaceNumber = a2 + angle / 8;
+      int surfaceNumber = a2 + (angle + 7) / 8;
 
       // ToDo: not in original code but it is invalid sometimes
       surfaceNumber = std::clamp(surfaceNumber, 0, 127);

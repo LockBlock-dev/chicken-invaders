@@ -8,14 +8,12 @@ Bonus::Bonus(UveDX::UveDX* uveDX, int x, int y)
           uveDX,
           x,
           y,
-          global::game->surface_chain_gift_box->getSurf(
-              generate_random_number() % 32
-          )
+          global::game->surface_chain_gift_box->getSurf(random_range(0u, 32u))
       ),
-      field_94(generate_random_number() % 5 + 2) {}
+      speed(random_range(2u, 7u)) {}
 
 void Bonus::update() {
-  this->sprite_y += this->field_94;
+  this->sprite_y += this->speed;
 
   if (this->sprite_y > 500)
     this->hasBeenDisposed = true;

@@ -9,5 +9,5 @@ class Bonus : public UveDX::Sprite {
   void update() override;
 
  private:
-  int field_94;
+  unsigned int speed;
 };

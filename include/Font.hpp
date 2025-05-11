@@ -33,9 +33,9 @@ class Font : public UveBase {
   static constexpr size_t PRINTABLE_ASCII_COUNT = 95;
 
   std::array<Surface*, PRINTABLE_ASCII_COUNT> surfaces;
-  int charSpacing;
+  unsigned int charSpacing;
   unsigned int spaceWidth;
-  int averageCharWidth;
-  int averageCharHeight;
+  unsigned int averageCharWidth;
+  unsigned int averageCharHeight;
 };
 }  // namespace UveDX

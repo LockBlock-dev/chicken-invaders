@@ -15,10 +15,10 @@ Bullet::Bullet(
     unsigned int angle
 )
     : UveDX::Sprite(uveDX, 0, 0, nullptr),
-      field_94((double)x),
-      field_9C((double)y),
-      field_A4(playerId),
-      field_A8(0),
+      x(static_cast<double>(x)),
+      y(static_cast<double>(y)),
+      playerId(playerId),
+      travelDistance(0),
       angle(angle) {
   auto surfaceNumber = (this->angle + 4) / 8;
 
@@ -27,54 +27,63 @@ Bullet::Bullet(
 }
 
 void Bullet::update() {
-  this->field_94 =
-      (double)++this->field_A8 * global::dcos[this->angle] + this->field_94;
-  this->field_9C =
-      (double)this->field_A8 * global::dsin[this->angle] + this->field_9C;
+  ++this->travelDistance;
 
-  this->sprite_x = static_cast<int>(this->field_94);
-  this->sprite_y = static_cast<int>(this->field_9C);
+  this->x =
+      static_cast<double>(this->travelDistance) * global::dcos[this->angle] +
+      this->x;
+  this->y =
+      static_cast<double>(this->travelDistance) * global::dsin[this->angle] +
+      this->y;
+
+  this->sprite_x = static_cast<int>(this->x);
+  this->sprite_y = static_cast<int>(this->y);
 
   UveDX::Sprite::update();
 
   this->handleHitEnemy();
 
-  bool flag = false;
+  bool isSurfaceVisible = false;
 
   if (this->surface) {
     int x_coord = this->isAbsolutePosition
                       ? this->sprite_x
                       : this->sprite_x - this->uveDX->xOffset;
 
-    int v3 = x_coord - this->surface->getOffsetX();
-    flag = true;
+    int adjustedSurfaceX =
+        x_coord - static_cast<int>(this->surface->getOffsetX());
+    isSurfaceVisible = true;
 
-    if (v3 < 0 || v3 >= static_cast<int>(this->uveDX->getWidth())) {
-      int v4 = v3 + this->surface->getWidth();
+    if (adjustedSurfaceX < 0 ||
+        adjustedSurfaceX >= static_cast<int>(this->uveDX->getWidth())) {
+      int surfaceRightEdgeX =
+          adjustedSurfaceX + static_cast<int>(this->surface->getWidth());
 
-      if (v4 < 0 || v4 >= static_cast<int>(this->uveDX->getWidth()))
-        flag = false;
+      if (surfaceRightEdgeX < 0 ||
+          surfaceRightEdgeX >= static_cast<int>(this->uveDX->getWidth()))
+        isSurfaceVisible = false;
     }
   }
 
-  bool v5;
-  int v7;
-  int v8;
-  int y_coord;
+  int y_coord = this->isAbsolutePosition
+                    ? this->sprite_y
+                    : this->sprite_y - this->uveDX->yOffset;
 
-  if (!flag ||
-      (this->surface
-           ? ((!this->isAbsolutePosition
-                   ? (y_coord = this->sprite_y - this->uveDX->yOffset)
-                   : (y_coord = this->sprite_y),
-               ((v7 = y_coord - this->surface->getOffsetY(), v7 >= 0) &&
-                v7 < static_cast<int>(this->uveDX->getHeight())) ||
-                   ((v8 = v7 + this->surface->getHeight(), v8 >= 0) &&
-                    v8 < static_cast<int>(this->uveDX->getHeight())))
-                  ? (v5 = true)
-                  : (v5 = false))
-           : (v5 = false),
-       !v5))
+  int surfaceHeight = static_cast<int>(this->surface->getHeight());
+  int screenHeight = static_cast<int>(this->uveDX->getHeight());
+
+  int surfaceTop = y_coord - static_cast<int>(this->surface->getOffsetY());
+  int surfaceBottom = surfaceTop + surfaceHeight;
+
+  bool shouldRender = false;
+
+  if (!isSurfaceVisible || !this->surface)
+    shouldRender = false;
+  else
+    shouldRender = (surfaceTop >= 0 && surfaceTop < screenHeight) ||
+                   (surfaceBottom >= 0 && surfaceBottom < screenHeight);
+
+  if (!shouldRender)
     this->hasBeenDisposed = true;
 }
 
@@ -91,7 +100,7 @@ void Bullet::handleHitEnemy() {
 
     if (originalHead->getInvisibilityTimeout() == 0 &&
         originalHead->checkCollisionsWith(this)) {
-      originalHead->handleHit(this->field_A4, 1);
+      originalHead->handleHit(this->playerId, 1);
 
       void* mem = std::malloc(0x2344);
       std::memset(mem, 0, 0x2344);

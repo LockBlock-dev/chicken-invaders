@@ -18,8 +18,8 @@ class WaveController : public UveDX::UveListOwner,
   unsigned int getCurrentSystem() const;
   bool getHasSpawnedGiftThisWave() const;
   void setHasSpawnedGiftThisWave(bool value);
-  int field_30;
-  int field_34;
+  int waveMinX;
+  int waveMaxX;
   BoundaryBouncer boundaryBouncer;
 
  private:

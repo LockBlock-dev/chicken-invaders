@@ -45,5 +45,5 @@ class GameController : public UveDX::UveListOwner, public StateBase<GameState> {
   std::array<std::string, 5> highscorePseudos;
   std::array<int, 5> highscores;
   std::array<int, 2> playerScores;
-  int field_98;
+  unsigned int frameCounter;
 };

@@ -25,13 +25,13 @@ Smoke::Smoke(
     int v10 = 9 * i;
     *(double*)(&this->field_1C + v10) = (double)x;
     *(double*)(&this->field_24 + v10) = (double)y;
-    int v16 = generate_random_number() % a8 - a8 / 2;
+    int v16 = random_range(0, a8) - a8 / 2;
     int v11 = v16 + a7 + (v16 + a7 < 0 ? 256 : 0);
 
     if (v11 > 255)
       v11 -= 256;
 
-    int v12 = a6 == 1 ? 0 : generate_random_number() % (a6 - 1);
+    int v12 = a6 == 1 ? 0 : random_range<int>(0, a6 - 1);
 
     int v13 = v12 + 1;
 

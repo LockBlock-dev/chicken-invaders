@@ -5,12 +5,17 @@
 
 class Asteroid : public Enemy {
  public:
+  enum class AsteroidType {
+    Rock = 2,
+    Fire = 3,
+  };
+
   Asteroid(
       UveDX::UveDX* uveDX,
       double x,
       double y,
-      int face,
-      int type,
+      unsigned int face,
+      AsteroidType type,
       bool size,
       unsigned int minspeed,
       unsigned int maxspeed
@@ -21,12 +26,12 @@ class Asteroid : public Enemy {
   void handleHitPlayer(unsigned int playerId) override;
 
  private:
-  double x_coord;
-  double y_coord;
-  int face;
+  double positionX;
+  double positionY;
+  unsigned int face;
   unsigned int speed;
-  double dx;
-  double dy;
-  int type;
-  bool size;
+  double velocityX;
+  double velocityY;
+  AsteroidType type;
+  bool isSmall;
 };

@@ -9,9 +9,9 @@ class Missile : public UveDX::Sprite {
   void update() override;
 
  private:
-  double field_94;
-  double field_9C;
-  double field_A4;
-  int playerId;
-  int field_B0;
+  double positionX;
+  double positionY;
+  double velocity;
+  unsigned int playerId;
+  unsigned int angleToTarget;
 };

@@ -12,10 +12,10 @@ class Boss : public Enemy {
   void handleHitPlayer(unsigned int playerId) override;
 
  private:
-  double x_coord;
-  double y_coord;
-  unsigned int field_AC;
+  double x;
+  double y;
+  unsigned int movementPatternIndex;
   int angle;
-  int field_B4;
+  unsigned int currentTargetStep;
   BoundaryBouncer boundaryBouncer;
 };

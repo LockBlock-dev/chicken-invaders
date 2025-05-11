@@ -734,7 +734,7 @@ void Game::playIntro() {
 
   auto background = new Background{this->uveDX};
   this->uveDX->add(background);
-  background->setScrollSpeed(1);
+  background->setTargetScrollSpeed(1);
 
   this->uveDX->add(
       new DelaySprite{this->uveDX, 320, 240, this->surface_earth, 0, 905}
@@ -804,7 +804,7 @@ void Game::playIntro() {
               break;
 
             if (++k >= 230) {
-              background->setScrollSpeed(4);
+              background->setTargetScrollSpeed(4);
 
               this->uveDX->add(new UveDX::Sprite{
                   this->uveDX, 340, 240, this->surface_chain_burger->getSurf(0)
@@ -830,7 +830,7 @@ void Game::playIntro() {
                 if (m > 0) {
                   this->uveDX->yOffset = 0;
 
-                  background->setScrollSpeed(0);
+                  background->setTargetScrollSpeed(0);
 
                   int n = 0;
 

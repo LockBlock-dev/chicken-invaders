@@ -35,7 +35,7 @@ Font::Font(UveDX* uveDX, const std::string& filename)
   if (loadedCharsCount > 0) {
     this->averageCharHeight /= loadedCharsCount;
     this->averageCharWidth /= loadedCharsCount;
-    this->spaceWidth = static_cast<int>(this->averageCharWidth * 0.75);
+    this->spaceWidth = static_cast<unsigned int>(this->averageCharWidth * 0.75);
   }
 }
 
@@ -71,9 +71,7 @@ void Font::blitText(
     if (c == ' ')
       x += this->spaceWidth;
     else if (c >= 33) {
-      auto surface = this->surfaces.at(c - 33);
-
-      if (surface) {
+      if (auto surface = this->surfaces.at(static_cast<size_t>(c - 33))) {
         surface->blit(x, y, nullptr, 1.0);
 
         x += this->charSpacing + surface->getWidth();
@@ -83,17 +81,14 @@ void Font::blitText(
 }
 
 int Font::calculateTextWidth(const std::string& text) {
-  int totalWidth = -this->charSpacing;
+  int totalWidth = -static_cast<int>(this->charSpacing);
 
   for (char c : text) {
     if (c == ' ')
       totalWidth += this->spaceWidth;
-    else if (c >= 33) {
-      auto surface = this->surfaces.at(c - 33);
-
-      if (surface)
+    else if (c >= 33)
+      if (auto surface = this->surfaces.at(static_cast<size_t>(c - 33)))
         totalWidth += this->charSpacing + surface->getWidth();
-    }
   }
 
   return totalWidth;

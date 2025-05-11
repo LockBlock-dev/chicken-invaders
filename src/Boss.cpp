@@ -1,5 +1,6 @@
 #include "Boss.hpp"
 
+#include <array>
 #include <cmath>
 #include <cstring>
 
@@ -14,82 +15,94 @@
 #include "rng.hpp"
 #include "trigonometry.hpp"
 
-int dword_44D33C[25] = {320, 540, 100, 440, 200, 320, 540, 100,
-                        320, 320, 320, 320, 540, 100, 320, 320,
-                        100, 100, 540, 100, 200, 320, 440, 540};
+const std::array<unsigned int, 25> bossTargetPositionsX{
+    320, 540, 100, 440, 200, 320, 540, 100, 320, 320, 320, 540, 320,
+    100, 320, 320, 100, 100, 540, 540, 100, 200, 320, 440, 540,
+};
 
-int dword_44D3A0[25] = {200, 200, 200, 400, 100, 250, 400, 250,
-                        100, 200, 100, 400, 100, 400, 100, 400,
-                        100, 400, 100, 400, 100, 400, 100, 400};
+const std::array<unsigned int, 25> bossTargetPositionsY{
+    200, 200, 200, 200, 200, 200, 200, 200, 200, 400, 100, 250, 400,
+    250, 100, 200, 100, 400, 100, 400, 100, 400, 100, 400, 100,
+};
 
-Boss::Boss(UveDX::UveDX* uveDX, unsigned int a3)
+Boss::Boss(UveDX::UveDX* uveDX, unsigned int movementPatternIndex)
     : Enemy(
           uveDX,
           0,
           0,
           global::game->surface_chain_chicken_boss->getSurf(0),
           0,
-          10 * global::game->gameController->getWaveController()
-                      ->getCurrentSystem() +
+          static_cast<int>(
+              10 * global::game->gameController->getWaveController()
+                       ->getCurrentSystem() +
               40
+          )
       ),
-      x_coord(static_cast<double>(generate_random_number() % 640)),
-      y_coord(-100.0),
-      field_AC(a3),
+      x(static_cast<double>(random_range(0, 640))),
+      y(-100.0),
+      movementPatternIndex(movementPatternIndex),
       angle(128),
-      field_B4(0),
+      currentTargetStep(0),
       boundaryBouncer(0, 9) {
-  this->sprite_x = static_cast<int>(this->x_coord);
-  this->sprite_y = static_cast<int>(this->y_coord);
+  this->sprite_x = static_cast<int>(this->x);
+  this->sprite_y = static_cast<int>(this->y);
 }
 
 void Boss::update() {
-  double v12 =
-      this->x_coord - (double)dword_44D33C[5 * this->field_AC + this->field_B4];
-  double v14 =
-      this->y_coord - (double)dword_44D3A0[5 * this->field_AC + this->field_B4];
+  double deltaXToTarget =
+      this->x - static_cast<double>(bossTargetPositionsX.at(
+                    5 * this->movementPatternIndex + this->currentTargetStep
+                ));
+  double deltaYToTarget =
+      this->y - static_cast<double>(bossTargetPositionsY.at(
+                    5 * this->movementPatternIndex + this->currentTargetStep
+                ));
 
-  int v3 = static_cast<int>(calculate_angle(-v12, -v14));
-  int v4 = v3;
-  int v5 = this->angle;
+  unsigned int targetAngle = calculate_angle(-deltaXToTarget, -deltaYToTarget);
+  int adjustedTargetAngle = targetAngle;
+  int currentAngle = this->angle;
 
-  if (v5 - v3 > 128)
-    v4 = v3 + 256;
+  if (currentAngle - targetAngle > 128)
+    adjustedTargetAngle = targetAngle + 256;
 
-  if (v5 - v4 < -128)
-    v4 -= 256;
+  if (currentAngle - adjustedTargetAngle < -128)
+    adjustedTargetAngle -= 256;
 
-  this->angle = static_cast<int>((double)v5 * 0.9 + (double)v4 * 0.1);
+  this->angle =
+      static_cast<int>(currentAngle * 0.9 + adjustedTargetAngle * 0.1);
 
   this->angle = (this->angle + 256) % 256;
 
-  this->x_coord = global::dcos[this->angle] * 5.0 + this->x_coord;
-  this->y_coord = global::dsin[this->angle] * 5.0 + this->y_coord;
+  this->x =
+      global::dcos.at(static_cast<unsigned int>(this->angle)) * 5.0 + this->x;
+  this->y =
+      global::dsin.at(static_cast<unsigned int>(this->angle)) * 5.0 + this->y;
 
-  if (std::fabs(v14) + std::fabs(v12) < 25.0 && ++this->field_B4 > 4)
-    this->field_B4 = 0;
+  if (std::fabs(deltaYToTarget) + std::fabs(deltaXToTarget) < 25.0 &&
+      ++this->currentTargetStep > 4)
+    this->currentTargetStep = 0;
 
   this->boundaryBouncer.update();
 
   this->surface = global::game->surface_chain_chicken_boss->getSurf(
-      this->boundaryBouncer.currentSurfaceIndex
+      static_cast<unsigned int>(this->boundaryBouncer.currentSurfaceIndex)
   );
-  this->sprite_x = static_cast<int>(this->x_coord);
-  this->sprite_y = static_cast<int>(this->y_coord);
+  this->sprite_x = static_cast<int>(this->x);
+  this->sprite_y = static_cast<int>(this->y);
 
   UveDX::Sprite::update();
 
-  if (generate_random_number() % 10 == 0) {
+  if (random_range(0, 10) == 0) {
     unsigned int currentSystem =
         global::game->gameController->getWaveController()->getCurrentSystem();
 
-    int v8 = currentSystem + 5 == 0
-                 ? 0
-                 : generate_random_number() % (currentSystem + 5);
+    unsigned int eggSpeed =
+        (currentSystem + 5 == 0 ? 0 : random_range(0u, (currentSystem + 5))) +
+        2;
 
     global::game->gameController->egg_list->add(new Egg{
-        this->uveDX, this->sprite_x + generate_random_number() % 100 - 50,
-        this->sprite_y + generate_random_number() % 50, v8 + 2
+        this->uveDX, this->sprite_x + random_range(-50, 50),
+        this->sprite_y + random_range(0, 50), eggSpeed
     });
 
     global::game->playSound(global::game->sound_fx110, this->sprite_x);
@@ -108,37 +121,34 @@ void Boss::handleHit(unsigned int playerId, int damages) {
     if (player)
       player->increaseScoreBy(250);
 
-    if (global::game->gameController->getGraphicsQuality()) {
-      for (size_t i = 0; i < 2; ++i) {
+    if (global::game->gameController->getGraphicsQuality())
+      for (size_t i = 0; i < 2; ++i)
         global::game->gameController->feather_list->add(new Feather{
-            this->uveDX, (double)this->sprite_x, (double)this->sprite_y
+            this->uveDX, static_cast<double>(this->sprite_x),
+            static_cast<double>(this->sprite_y)
         });
-      }
-    }
 
     if (this->health <= 0) {
       if (global::game->sound_fx113->uveDX->soundEnabled)
         global::game->sound_fx113->play();
 
-      global::game->gameController->background->setField20(20);
+      global::game->gameController->background->setShakeOffset(20);
 
-      for (size_t j = 0; j < 20; ++j) {
+      for (size_t i = 0; i < 20; ++i)
         global::game->gameController->chicken_leg_list->add(new ChickenLeg{
             this->uveDX,
-            (double)(this->sprite_x + generate_random_number() % 100 - 32),
-            (double)(this->sprite_y + generate_random_number() % 100 - 50)
+            static_cast<double>(this->sprite_x + random_range(-32, 68)),
+            static_cast<double>(this->sprite_y + random_range(-50, 50))
         });
-      }
 
-      for (size_t k = 0; k < 10; ++k) {
+      for (size_t i = 0; i < 10; ++i) {
         void* memSmoke = std::malloc(0x2344);
         std::memset(memSmoke, 0, 0x2344);
 
         global::game->gameController->explosion_smoke_list->add(new (memSmoke
         ) Smoke{
-            this->uveDX, this->sprite_x + generate_random_number() % 100 - 50,
-            this->sprite_y + generate_random_number() % 100 - 50, 50, 1024, 0,
-            256, true
+            this->uveDX, this->sprite_x + random_range(-50, 50),
+            this->sprite_y + random_range(-50, 50), 50, 1024, 0, 256, true
         });
 
         void* memExplosion = std::malloc(0x2344);
@@ -152,18 +162,18 @@ void Boss::handleHit(unsigned int playerId, int damages) {
       }
 
       if (player)
-        player->increaseScoreBy(
+        player->increaseScoreBy(static_cast<int>(
             1000 * global::game->gameController->getWaveController()
                        ->getCurrentSystem() +
             10000
-        );
+        ));
 
       this->hasBeenDisposed = true;
 
       auto waveController = global::game->gameController->getWaveController();
 
       if (!waveController->getHasSpawnedGiftThisWave() &&
-          generate_random_number() % 5 == 0) {
+          random_range(0, 5) == 0) {
         global::game->gameController->bonus_list->add(
             new Bonus{this->uveDX, this->sprite_x, this->sprite_y}
         );
@@ -171,13 +181,12 @@ void Boss::handleHit(unsigned int playerId, int damages) {
         waveController->setHasSpawnedGiftThisWave(true);
       }
 
-      if (global::game->gameController->getGraphicsQuality()) {
-        for (size_t m = 0; m < 20; ++m) {
+      if (global::game->gameController->getGraphicsQuality())
+        for (size_t i = 0; i < 20; ++i)
           global::game->gameController->feather_list->add(new Feather{
-              this->uveDX, (double)this->sprite_x, (double)this->sprite_y
+              this->uveDX, static_cast<double>(this->sprite_x),
+              static_cast<double>(this->sprite_y)
           });
-        }
-      }
     }
   }
 }

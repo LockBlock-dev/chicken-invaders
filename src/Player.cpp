@@ -161,26 +161,29 @@ void Player::update() {
     this->sprite_x = (this->x_coord + this->sprite_x) / 2;
     this->sprite_y = (this->y_coord + this->sprite_y) / 2;
 
-    int v40 = 4 - this->spaceshipAngle;
-    int v41 = (v40 < 0) ? (v40 - 1) / 2 : v40 / 2;
+    int angleAdjustment = 4 - this->spaceshipAngle;
+    int exhaustOffset =
+        (angleAdjustment < 0) ? (angleAdjustment - 1) / 2 : angleAdjustment / 2;
 
-    v41 /= 2;
+    exhaustOffset /= 2;
 
-    if (v41 < 0)
-      ++v41;
+    if (exhaustOffset < 0)
+      ++exhaustOffset;
 
-    int v57 = this->sprite_y + 12;
-    int v54 = this->sprite_x - (10 - v41);
+    int exhaustPositionY = this->sprite_y + 12;
+    int exhaustLeftPositionX = this->sprite_x - (10 - exhaustOffset);
 
     auto exhaust_surface = global::game->surface_chain_exhaust->getSurf(
         this->uveDX->totalFramesRendered % 2 + 2 * this->playerId
     );
 
-    exhaust_surface->blit(v54, v57, nullptr, 1.0);
+    exhaust_surface->blit(exhaustLeftPositionX, exhaustPositionY, nullptr, 1.0);
 
-    int v55 = this->sprite_x + 10 - v41;
+    int exhaustRightPositionX = this->sprite_x + 10 - exhaustOffset;
 
-    exhaust_surface->blit(v55, v57, nullptr, 1.0);
+    exhaust_surface->blit(
+        exhaustRightPositionX, exhaustPositionY, nullptr, 1.0
+    );
 
     if (this->shieldTimeout > 0) {
       --this->shieldTimeout;
@@ -235,10 +238,10 @@ void Player::update() {
 }
 
 void Player::drawInterface() {
-  int v1 = 10;
+  int missileOffsetDirection = 10;
 
   if (this->playerId > 0)
-    v1 = -10;
+    missileOffsetDirection = -10;
 
   for (size_t i = 0; i < this->lives; ++i)
     global::game->surface_heart->blit(
@@ -247,7 +250,8 @@ void Player::drawInterface() {
 
   for (size_t j = 0; j < this->missilesCount; ++j)
     global::game->surface_chain_missile->getSurf(0)->blit(
-        j * v1 + 620 * this->playerId + 10, 460, nullptr, 1.0
+        j * missileOffsetDirection + 620 * this->playerId + 10, 460, nullptr,
+        1.0
     );
 
   if (this->playerId > 0)
@@ -335,12 +339,12 @@ void Player::handleHit() {
       this->uveDX, this->sprite_x, this->sprite_y, 100, 768, 0, 256, true
   });
 
-  int random_number = generate_random_number();
+  unsigned int random_number = random_range(0u, 3u);
 
-  if (random_number % 3 != 0) {
-    if (random_number % 3 == 1)
+  if (random_number != 0) {
+    if (random_number == 1)
       global::game->messenger->showPrimaryMessage("doh!", 0, 50, 0);
-    else if (random_number % 3 == 2)
+    else if (random_number == 2)
       global::game->messenger->showPrimaryMessage("ouch!", 0, 50, 0);
   } else
     global::game->messenger->showPrimaryMessage("oops!", 0, 50, 0);
@@ -353,7 +357,7 @@ void Player::handleHit() {
   this->invisibilityTimeout = 50;
   this->shieldTimeout = 50;
 
-  global::game->gameController->background->setField20(10);
+  global::game->gameController->background->setShakeOffset(10);
 }
 
 void Player::handleHitByEnemy() {

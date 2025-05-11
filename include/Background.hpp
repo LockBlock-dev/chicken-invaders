@@ -7,12 +7,12 @@ class Background : public UveDX::UveBase {
   Background(UveDX::UveDX* uveDX);
 
   void update() override;
-  void setScrollSpeed(int speed);
-  void setField20(int value);
+  void setTargetScrollSpeed(int speed);
+  void setShakeOffset(int value);
 
  private:
-  int field_14;
-  int scrollSpeed;
-  int field_1C;
-  int field_20;
+  int currentScrollSpeed;
+  int targetScrollSpeed;
+  int scrollOffset;
+  int shakeOffset;
 };

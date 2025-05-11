@@ -8,17 +8,17 @@ class DelayText : public UveDX::UveBase {
  public:
   DelayText(
       UveDX::UveDX* uveDX,
-      int a2,
+      int y,
       const std::string& text,
-      int a4,
-      int a5
+      int delayBeforeDisplay,
+      int displayDuration
   );
 
   void update() override;
 
  private:
   const std::string text;
-  int dstY;
+  int y;
   int delayBeforeDisplay;
   int displayDuration;
 };

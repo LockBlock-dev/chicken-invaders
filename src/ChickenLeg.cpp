@@ -13,46 +13,47 @@ ChickenLeg::ChickenLeg(UveDX::UveDX* uveDX, double x, double y)
           static_cast<int>(y),
           global::game->surface_chain_chicken_leg->getSurf(0)
       ),
-      double94(x),
-      double9C(y),
-      intB4(generate_random_number() % 256),
-      intB8(generate_random_number() % 64 - 32),
-      intBC(0) {
-  int v4 = generate_random_number() % 256;
-  int v5 = generate_random_number() % 10;
+      x(x),
+      y(y),
+      animationFrame(random_range(0, 256)),
+      rotationSpeed(random_range(-32, 32)),
+      disposeCountdown(0) {
+  unsigned int angle = random_range(0u, 256u);
+  unsigned int initialSpeed = random_range(0u, 10u);
 
-  this->doubleA4 = (double)v5 * global::dcos[v4];
-  this->doubleAC = (double)v5 * global::dsin[v4];
+  this->velocityX = initialSpeed * global::dcos[angle];
+  this->velocityY = initialSpeed * global::dsin[angle];
 }
 
 void ChickenLeg::update() {
-  if (this->intBC > 0 && !--this->intBC)
+  if (this->disposeCountdown > 0 && --this->disposeCountdown == 0)
     this->hasBeenDisposed = true;
 
-  this->double94 = this->doubleA4 + this->double94;
-  this->double9C = this->doubleAC + this->double9C;
+  this->x += this->velocityX;
+  this->y += this->velocityY;
 
-  if (this->double9C <= 460.0)
-    this->doubleAC = this->doubleAC + 0.5;
-  else if (std::fabs(this->doubleAC) >= 1.0)
-    this->doubleAC = -std::fabs(this->doubleAC * 0.5);
+  if (this->y <= 460.0)
+    this->velocityY += 0.5;
+  else if (std::fabs(this->velocityY) >= 1.0)
+    this->velocityY = -std::fabs(this->velocityY * 0.5);
   else {
-    this->doubleAC = 0.0;
-    this->doubleA4 = 0.0;
-    this->intB8 = 0;
+    this->velocityY = 0.0;
+    this->velocityX = 0.0;
+    this->rotationSpeed = 0;
 
-    if (!this->intBC)
-      this->intBC = generate_random_number() % 50 + 10;
+    if (this->disposeCountdown == 0)
+      this->disposeCountdown = static_cast<int>(random_range(10, 60));
   }
 
-  this->intB4 += this->intB8;
+  this->animationFrame += this->rotationSpeed;
 
-  this->intB4 = (this->intB4 + 256) % 256;
+  this->animationFrame = (this->animationFrame + 256) % 256;
 
-  this->sprite_x = static_cast<int>(this->double94);
-  this->sprite_y = static_cast<int>(this->double9C);
-  this->surface =
-      global::game->surface_chain_chicken_leg->getSurf(this->intB4 / 8);
+  this->sprite_x = static_cast<int>(this->x);
+  this->sprite_y = static_cast<int>(this->y);
+  this->surface = global::game->surface_chain_chicken_leg->getSurf(
+      this->animationFrame / 8
+  );
 
   UveDX::Sprite::update();
 }

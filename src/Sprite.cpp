@@ -17,7 +17,7 @@ void Sprite::update() {
   if (this->surface && !this->isHidden) {
     int x = 0;
     int y = 0;
-    bool v3 = false;
+    bool isSurfaceVisible = false;
 
     if (this->isAbsolutePosition)
       x = this->sprite_x;
@@ -30,41 +30,52 @@ void Sprite::update() {
       y = this->sprite_y - this->uveDX->yOffset;
 
     if (this->surface) {
-      int v4 = 0;
+      int adjustedSpriteX = 0;
 
       if (this->isAbsolutePosition)
-        v4 = this->sprite_x;
+        adjustedSpriteX = this->sprite_x;
       else
-        v4 = this->sprite_x - this->uveDX->xOffset;
+        adjustedSpriteX = this->sprite_x - this->uveDX->xOffset;
 
-      int v5 = v4 - this->surface->getOffsetX();
-      v3 = true;
+      int relativePositionX = adjustedSpriteX - this->surface->getOffsetX();
+      isSurfaceVisible = true;
 
-      if (v5 < 0 || v5 >= static_cast<int>(this->uveDX->width)) {
-        int v6 = v5 + this->surface->getWidth();
+      if (relativePositionX < 0 ||
+          relativePositionX >= static_cast<int>(this->uveDX->width)) {
+        int adjustedSurfaceRightX =
+            relativePositionX + this->surface->getWidth();
 
-        if (v6 < 0 || v6 >= static_cast<int>(this->uveDX->width))
-          v3 = false;
+        if (adjustedSurfaceRightX < 0 ||
+            adjustedSurfaceRightX >= static_cast<int>(this->uveDX->width))
+          isSurfaceVisible = false;
       }
     }
 
-    if (v3) {
-      bool v7 = false;
+    if (isSurfaceVisible) {
+      bool shouldRender = false;
 
       if (this->surface) {
-        int v9 = 0;
+        int y_coord = this->isAbsolutePosition
+                          ? this->sprite_y
+                          : this->sprite_y - this->uveDX->yOffset;
 
-        int v8 = this->isAbsolutePosition
-                     ? this->sprite_y
-                     : this->sprite_y - this->uveDX->yOffset;
-        v7 =
-            ((v9 = v8 - this->surface->getOffsetY(), v9 >= 0) &&
-             v9 < static_cast<int>(this->uveDX->height)) ||
-            (v9 + surface->getHeight() >= 0 &&
-             surface->getHeight() + v9 < static_cast<int>(this->uveDX->height));
+        int surfaceHeight = static_cast<int>(this->surface->getHeight());
+        int screenHeight = static_cast<int>(this->uveDX->getHeight());
+
+        int surfaceTop =
+            y_coord - static_cast<int>(this->surface->getOffsetY());
+        int surfaceBottom = surfaceTop + surfaceHeight;
+
+        bool overlapsTop = surfaceTop >= 0 && surfaceTop < screenHeight;
+        bool overlapsBottom =
+            surfaceBottom >= 0 && surfaceBottom < screenHeight;
+
+        shouldRender = overlapsTop || overlapsBottom;
       }
 
-      if (v7) {
+      shouldRender = true;
+
+      if (shouldRender) {
         this->surface->blit(x, y, nullptr, this->size);
 
         if (this->uveDX->debugMode ==
@@ -87,44 +98,42 @@ void Sprite::update() {
 }
 
 bool Sprite::checkCollisionsWith(Sprite* other) const {
-  int v4 = this->surface->getWidth() / 2;
-  int v17 = v4 + this->sprite_x - this->surface->getOffsetX();
-  int v18 =
-      this->surface->getHeight() / 2 + sprite_y - this->surface->getOffsetY();
-  int v15 = (int)((long double)v4 * this->surface->getScaleFactor());
-  int v16 = (int)((long double)(this->surface->getHeight() / 2) *
-                  this->surface->getScaleFactor());
-  int v13 = other->surface->getWidth() / 2 + other->sprite_x -
-            other->surface->getOffsetX();
-  int v14 = other->surface->getHeight() / 2 + other->sprite_y -
-            other->surface->getOffsetY();
-  int v11 = (int)((long double)(other->surface->getWidth() / 2) *
-                  other->surface->getScaleFactor());
-  int v12 = (int)((long double)(other->surface->getHeight() / 2) *
-                  other->surface->getScaleFactor());
+  int halfWidth = this->surface->getWidth() / 2;
+  int halfHeight = this->surface->getHeight() / 2;
+  int centerX = halfWidth + this->sprite_x - this->surface->getOffsetX();
+  int centerY = halfHeight + sprite_y - this->surface->getOffsetY();
+  int scaledHalfWidth =
+      (int)((long double)halfWidth * this->surface->getScaleFactor());
+  int scaledHalfHeight =
+      (int)((long double)halfHeight * this->surface->getScaleFactor());
+  int otherCenterX = other->surface->getWidth() / 2 + other->sprite_x -
+                     other->surface->getOffsetX();
+  int otherCenterY = other->surface->getHeight() / 2 + other->sprite_y -
+                     other->surface->getOffsetY();
+  int otherScaledHalfWidth =
+      (int)((long double)(other->surface->getWidth() / 2) *
+            other->surface->getScaleFactor());
+  int otherScaledHalfHeight =
+      (int)((long double)(other->surface->getHeight() / 2) *
+            other->surface->getScaleFactor());
 
-  if ((int)(v15 + v17) < v13 - v11 || v16 + v18 < v14 - v12 ||
-      (int)(v17 - v15) > v11 + v13 || v18 - v16 > v12 + v14)
+  if ((int)(scaledHalfWidth + centerX) < otherCenterX - otherScaledHalfWidth ||
+      scaledHalfHeight + centerY < otherCenterY - otherScaledHalfHeight ||
+      (int)(centerX - scaledHalfWidth) > otherScaledHalfWidth + otherCenterX ||
+      centerY - scaledHalfHeight > otherScaledHalfHeight + otherCenterY)
     return false;
 
-  int* v8;
+  int thisScaledMaxRadius =
+      scaledHalfWidth <= scaledHalfHeight ? scaledHalfHeight : scaledHalfWidth;
 
-  if (v15 <= v16)
-    v8 = &v16;
-  else
-    v8 = &v15;
+  int otherScaledMaxRadius = otherScaledHalfWidth <= otherScaledHalfHeight
+                                 ? otherScaledHalfHeight
+                                 : otherScaledHalfWidth;
 
-  int v9 = *v8;
-
-  int* v10;
-
-  if (v11 <= v12)
-    v10 = &v12;
-  else
-    v10 = &v11;
-
-  return ((v18 - v14) * (v18 - v14) + (v17 - v13) * (v17 - v13)) <
-         (*v10 + v9) * (*v10 + v9);
+  return ((centerY - otherCenterY) * (centerY - otherCenterY) +
+          (centerX - otherCenterX) * (centerX - otherCenterX)) <
+         (otherScaledMaxRadius + thisScaledMaxRadius) *
+             (otherScaledMaxRadius + thisScaledMaxRadius);
 }
 
 void Sprite::setSurface(Surface* surface) {

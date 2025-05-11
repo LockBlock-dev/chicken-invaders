@@ -16,9 +16,9 @@ class Bullet : public UveDX::Sprite {
   void handleHitEnemy();
 
  private:
-  double field_94;
-  double field_9C;
-  int field_A4;
-  int field_A8;
+  double x;
+  double y;
+  unsigned int playerId;
+  int travelDistance;
   unsigned int angle;
 };

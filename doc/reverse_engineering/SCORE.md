@@ -4,9 +4,9 @@ The game awards points for various in-game actions. Below are the scoring rules 
 
 ## Asteroid destroyed
 
-Formula: `100 * (dx + dy) + 300`
+Formula: `100 * (velocityX + velocityY) + 300`
 
-Points are awarded based on the asteroid's horizontal (`dx`) and vertical (`dy`) velocity, scaled by 100, with an additional base value of 300 points.
+Points are awarded based on the asteroid's horizontal and vertical velocity, scaled by 100, with an additional base value of 300 points.
 
 ## Boss hit
 

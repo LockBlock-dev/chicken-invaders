@@ -7,60 +7,63 @@
 
 Background::Background(UveDX::UveDX* uveDX)
     : UveDX::UveBase(uveDX),
-      field_14(-1),
-      scrollSpeed(-1),
-      field_1C(0),
-      field_20(0) {}
+      currentScrollSpeed(-1),
+      targetScrollSpeed(-1),
+      scrollOffset(0),
+      shakeOffset(0) {}
 
 void Background::update() {
-  if (this->field_14 < this->scrollSpeed)
-    ++this->field_14;
+  if (this->currentScrollSpeed < this->targetScrollSpeed)
+    ++this->currentScrollSpeed;
 
-  if (this->field_14 > this->scrollSpeed)
-    --this->field_14;
+  if (this->currentScrollSpeed > this->targetScrollSpeed)
+    --this->currentScrollSpeed;
 
-  this->field_1C += this->field_20 + this->field_14;
+  this->scrollOffset += this->shakeOffset + this->currentScrollSpeed;
 
-  int v2 = 0;
+  int tempScrollValue = 0;
 
-  if (this->field_20 <= 0) {
-    v2 = this->field_20;
+  if (this->shakeOffset <= 0) {
+    tempScrollValue = this->shakeOffset;
 
-    if (v2 < 0)
-      this->field_20 = -v2 - 1;
+    if (tempScrollValue < 0)
+      this->shakeOffset = -tempScrollValue - 1;
   } else
-    this->field_20 = 1 - this->field_20;
+    this->shakeOffset = 1 - this->shakeOffset;
 
-  if (this->field_20)
-    this->uveDX->yOffset = -this->field_20;
+  if (this->shakeOffset != 0)
+    this->uveDX->yOffset = -this->shakeOffset;
 
-  this->field_1C = (this->field_1C + 480) % 480;
+  this->scrollOffset = (this->scrollOffset + 480) % 480;
 
   sf::IntRect rect{
-      sf::Vector2i{0, this->field_1C},
+      sf::Vector2i{0, this->scrollOffset},
       sf::Vector2i{
-          global::game->surface_salmonsky->getWidth(),
-          global::game->surface_salmonsky->getHeight() - this->field_1C
+          static_cast<int>(global::game->surface_salmonsky->getWidth()),
+          static_cast<int>(global::game->surface_salmonsky->getHeight()) -
+              this->scrollOffset
       }
   };
 
   global::game->surface_salmonsky->blit(0, 0, &rect, 1.0);
 
-  if (this->field_1C > 0) {
+  if (this->scrollOffset > 0) {
     rect.position.y = 0;
-    rect.size.y = this->field_1C;
+    rect.size.y = this->scrollOffset;
 
     global::game->surface_salmonsky->blit(
-        0, global::game->surface_salmonsky->getHeight() - this->field_1C, &rect,
-        1.0
+        0,
+        static_cast<int>(global::game->surface_salmonsky->getHeight()) -
+            this->scrollOffset,
+        &rect, 1.0
     );
   }
 }
 
-void Background::setScrollSpeed(int speed) {
-  this->scrollSpeed = speed;
+void Background::setTargetScrollSpeed(int speed) {
+  this->targetScrollSpeed = speed;
 }
 
-void Background::setField20(int value) {
-  this->field_20 = value;
+void Background::setShakeOffset(int value) {
+  this->shakeOffset = value;
 }

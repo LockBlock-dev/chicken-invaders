@@ -28,124 +28,126 @@ Chicken::Chicken(
           global::game->gameController->getWaveController()->getCurrentSystem(
           ) + 1
       ),
-      xCoordBase(x),
-      yCoordBase(y),
-      x_coord(x),
-      y_coord(y),
-      field_AC(generate_random_number() % 256),
-      field_B0(generate_random_number() % 256),
-      field_B4(generate_random_number() % 200 + 100),
+      targetX(x),
+      targetY(y),
+      prevX(x),
+      prevY(y),
+      angleX(random_range(0u, 256u)),
+      angleY(random_range(0u, 256u)),
+      motionRadius(random_range(100, 300)),
       chickenFlyType(chickenFlyType),
       chickenType(chickenType),
       boundaryBouncer(0, this->chickenType == 3 ? 7 : 9) {
   if (this->chickenFlyType == 5) {
-    this->sprite_x = this->xCoordBase;
-    this->sprite_y = this->yCoordBase;
-    this->field_B4 =
+    this->sprite_x = this->targetX;
+    this->sprite_y = this->targetY;
+    this->motionRadius =
         global::game->gameController->getWaveController()->getCurrentSystem() +
         5;
-    this->field_AC = 112;
+    this->angleX = 112;
   }
   if (this->chickenFlyType == 6) {
-    this->sprite_x = this->xCoordBase;
-    this->sprite_y = this->yCoordBase;
-    this->field_B4 =
+    this->sprite_x = this->targetX;
+    this->sprite_y = this->targetY;
+    this->motionRadius =
         global::game->gameController->getWaveController()->getCurrentSystem() +
         5;
-    this->field_AC = 144;
+    this->angleX = 144;
   }
 }
 
 void Chicken::update() {
-  int v1 = 0;
+  unsigned int spriteAngle = 0;
 
   if (this->invisibilityTimeout <= 0) {
-    this->x_coord = this->sprite_x;
-    this->y_coord = this->sprite_y;
+    this->prevX = this->sprite_x;
+    this->prevY = this->sprite_y;
 
     if (this->chickenFlyType == 1) {
-      int v2 = global::game->gameController->getWaveController()->field_30;
+      int minXBoundary =
+          global::game->gameController->getWaveController()->waveMinX;
 
-      if (v2 >= this->xCoordBase)
-        v2 = this->xCoordBase;
+      if (minXBoundary >= this->targetX)
+        minXBoundary = this->targetX;
 
-      int v3 = v2;
+      global::game->gameController->getWaveController()->waveMinX =
+          minXBoundary;
 
-      int v4 = global::game->gameController->getWaveController()->field_34;
+      int maxXBoundary =
+          global::game->gameController->getWaveController()->waveMaxX;
 
-      global::game->gameController->getWaveController()->field_30 = v3;
+      if (maxXBoundary <= this->targetX)
+        maxXBoundary = this->targetX;
 
-      if (v4 <= this->xCoordBase)
-        v4 = this->xCoordBase;
-
-      global::game->gameController->getWaveController()->field_34 = v4;
+      global::game->gameController->getWaveController()->waveMaxX =
+          maxXBoundary;
 
       this->sprite_x = (global::game->gameController->getWaveController()
                             ->boundaryBouncer.currentSurfaceIndex +
-                        this->xCoordBase + this->sprite_x) /
+                        this->targetX + this->sprite_x) /
                        2;
-      this->sprite_y = (this->yCoordBase + this->sprite_y) / 2;
+      this->sprite_y = (this->targetY + this->sprite_y) / 2;
 
-      v1 = 128;
+      spriteAngle = 128;
     }
 
     if (this->chickenFlyType == 2) {
-      this->field_AC = (this->field_AC + 1 + 256) % 256;
-      this->field_B0 = (this->field_B0 + 1 + 256) % 256;
+      this->angleX = (this->angleX + 1 + 256) % 256;
+      this->angleY = (this->angleY + 1 + 256) % 256;
 
-      this->xCoordBase = (int)(global::dcos[this->field_AC] * 300.0 + 320.0);
-      this->yCoordBase = (int)(global::dsin[this->field_B0] * 160.0 + 200.0);
+      this->targetX = (int)(global::dcos[this->angleX] * 300.0 + 320.0);
+      this->targetY = (int)(global::dsin[this->angleY] * 160.0 + 200.0);
 
-      this->sprite_x = (this->xCoordBase + this->sprite_x) / 2;
-      this->sprite_y = (this->yCoordBase + this->sprite_y) / 2;
+      this->sprite_x = (this->targetX + this->sprite_x) / 2;
+      this->sprite_y = (this->targetY + this->sprite_y) / 2;
 
-      v1 = static_cast<int>(calculate_angle(
-          (double)(this->xCoordBase - this->x_coord),
-          (double)(this->yCoordBase - this->y_coord)
-      ));
+      spriteAngle = calculate_angle(
+          static_cast<double>(this->targetX - this->prevX),
+          static_cast<double>(this->targetY - this->prevY)
+      );
     }
 
     if (this->chickenFlyType == 3) {
-      this->field_AC = (this->field_AC + 1 + 256) % 256;
+      this->angleX = (this->angleX + 1 + 256) % 256;
 
-      this->xCoordBase = (int)(global::dcos[this->field_AC] * 300.0 + 320.0);
+      this->targetX = (int)(global::dcos[this->angleX] * 300.0 + 320.0);
 
-      ++this->yCoordBase;
+      ++this->targetY;
 
-      this->sprite_x = (this->xCoordBase + this->sprite_x) / 2;
-      this->sprite_y = (this->yCoordBase + this->sprite_y) / 2;
+      this->sprite_x = (this->targetX + this->sprite_x) / 2;
+      this->sprite_y = (this->targetY + this->sprite_y) / 2;
 
-      v1 = this->field_AC + 64;
+      spriteAngle = this->angleX + 64;
     }
 
     if (this->chickenFlyType == 4) {
-      this->field_AC = (this->field_AC + 1 + 256) % 256;
+      this->angleX = (this->angleX + 1 + 256) % 256;
 
-      this->xCoordBase =
-          (int)((long double)this->field_B4 * global::dcos[this->field_AC] +
+      this->targetX =
+          (int)((long double)this->motionRadius * global::dcos[this->angleX] +
                 320.0);
-      this->yCoordBase = (int)((long double)this->field_B4 *
-                                   global::dsin[this->field_AC] * 0.5 +
-                               200.0);
+      this->targetY = (int)((long double)this->motionRadius *
+                                global::dsin[this->angleX] * 0.5 +
+                            200.0);
 
-      this->sprite_x = (this->xCoordBase + this->sprite_x) / 2;
-      this->sprite_y = (this->yCoordBase + this->sprite_y) / 2;
+      this->sprite_x = (this->targetX + this->sprite_x) / 2;
+      this->sprite_y = (this->targetY + this->sprite_y) / 2;
 
-      v1 = this->field_AC + 64;
+      spriteAngle = this->angleX + 64;
     }
 
     if (this->chickenFlyType == 5 || this->chickenFlyType == 6) {
-      this->xCoordBase =
-          (int)((long double)this->field_B4 * global::dcos[this->field_AC] +
-                (long double)this->xCoordBase);
-      this->yCoordBase =
-          (int)((long double)this->field_B4 * global::dsin[this->field_AC] +
-                (long double)(int)this->yCoordBase);
+      this->targetX =
+          (int)((long double)this->motionRadius * global::dcos[this->angleX] +
+                (long double)this->targetX);
+      this->targetY =
+          (int)((long double)this->motionRadius * global::dsin[this->angleX] +
+                (long double)(int)this->targetY);
 
-      this->sprite_x = (this->xCoordBase + this->sprite_x) / 2;
-      this->sprite_y = (this->yCoordBase + this->sprite_y) / 2;
+      this->sprite_x = (this->targetX + this->sprite_x) / 2;
+      this->sprite_y = (this->targetY + this->sprite_y) / 2;
 
-      v1 = this->field_AC;
+      spriteAngle = this->angleX;
     }
 
     if (this->sprite_y > 500)
@@ -158,28 +160,29 @@ void Chicken::update() {
           this->boundaryBouncer.currentSurfaceIndex
       );
     else if (this->chickenType - 2 == 1) {
-      int v10 = (v1 + 4) / 8 + ((v1 + 4) / 8 < 0 ? 32 : 0);
+      unsigned int animationFrameIndex =
+          // (spriteAngle + 4) / 8 + ((spriteAngle + 4) / 8 < 0 ? 32 : 0);
+          (spriteAngle + 4) / 8;
 
-      if (v10 > 31)
-        v10 -= 32;
+      if (animationFrameIndex > 31)
+        animationFrameIndex -= 32;
 
       this->surface = global::game->surface_chain_chicken_attack->getSurf(
-          this->boundaryBouncer.currentSurfaceIndex + 8 * v10
+          this->boundaryBouncer.currentSurfaceIndex + 8 * animationFrameIndex
       );
     }
 
     UveDX::Sprite::update();
 
-    if (!(generate_random_number() % 500)) {
+    if (!(random_range(0, 500))) {
       auto currentSytem =
           global::game->gameController->getWaveController()->getCurrentSystem();
 
-      int v13 = currentSytem + 5 == 0
-                    ? 0
-                    : generate_random_number() % (currentSytem + 5);
+      unsigned int eggSpeed =
+          (currentSytem + 5 == 0 ? 0 : random_range(0u, currentSytem + 5)) + 2;
 
       global::game->gameController->egg_list->add(
-          new Egg{this->uveDX, this->sprite_x, this->sprite_y, v13 + 2}
+          new Egg{this->uveDX, this->sprite_x, this->sprite_y, eggSpeed}
       );
 
       global::game->playSound(global::game->sound_fx110, this->sprite_x);
@@ -220,7 +223,7 @@ void Chicken::handleHit(unsigned int playerId, int damages) {
       this->hasBeenDisposed = true;
 
       if (!waveController->getHasSpawnedGiftThisWave() &&
-          generate_random_number() % 50 == 0) {
+          random_range(0, 50) == 0) {
         gameController->bonus_list->add(
             new Bonus{this->uveDX, this->sprite_x, this->sprite_y}
         );

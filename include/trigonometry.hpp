@@ -7,4 +7,4 @@ inline std::array<double, 256> dcos{};
 inline std::array<double, 256> dsin{};
 }  // namespace global
 
-[[nodiscard]] double calculate_angle(double x, double y) noexcept;
+[[nodiscard]] unsigned int calculate_angle(double x, double y) noexcept;

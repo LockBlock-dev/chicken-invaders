@@ -20,13 +20,13 @@ class Chicken : public Enemy {
   void handleHitPlayer(unsigned int playerId) override;
 
  private:
-  int xCoordBase;
-  int yCoordBase;
-  int x_coord;
-  int y_coord;
-  int field_AC;
-  int field_B0;
-  int field_B4;
+  int targetX;
+  int targetY;
+  int prevX;
+  int prevY;
+  unsigned int angleX;
+  unsigned int angleY;
+  int motionRadius;
   int chickenFlyType;
   int chickenType;
   BoundaryBouncer boundaryBouncer;

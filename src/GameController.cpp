@@ -28,7 +28,7 @@ GameController::GameController(UveDX::UveDX* uveDX)
       highscorePseudos({}),
       highscores({}),
       playerScores({}),
-      field_98(0) {
+      frameCounter(0) {
   this->callback = [this]() { this->handlePostLevelTransition(); };
 
   this->add(this->background);
@@ -68,7 +68,7 @@ void GameController::update() {
 
   UveListOwner::update();
 
-  ++this->field_98;
+  ++this->frameCounter;
 
   switch (this->previousState) {
     case GameState::Menu: {
@@ -100,7 +100,7 @@ void GameController::update() {
           UveDX::Font::TextAlignment::Center
       );
 
-      if (this->field_98 / 100 % 2) {
+      if (this->frameCounter / 100 % 2) {
         if (this->uveDX->totalFramesRendered / 8 % 2 == 0)
           global::game->font_alphabet_small->blitText(
               320, 250, "press fire to start",
@@ -374,7 +374,7 @@ void GameController::handlePostLevelTransition() {
       for (auto& score : this->playerScores)
         score = 0;
 
-      this->field_98 = 0;
+      this->frameCounter = 0;
 
       break;
     }

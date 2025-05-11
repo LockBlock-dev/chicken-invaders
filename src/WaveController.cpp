@@ -14,8 +14,8 @@
 WaveController::WaveController(UveDX::UveDX* uveDX)
     : UveDX::UveListOwner(uveDX),
       StateBase(LevelState::Default),
-      field_30(640),
-      field_34(0),
+      waveMinX(640),
+      waveMaxX(0),
       boundaryBouncer(0, 80, 0),
       hasSpawnedGiftThisWave(false),
       currentWave(0),
@@ -29,13 +29,13 @@ WaveController::WaveController(UveDX::UveDX* uveDX)
 void WaveController::update() {
   this->processTick();
 
-  this->boundaryBouncer.firstSurfaceIndex = 40 - this->field_30;
-  this->boundaryBouncer.lastSurfaceIndex = 600 - this->field_34;
+  this->boundaryBouncer.firstSurfaceIndex = 40 - this->waveMinX;
+  this->boundaryBouncer.lastSurfaceIndex = 600 - this->waveMaxX;
 
   this->boundaryBouncer.update();
 
-  this->field_30 = 640;
-  this->field_34 = 0;
+  this->waveMinX = 640;
+  this->waveMaxX = 0;
 
   UveListOwner::update();
 
@@ -57,11 +57,10 @@ void WaveController::update() {
 }
 
 void WaveController::handleWave() {
-  int v1 = 2;
-  if (this->currentSystem % 2 != 0)
-    v1 = 3;
+  auto asteroidType = Asteroid::AsteroidType::Rock;
 
-  int v2 = v1;
+  if (this->currentSystem % 2 != 0)
+    asteroidType = Asteroid::AsteroidType::Fire;
 
   switch (this->previousState) {
     case LevelState::NewWave: {
@@ -70,11 +69,10 @@ void WaveController::handleWave() {
       this->currentStage = (this->currentWave - 1) % 10;
       this->currentSystem = (this->currentWave - 1) / 10;
 
-      global::game->gameController->background->setScrollSpeed(-1);
+      global::game->gameController->background->setTargetScrollSpeed(-1);
 
       global::game->messenger->showPrimaryMessage(
-          generate_random_number() % 8 == 0 ? "wake up!" : "get ready!", 0, 50,
-          0
+          random_range(0u, 8u) == 0 ? "wake up!" : "get ready!", 0, 50, 0
       );
 
       global::game->messenger->showSecondaryMessage(
@@ -132,7 +130,7 @@ void WaveController::handleWave() {
       if (global::game->sound_harley1->uveDX->soundEnabled)
         global::game->sound_harley1->play();
 
-      global::game->gameController->background->setScrollSpeed(-64);
+      global::game->gameController->background->setTargetScrollSpeed(-64);
 
       global::game->messenger->showPrimaryMessage("system clear!", 0, 50, 1);
 
@@ -154,21 +152,21 @@ void WaveController::handleWave() {
 
       if (this->currentStage == 2) {
         for (int j = 0; j < 15; ++j) {
-          auto a5 = (double)(generate_random_number() % 480 - 640);
-          auto random_number = generate_random_number();
+          auto y = static_cast<double>(random_range(-640, 480 - 640));
+          auto x = static_cast<double>(-random_range(0, 640));
 
           this->add(new Asteroid{
-              this->uveDX, (double)-(random_number % 640), a5, 96, v2, true, 2,
+              this->uveDX, x, y, 96, asteroidType, true, 2,
               this->currentSystem + 5
           });
         }
 
         for (int k = 0; k < 5; ++k) {
-          auto a5 = (double)(generate_random_number() % 480 - 640);
-          auto random_number = generate_random_number();
+          auto y = static_cast<double>(random_range(-640, 480 - 640));
+          auto x = static_cast<double>(-random_range(0, 640));
 
           this->add(new Asteroid{
-              this->uveDX, (double)-(random_number % 640), a5, 96, v2, false, 4,
+              this->uveDX, x, y, 96, asteroidType, false, 4,
               this->currentSystem + 5
           });
         }
@@ -188,21 +186,21 @@ void WaveController::handleWave() {
 
       if (this->currentStage == 5) {
         for (int ii = 0; ii < 15; ++ii) {
-          auto a5 = (double)-(generate_random_number() % 300);
-          auto random_number = generate_random_number() % 640;
+          auto y = static_cast<double>(-random_range(0, 300));
+          auto x = static_cast<double>(random_range(0, 640));
 
           this->add(new Asteroid{
-              this->uveDX, (double)random_number, a5, 128, v2, true, 8,
+              this->uveDX, x, y, 128, asteroidType, true, 8,
               this->currentSystem + 10
           });
         }
 
         for (int jj = 0; jj < 15; ++jj) {
-          auto a5 = (double)(-1000 - generate_random_number() % 300);
-          auto random_number = generate_random_number() % 640;
+          auto y = static_cast<double>(-1000 - random_range(0, 300));
+          auto x = static_cast<double>(random_range(0, 640));
 
           this->add(new Asteroid{
-              this->uveDX, (double)random_number, a5, 128, v2, true, 8,
+              this->uveDX, x, y, 128, asteroidType, true, 8,
               this->currentSystem + 10
           });
         }
@@ -231,30 +229,30 @@ void WaveController::handleWave() {
 
       if (this->currentStage == 8) {
         for (int i2 = 0; i2 < 8; ++i2) {
-          auto v52 = 128 - generate_random_number() % 32;
-          auto a5 = (double)-(generate_random_number() % 500);
-          auto random_number = generate_random_number() % 320;
+          auto face = 128 - random_range(0u, 32u);
+          auto y = static_cast<double>(-random_range(0, 500));
+          auto x = static_cast<double>(random_range(0, 320));
 
           this->add(new Asteroid{
-              this->uveDX, (double)random_number, a5, v52, v2, true, 5,
+              this->uveDX, x, y, face, asteroidType, true, 5,
               this->currentSystem + 5
           });
 
-          auto v53 = generate_random_number() % 32 + 128;
-          a5 = (double)-(generate_random_number() % 500);
-          random_number = generate_random_number();
+          face = random_range(128u, 128u + 32u);
+          y = static_cast<double>(-random_range(0, 500));
+          x = static_cast<double>(random_range(320, 640));
 
           this->add(new Asteroid{
-              this->uveDX, (double)(random_number % 320 + 320), a5, v53, v2,
-              true, 5, this->currentSystem + 5
+              this->uveDX, x, y, face, asteroidType, true, 5,
+              this->currentSystem + 5
           });
 
-          auto v54 = generate_random_number() % 64 + 96;
-          a5 = (double)(-500 - generate_random_number() % 500);
-          random_number = generate_random_number() % 640;
+          face = random_range(96u, 64u + 96u);
+          y = static_cast<double>(-500 - random_range(0, 500));
+          x = static_cast<double>(random_range(0, 640));
 
           this->add(new Asteroid{
-              this->uveDX, (double)random_number, a5, v54, v2, false, 8,
+              this->uveDX, x, y, face, asteroidType, false, 8,
               this->currentSystem + 5
           });
         }

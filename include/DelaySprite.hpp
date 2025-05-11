@@ -9,13 +9,13 @@ class DelaySprite : public UveDX::Sprite {
       int x,
       int y,
       UveDX::Surface* surface,
-      int a5,
-      int a6
+      int delayBeforeDisplay,
+      int displayDuration
   );
 
   virtual void update() override;
 
  private:
-  int field_94;
-  int field_98;
+  int delayBeforeDisplay;
+  int displayDuration;
 };

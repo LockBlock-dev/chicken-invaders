@@ -9,6 +9,6 @@ class IntroChicken : public UveDX::Sprite {
   void update() override;
 
  private:
-  int field_94;
-  int field_98;
+  unsigned int velocity;
+  unsigned int angle;
 };

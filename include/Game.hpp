@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 #include "Font.hpp"
 #include "GameController.hpp"
@@ -98,5 +99,5 @@ class Game {
 };
 
 namespace global {
-inline std::shared_ptr<Game> game = nullptr;
+inline std::unique_ptr<Game> game = nullptr;
 }

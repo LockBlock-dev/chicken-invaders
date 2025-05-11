@@ -15,31 +15,30 @@ Missile::Missile(UveDX::UveDX* uveDX, unsigned int playerId, double x, double y)
           0,
           global::game->surface_chain_missile->getSurf(0)
       ),
-      field_94(x),
-      field_9C(y),
-      field_A4(0),
+      positionX(x),
+      positionY(y),
+      velocity(0),
       playerId(playerId),
-      field_B0(calculate_angle(320.0 - this->field_94, 200.0 - this->field_9C)
+      angleToTarget(
+          calculate_angle(320.0 - this->positionX, 200.0 - this->positionY)
       ) {}
 
 void Missile::update() {
-  int v1 = this->field_B0 + 128;
+  unsigned int smokeAngle = this->angleToTarget + 128;
 
-  v1 = (v1 + 256) % 256;
+  smokeAngle = (smokeAngle + 256) % 256;
 
-  this->field_A4 += 0.25;
+  this->velocity += 0.25;
 
-  this->field_94 =
-      global::dcos[this->field_B0] * this->field_A4 + this->field_94;
-  this->field_9C =
-      global::dsin[this->field_B0] * this->field_A4 + this->field_9C;
+  this->positionX += global::dcos.at(this->angleToTarget) * this->velocity;
+  this->positionY += global::dsin.at(this->angleToTarget) * this->velocity;
 
-  int v2 = this->field_B0 + 4;
+  int frameAngleOffset = this->angleToTarget + 4;
 
-  if (v2 < 0)
-    v2 += 7;
+  if (frameAngleOffset < 0)
+    frameAngleOffset += 7;
 
-  int surfaceNumber = v2 / 8;
+  int surfaceNumber = frameAngleOffset / 8;
 
   surfaceNumber = (surfaceNumber + 32) % 32;
 
@@ -50,16 +49,17 @@ void Missile::update() {
 
   global::game->gameController->asteroid_explosion_smoke_list->add(new (memSmoke
   ) Smoke{
-      this->uveDX, (int)(global::dcos[v1] * 14.0 + this->field_94),
-      (int)(global::dsin[v1] * 14.0 + this->field_9C), 15, 512, v1, 128, true
+      this->uveDX, (int)(global::dcos[smokeAngle] * 14.0 + this->positionX),
+      (int)(global::dsin[smokeAngle] * 14.0 + this->positionY), 15, 512,
+      static_cast<int>(smokeAngle), 128, true
   });
 
-  this->sprite_x = (int)this->field_94;
-  this->sprite_y = (int)this->field_9C;
+  this->sprite_x = (int)this->positionX;
+  this->sprite_y = (int)this->positionY;
 
   UveDX::Sprite::update();
 
-  if (this->field_9C < 200.0) {
+  if (this->positionY < 200.0) {
     auto currentHead =
         global::game->gameController->getWaveController()->getHead();
 
@@ -73,7 +73,7 @@ void Missile::update() {
       originalHead->handleHit(this->playerId, 50);
     }
 
-    global::game->gameController->background->setField20(20);
+    global::game->gameController->background->setShakeOffset(20);
 
     if (global::game->sound_fx113->uveDX->soundEnabled)
       global::game->sound_fx113->play();
