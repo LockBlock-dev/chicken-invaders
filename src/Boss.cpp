@@ -142,21 +142,12 @@ void Boss::handleHit(unsigned int playerId, int damages) {
         });
 
       for (size_t i = 0; i < 10; ++i) {
-        void* memSmoke = std::malloc(0x2344);
-        std::memset(memSmoke, 0, 0x2344);
-
-        global::game->gameController->explosion_smoke_list->add(new (memSmoke
-        ) Smoke{
+        global::game->gameController->explosion_smoke_list->add(new Smoke{
             this->uveDX, this->sprite_x + random_range(-50, 50),
             this->sprite_y + random_range(-50, 50), 50, 1024, 0, 256, true
         });
 
-        void* memExplosion = std::malloc(0x2344);
-        std::memset(memExplosion, 0, 0x2344);
-
-        global::game->gameController->explosion_smoke_list->add(new (
-            memExplosion
-        ) Explosion{
+        global::game->gameController->explosion_smoke_list->add(new Explosion{
             this->uveDX, this->sprite_x, this->sprite_y, 200, 1280, 0, 256, true
         });
       }

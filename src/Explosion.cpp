@@ -1,6 +1,7 @@
 #include "Explosion.hpp"
 
 #include <cmath>
+#include <cstddef>
 
 #include "Game.hpp"
 #include "Sprite.hpp"
@@ -9,96 +10,82 @@
 
 Explosion::Explosion(
     UveDX::UveDX* uveDX,
-    int x,
-    int y,
-    int a5,
-    unsigned int a6,
-    int a7,
-    int a8,
-    bool a9
+    int originX,
+    int originY,
+    unsigned int particleCount,
+    unsigned int speedRange,
+    int baseAngle,
+    int angleSpread,
+    bool gravityEnabled
 )
-    : UveDX::UveBase(uveDX), field_14(a9), field_18(a5) {
-  if (!a8)
-    a8 = 2;
+    : UveDX::UveBase(uveDX),
+      gravityEnabled(gravityEnabled),
+      particleCount(particleCount),
+      particles({}) {
+  if (!angleSpread)
+    angleSpread = 2;
 
-  for (int i = 0; i < this->field_18; ++i) {
-    int v10 = 9 * i;
-    *(double*)(&this->field_1C + v10) = (double)x;
-    *(double*)(&this->field_24 + v10) = (double)y;
-    int v16 = random_range(0, a8) - a8 / 2;
-    int v11 = v16 + a7 + (v16 + a7 < 0 ? 256 : 0);
+  for (size_t i = 0; i < this->particleCount; ++i) {
+    auto& particle = this->particles.at(i);
 
-    if (v11 > 255)
-      v11 -= 256;
+    particle.originX = originX;
+    particle.originY = originY;
 
-    int v12 = a6 == 1 ? 0 : random_range<int>(0, a6 - 1);
+    int v16 = random_range(0, angleSpread) - angleSpread / 2;
+    int angle = v16 + baseAngle + (v16 + baseAngle < 0 ? 256 : 0);
 
-    int v13 = v12 + 1;
+    if (angle > 255)
+      angle -= 256;
 
-    if (a8 != 256)
-      v13 =
-          ((1.0 - std::fabs((long double)v16 / (long double)(a8 / 2))) *
-           (long double)v13);
+    int speed =
+        (speedRange == 1 ? 0 : random_range<int>(0, speedRange - 1)) + 1;
 
-    int v14 = 9 * i;
+    if (angleSpread != 256)
+      speed =
+          ((1.0 - std::fabs((long double)v16 / (long double)(angleSpread / 2))
+           ) *
+           (long double)speed);
 
-    *(double*)(&this->field_2C + v14) = (long double)v13 * global::dcos[v11];
-    *(double*)(&this->field_34 + v14) = (long double)v13 * global::dsin[v11];
-    *(&this->field_3C + v14) = v13;
+    particle.velocityX = speed * global::dcos.at(angle);
+    particle.velocityY = speed * global::dsin.at(angle);
+    particle.speed = speed;
   }
 }
 
 void Explosion::update() {
   auto sprite = UveDX::Sprite{this->uveDX, 0, 0, nullptr};
 
-  int i = 0;
-  bool flag = false;
-  int* v2 = &this->field_3C;
+  bool anyAlive = false;
 
-  while (i < this->field_18) {
-    if (*v2 > 0) {
-      flag = true;
+  for (size_t i = 0; i < this->particleCount; ++i) {
+    auto& particle = this->particles.at(i);
 
-      *((double*)v2 - 4) = *((double*)v2 - 2) * 0.00390625 + *((double*)v2 - 4);
-      *((double*)v2 - 3) = *((double*)v2 - 1) * 0.00390625 + *((double*)v2 - 3);
+    if (particle.speed > 0) {
+      anyAlive = true;
 
-      if (this->field_14)
-        *((double*)v2 - 1) += 16.0;
+      particle.originX += particle.velocityX * INVERSE_OF_256;
+      particle.originY += particle.velocityY * INVERSE_OF_256;
 
-      int a2 = 1024 - *v2;
+      if (this->gravityEnabled)
+        particle.velocityY += 16.0;
 
-      if (a2 < 0)
-        a2 += 255;
+      int lifeFactor = 32 * ((1024 - particle.speed) / 256);
 
-      a2 /= 256;
+      particle.speed -= 32;
 
-      a2 *= 32;
+      sprite.sprite_x = static_cast<int>(particle.originX);
+      sprite.sprite_y = static_cast<int>(particle.originY);
 
-      *v2 -= 32;
+      auto angle = calculate_angle(particle.velocityX, particle.velocityY);
 
-      sprite.sprite_x = *((double*)v2 - 4);
-      sprite.sprite_y = *((double*)v2 - 3);
-
-      auto angle = calculate_angle(*((double*)v2 - 2), *((double*)v2 - 1));
-
-      // if (angle >= 0)
-      //   angle += 7;
-
-      int surfaceNumber = a2 + (angle + 7) / 8;
-
-      // ToDo: not in original code but it is invalid sometimes
-      surfaceNumber = std::clamp(surfaceNumber, 0, 127);
-
-      sprite.setSurface(global::game->surface_chain_sparc->getSurf(surfaceNumber
-      ));
+      sprite.setSurface(
+          global::game->surface_chain_sparc->getSurf(angle / 8 + lifeFactor)
+      );
 
       sprite.update();
     }
-
-    ++i;
-    v2 += 9;
   }
 
-  if (!flag)
+  if (!anyAlive)
     this->hasBeenDisposed = true;
 }

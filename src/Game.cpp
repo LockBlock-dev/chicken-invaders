@@ -214,7 +214,8 @@ void Game::loadGameResources() {
   this->uveDX->frame();
 
   for (size_t i = 0; i < 256; ++i) {
-    double angle = 1.5705 - static_cast<double>(i) * 6.282 * 0.00390625;
+    double angle =
+        HALF_PI_APPROX - static_cast<double>(i) * TWO_PI * INVERSE_OF_256;
 
     global::dsin.at(i) = -std::sin(angle);
     global::dcos.at(i) = std::cos(angle);

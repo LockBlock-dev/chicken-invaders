@@ -2,10 +2,6 @@
 
 #include <cmath>
 
-constexpr double PI = 3.141;
-constexpr double HALF_PI_APPROX = 1.5705;
-constexpr double INV_TWO_PI_FACTOR = 0.15918497293855459973;
-
 [[nodiscard]] unsigned int calculate_angle(double x, double y) noexcept {
   if (std::abs(x) < 0.05)
     return y < 0.0 ? 0 : 128;

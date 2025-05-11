@@ -30,10 +30,10 @@ void Bullet::update() {
   ++this->travelDistance;
 
   this->x =
-      static_cast<double>(this->travelDistance) * global::dcos[this->angle] +
+      static_cast<double>(this->travelDistance) * global::dcos.at(this->angle) +
       this->x;
   this->y =
-      static_cast<double>(this->travelDistance) * global::dsin[this->angle] +
+      static_cast<double>(this->travelDistance) * global::dsin.at(this->angle) +
       this->y;
 
   this->sprite_x = static_cast<int>(this->x);
@@ -102,11 +102,7 @@ void Bullet::handleHitEnemy() {
         originalHead->checkCollisionsWith(this)) {
       originalHead->handleHit(this->playerId, 1);
 
-      void* mem = std::malloc(0x2344);
-      std::memset(mem, 0, 0x2344);
-
-      global::game->gameController->explosion_smoke_list->add(new (mem
-      ) Explosion{
+      global::game->gameController->explosion_smoke_list->add(new Explosion{
           this->uveDX, this->sprite_x, this->sprite_y, 10, 512, 0, 256, true
       });
 

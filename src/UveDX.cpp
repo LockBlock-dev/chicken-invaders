@@ -170,7 +170,7 @@ void UveDX::showError(
   tinyfd_messageBox(
       "UveDX Error",
       std::format(
-          "Function {} failed with error: '{}', error code: {} ({})",
+          "Function {} failed with error: {}, error code: {} ({})",
           functionName, message, code, "No description"
       )
           .c_str(),

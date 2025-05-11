@@ -95,8 +95,8 @@ void Chicken::update() {
       this->angleX = (this->angleX + 1 + 256) % 256;
       this->angleY = (this->angleY + 1 + 256) % 256;
 
-      this->targetX = (int)(global::dcos[this->angleX] * 300.0 + 320.0);
-      this->targetY = (int)(global::dsin[this->angleY] * 160.0 + 200.0);
+      this->targetX = (int)(global::dcos.at(this->angleX) * 300.0 + 320.0);
+      this->targetY = (int)(global::dsin.at(this->angleY) * 160.0 + 200.0);
 
       this->sprite_x = (this->targetX + this->sprite_x) / 2;
       this->sprite_y = (this->targetY + this->sprite_y) / 2;
@@ -110,7 +110,7 @@ void Chicken::update() {
     if (this->chickenFlyType == 3) {
       this->angleX = (this->angleX + 1 + 256) % 256;
 
-      this->targetX = (int)(global::dcos[this->angleX] * 300.0 + 320.0);
+      this->targetX = (int)(global::dcos.at(this->angleX) * 300.0 + 320.0);
 
       ++this->targetY;
 
@@ -123,11 +123,11 @@ void Chicken::update() {
     if (this->chickenFlyType == 4) {
       this->angleX = (this->angleX + 1 + 256) % 256;
 
-      this->targetX =
-          (int)((long double)this->motionRadius * global::dcos[this->angleX] +
-                320.0);
+      this->targetX = (int)((long double)this->motionRadius *
+                                global::dcos.at(this->angleX) +
+                            320.0);
       this->targetY = (int)((long double)this->motionRadius *
-                                global::dsin[this->angleX] * 0.5 +
+                                global::dsin.at(this->angleX) * 0.5 +
                             200.0);
 
       this->sprite_x = (this->targetX + this->sprite_x) / 2;
@@ -137,12 +137,12 @@ void Chicken::update() {
     }
 
     if (this->chickenFlyType == 5 || this->chickenFlyType == 6) {
-      this->targetX =
-          (int)((long double)this->motionRadius * global::dcos[this->angleX] +
-                (long double)this->targetX);
-      this->targetY =
-          (int)((long double)this->motionRadius * global::dsin[this->angleX] +
-                (long double)(int)this->targetY);
+      this->targetX = (int)((long double)this->motionRadius *
+                                global::dcos.at(this->angleX) +
+                            (long double)this->targetX);
+      this->targetY = (int)((long double)this->motionRadius *
+                                global::dsin.at(this->angleX) +
+                            (long double)(int)this->targetY);
 
       this->sprite_x = (this->targetX + this->sprite_x) / 2;
       this->sprite_y = (this->targetY + this->sprite_y) / 2;
@@ -205,10 +205,7 @@ void Chicken::handleHit(unsigned int playerId, int damages) {
           this->uveDX, (double)this->sprite_x, (double)this->sprite_y
       });
 
-      void* mem = std::malloc(0x2344);
-      std::memset(mem, 0, 0x2344);
-
-      gameController->explosion_smoke_list->add(new (mem) Smoke{
+      gameController->explosion_smoke_list->add(new Smoke{
           this->uveDX, this->sprite_x, this->sprite_y, 50, 512, 0, 256, true
       });
 

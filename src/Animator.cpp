@@ -51,8 +51,6 @@ void Animator::loadFromFile(const std::string& filename) {
     this->frameDataBufferSize =
         4 * this->height + (this->height + 1) * (this->width + 1);
 
-  // this->frameDataBuffer = static_cast<char *>(std::std::malloc(2 *
-  // this->frameDataBufferSize));
   this->frameDataBuffer = new char[2 * this->frameDataBufferSize];
 
   this->frameDataBufferSize *= 2;

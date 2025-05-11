@@ -199,21 +199,15 @@ void Player::update() {
 
     if (global::game->gameController->getWaveController()->previousState ==
         LevelState::SystemClear) {
-      void* memExplosion = std::malloc(0x2344);
-      std::memset(memExplosion, 0, 0x2344);
-
       global::game->gameController->asteroid_explosion_smoke_list->add(
-          new (memExplosion) Explosion{
+          new Explosion{
               this->uveDX, this->sprite_x - 10, this->sprite_y + 18, 10, 1280,
               128, 32, true
           }
       );
 
-      void* memExplosionTwo = std::malloc(0x2344);
-      std::memset(memExplosionTwo, 0, 0x2344);
-
       global::game->gameController->asteroid_explosion_smoke_list->add(
-          new (memExplosionTwo) Explosion{
+          new Explosion{
               this->uveDX, this->sprite_x + 10, this->sprite_y + 18, 10, 1280,
               128, 32, true
           }
@@ -325,17 +319,11 @@ void Player::handleChickenLeg() {
 void Player::handleHit() {
   global::game->playSound(global::game->sound_fx113, this->sprite_x);
 
-  void* memSmoke = std::malloc(0x2344);
-  std::memset(memSmoke, 0, 0x2344);
+  global::game->gameController->explosion_smoke_list->add(new Smoke{
+      this->uveDX, this->sprite_x, this->sprite_y, 100, 768, 0, 256, true
+  });
 
-  global::game->gameController->explosion_smoke_list->add(new (memSmoke
-  ) Smoke{this->uveDX, this->sprite_x, this->sprite_y, 100, 768, 0, 256, true});
-
-  void* memExplosion = std::malloc(0x2344);
-  std::memset(memExplosion, 0, 0x2344);
-
-  global::game->gameController->explosion_smoke_list->add(new (memExplosion
-  ) Explosion{
+  global::game->gameController->explosion_smoke_list->add(new Explosion{
       this->uveDX, this->sprite_x, this->sprite_y, 100, 768, 0, 256, true
   });
 

@@ -21,8 +21,8 @@ ChickenLeg::ChickenLeg(UveDX::UveDX* uveDX, double x, double y)
   unsigned int angle = random_range(0u, 256u);
   unsigned int initialSpeed = random_range(0u, 10u);
 
-  this->velocityX = initialSpeed * global::dcos[angle];
-  this->velocityY = initialSpeed * global::dsin[angle];
+  this->velocityX = initialSpeed * global::dcos.at(angle);
+  this->velocityY = initialSpeed * global::dsin.at(angle);
 }
 
 void ChickenLeg::update() {

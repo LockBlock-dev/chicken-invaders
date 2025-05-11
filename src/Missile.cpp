@@ -44,13 +44,9 @@ void Missile::update() {
 
   this->surface = global::game->surface_chain_missile->getSurf(surfaceNumber);
 
-  void* memSmoke = std::malloc(0x2344);
-  std::memset(memSmoke, 0, 0x2344);
-
-  global::game->gameController->asteroid_explosion_smoke_list->add(new (memSmoke
-  ) Smoke{
-      this->uveDX, (int)(global::dcos[smokeAngle] * 14.0 + this->positionX),
-      (int)(global::dsin[smokeAngle] * 14.0 + this->positionY), 15, 512,
+  global::game->gameController->asteroid_explosion_smoke_list->add(new Smoke{
+      this->uveDX, (int)(global::dcos.at(smokeAngle) * 14.0 + this->positionX),
+      (int)(global::dsin.at(smokeAngle) * 14.0 + this->positionY), 15, 512,
       static_cast<int>(smokeAngle), 128, true
   });
 
@@ -78,11 +74,7 @@ void Missile::update() {
     if (global::game->sound_fx113->uveDX->soundEnabled)
       global::game->sound_fx113->play();
 
-    void* memExplosion = std::malloc(0x2344);
-    std::memset(memExplosion, 0, 0x2344);
-
-    global::game->gameController->explosion_smoke_list->add(new (memExplosion
-    ) Explosion{
+    global::game->gameController->explosion_smoke_list->add(new Explosion{
         this->uveDX, this->sprite_x, this->sprite_y, 200, 1280, 0, 256, true
     });
 

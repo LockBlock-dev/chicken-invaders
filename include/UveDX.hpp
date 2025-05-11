@@ -36,8 +36,11 @@ class UveDX : public UveListOwner {
   );
   void
   onError(const std::string& title, const std::string& message, int code = -1);
-  void
-  showError(const std::string& title, const std::string& message, int code);
+  void showError(
+      const std::string& title,
+      const std::string& message,
+      int code = -1
+  );
   void waitForEscapeKey(unsigned int sleepTimeMs);
   unsigned int getWidth() const;
   unsigned int getHeight() const;

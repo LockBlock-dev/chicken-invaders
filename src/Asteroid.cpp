@@ -24,8 +24,8 @@ Asteroid::Asteroid(
       positionY(y),
       face(face),
       speed(minspeed + (maxspeed != 0 ? random_range(0u, maxspeed) : 0)),
-      velocityX((double)this->speed * global::dcos[this->face]),
-      velocityY((double)this->speed * global::dsin[this->face]),
+      velocityX((double)this->speed * global::dcos.at(this->face)),
+      velocityY((double)this->speed * global::dsin.at(this->face)),
       type(type),
       isSmall(isSmall) {
   if (this->type == AsteroidType::Rock) {
@@ -113,16 +113,13 @@ void Asteroid::update() {
 
         v9 = std::clamp(v9, 0u, 1279u);
 
-        void* mem = std::malloc(0x2344);
-        std::memset(mem, 0, 0x2344);
-
         global::game->gameController->asteroid_explosion_smoke_list->add(
             this->type == AsteroidType::Fire
-                ? dynamic_cast<UveBase*>(new (mem) Explosion{
+                ? dynamic_cast<UveBase*>(new Explosion{
                       this->uveDX, this->sprite_x, this->sprite_y, 10, v9,
                       adjustedDirectionAngle, 128, true
                   })
-                : dynamic_cast<UveBase*>(new (mem) Smoke{
+                : dynamic_cast<UveBase*>(new Smoke{
                       this->uveDX, this->sprite_x, this->sprite_y, 10, v9,
                       adjustedDirectionAngle, 128, true
                   })
@@ -146,10 +143,7 @@ void Asteroid::handleHit(unsigned int playerId, int damages) {
 
       auto gameController = global::game->gameController;
 
-      void* mem = std::malloc(0x2344);
-      std::memset(mem, 0, 0x2344);
-
-      gameController->explosion_smoke_list->add(new (mem) Explosion{
+      gameController->explosion_smoke_list->add(new Explosion{
           this->uveDX, this->sprite_x, this->sprite_y, 50,
           (this->isSmall ? 3u : 5u) * 256, 0, 256, true
       });

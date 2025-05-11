@@ -20,10 +20,10 @@ void IntroChicken::update() {
   this->velocity -= this->velocity / 50 + 1;
 
   this->sprite_x = static_cast<int>(
-      static_cast<double>(this->velocity) * global::dcos[this->angle] + 320.0
+      static_cast<double>(this->velocity) * global::dcos.at(this->angle) + 320.0
   );
   this->sprite_y = static_cast<int>(
-      static_cast<double>(this->velocity) * global::dsin[this->angle] + 240.0
+      static_cast<double>(this->velocity) * global::dsin.at(this->angle) + 240.0
   );
 
   this->surface = global::game->surface_chain_smoke->getSurf(surfaceNumber);
