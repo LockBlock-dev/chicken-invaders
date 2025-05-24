@@ -7,7 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(WITH_DISCORD "Enable Discord integration" OFF)
 
-find_package(SFML QUIET)
+find_package(SFML COMPONENTS graphics audio CONFIG QUIET)
 if (NOT SFML_FOUND)
     FetchContent_Declare(
         SFML
