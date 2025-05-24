@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-05-24
+
+### Added
+
+-   Missing `TileLayer` entity in UveDX (used in Island Wars 1)
+-   Missing `UveDX::bounds` member (used by TileLayer)
+-   Missing `UveDX::setBackSurfaceClipRegion` method
+
+### Changed
+
+-   Renamed `Game::sub_40AAD8` to `Game::renderPauseOverlay`
+
+### Fixed
+
+-   Debug timings
+
+### Removed
+
+-   SFML FPS limit
+
 ## [0.3.1] - 2025-05-11
 
 ### Added

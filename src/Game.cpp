@@ -69,9 +69,7 @@ Game::Game()
       font_alphabet(nullptr),
       font_alphabet_small(nullptr),
       font_3x7(nullptr),
-      shouldQuit(false) {
-  this->window.setFramerateLimit(constants::targetFPS);
-}
+      shouldQuit(false) {}
 
 Game::~Game() {
   if (this->uveDX) {
@@ -929,7 +927,7 @@ void Game::drawProgressBar(
 }
 
 bool Game::handlePauseScreen() {
-  this->sub_40AAD8();
+  this->renderPauseOverlay();
 
   this->uveDX->backSurface->blitWithColor();
 
@@ -947,40 +945,30 @@ bool Game::handlePauseScreen() {
   return !this->uveDX->uveInput->isKeyPressed(sf::Keyboard::Scancode::Escape);
 }
 
-int Game::sub_40AAD8() {
+void Game::renderPauseOverlay() {
   UveDX::UveTimer timer{this->uveDX->timer.getInterval()};
 
   this->window.clear(sf::Color::Black);
 
-  int result;
-  int i = 0;
   sf::IntRect rect{
-      sf::Vector2i{0, 0},
-      sf::Vector2i{640, 480},
+      {0, 0},
+      {static_cast<int>(this->uveDX->getWidth()),
+       static_cast<int>(this->uveDX->getHeight())},
   };
 
-  while (true) {
-    result = 245 - i - 1;
-
-    if (245 - i <= 1)
-      break;
-
+  for (int i = 0; 245 - i > 1; i = (i + 245) / 2) {
     rect.position.y = 0;
     rect.size.y = i;
 
     this->uveDX->backSurface->blitWithColor(&rect);
 
-    rect.position.y = 480 - i;
-    rect.size.y = 480 - rect.position.y;
+    rect.position.y = static_cast<int>(this->uveDX->getHeight()) - i;
+    rect.size.y = static_cast<int>(this->uveDX->getHeight()) - rect.position.y;
 
     this->uveDX->backSurface->blitWithColor(&rect);
 
     this->uveDX->frame();
 
     timer.waitForTimeInterval();
-
-    i = (i + 245) / 2;
   }
-
-  return result;
 }

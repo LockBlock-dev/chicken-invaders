@@ -36,7 +36,7 @@ class Game {
       unsigned int barHeight
   );
   bool handlePauseScreen();
-  int sub_40AAD8();
+  void renderPauseOverlay();
 
   sf::RenderWindow window;
   UveDX::UveDX* uveDX;

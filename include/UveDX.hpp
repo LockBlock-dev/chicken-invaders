@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Graphics/Rect.hpp>
 #include <string>
 
 #include "Surface.hpp"
@@ -24,7 +25,7 @@ class UveDX : public UveListOwner {
       unsigned int height,
       unsigned int bpp
   );
-  ~UveDX();
+  ~UveDX() override;
 
   void update() override;
   void frame();
@@ -44,6 +45,8 @@ class UveDX : public UveListOwner {
   void waitForEscapeKey(unsigned int sleepTimeMs);
   unsigned int getWidth() const;
   unsigned int getHeight() const;
+
+  void setBackSurfaceClipRegion(const sf::IntRect* bounds = nullptr);
 
   Surface* backSurface;
   UveSound* uveSound;
@@ -66,6 +69,7 @@ class UveDX : public UveListOwner {
   unsigned int totalFramesRendered;
   unsigned int pixelFormat;
   UveTimer timer;
+  sf::IntRect bounds;
 };
 
 }  // namespace UveDX

@@ -8,7 +8,7 @@ class UveListOwner : public UveBase {
  public:
   UveListOwner();
   UveListOwner(UveDX* uveDX);
-  ~UveListOwner();
+  ~UveListOwner() override;
 
   void update() override;
   void add(LinkedListNode* node);

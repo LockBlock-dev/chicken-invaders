@@ -36,8 +36,11 @@ UveDX::UveDX(
       timeDiffAfterEngineFrame(0),
       totalFramesRendered(0),
       pixelFormat(0),
-      timer(0) {
+      timer(0),
+      bounds() {
   this->backSurface->createAsBackSurface();
+
+  this->setBackSurfaceClipRegion();
 
   /*
   if (type == GL_UNSIGNED_SHORT_5_6_5)
@@ -77,22 +80,22 @@ void UveDX::update() {
 
   if (this->debugMode > UveDX::DebugLevel::NONE) {
     sf::IntRect rect{
-        sf::Vector2i{0, 0},
-        sf::Vector2i{this->timer.getInterval(), 4},
+        {0, 0},
+        {this->timer.getInterval(), 4},
     };
 
     this->backSurface->blitWithColor(&rect, sf::Color::White);
 
     rect.position.y = 1;
-    rect.size = sf::Vector2i{(int)this->timeDiffAfterEngineFrame, 3 - 1};
+    rect.size = {static_cast<int>(this->timeDiffAfterEngineFrame), 2};
 
     this->backSurface->blitWithColor(&rect, sf::Color::Blue);
 
-    rect.size.x = this->timeDiffAfterEngineUpdate;
+    rect.size.x = static_cast<int>(this->timeDiffAfterEngineUpdate);
 
     this->backSurface->blitWithColor(&rect, sf::Color::Green);
 
-    rect.size.x = this->timeDiffStartEngineUpdate;
+    rect.size.x = static_cast<int>(this->timeDiffStartEngineUpdate);
 
     this->backSurface->blitWithColor(&rect, sf::Color::Red);
   }
@@ -198,4 +201,15 @@ unsigned int UveDX::getWidth() const {
 unsigned int UveDX::getHeight() const {
   return this->height;
 }
+
+void UveDX::setBackSurfaceClipRegion(const sf::IntRect* inRect) {
+  this->bounds = !inRect ? sf::IntRect{
+    {0, 0},
+    {static_cast<int>(this->backSurface->getWidth()),
+     static_cast<int>(this->backSurface->getHeight())}
+} : *inRect;
+
+  // this->backSurface->setClipRegion(this->bounds);
+}
+
 }  // namespace UveDX
