@@ -19,7 +19,7 @@
     innoextract ChickenInvadersInstaller.exe
     ```
 
-    4. Locate the `ChickenInvaders.dat` file and move it in the [`assets`](../assets/) folder.
+    4. Locate the `ChickenInvaders.dat` file and move it in the [`Game/assets`](../Game/assets/) folder.
 
 4. (Optional) To enable Discord RPC integration, open the [`CMakeLists.txt`](../CMakeLists.txt) file and change the `WITH_DISCORD` option from `OFF` to `ON`:
 

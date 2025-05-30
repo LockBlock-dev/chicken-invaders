@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-05-30
+
+### Changed
+
+-   Refactor UveDX into a separate compilation unit
+-   Rename some variables for clarity
+
 ## [0.4.1] - 2025-05-24
 
 ### Fixed
@@ -21,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--   Renamed `Game::sub_40AAD8` to `Game::renderPauseOverlay`
+-   Rename `Game::sub_40AAD8` to `Game::renderPauseOverlay`
 
 ### Fixed
 
@@ -39,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--   Switched `Explosion` and `Smoke` particles from dynamic C-style arrays to `std::array` of `Particle`
+-   Switch `Explosion` and `Smoke` particles from dynamic C-style arrays to `std::array` of `Particle`
 
 ### Fixed
 

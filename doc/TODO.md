@@ -7,3 +7,4 @@
 -   use fixed width types
 -   remove usage of `new`
 -   replace velocityX/velocityY, etc with GLM vectors
+-   install target for UveDX
