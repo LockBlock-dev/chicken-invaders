@@ -40,25 +40,25 @@ TileLayer::TileLayer(
 void TileLayer::update() {
   int screenOffsetX = static_cast<int>(
       static_cast<double>(this->uveDX->xOffset) * this->scaleX +
-      static_cast<double>(this->uveDX->bounds.position.x)
+      static_cast<double>(this->uveDX->bounds.x)
   );
   int screenOffsetY = static_cast<int>(
       static_cast<double>(this->uveDX->yOffset) * this->scaleY +
-      static_cast<double>(this->uveDX->bounds.position.y)
+      static_cast<double>(this->uveDX->bounds.y)
   );
   int startColumn = (screenOffsetX - this->originX) / this->tileWidth;
   int startRow = (screenOffsetY - this->originY) / this->tileHeight;
-  int drawStartX = this->uveDX->bounds.position.x -
-                   (screenOffsetX - this->originX) % this->tileWidth;
+  int drawStartX =
+      this->uveDX->bounds.x - (screenOffsetX - this->originX) % this->tileWidth;
 
-  for (int drawY = this->uveDX->bounds.position.y -
+  for (int drawY = this->uveDX->bounds.y -
                    (screenOffsetY - this->originY) % this->tileHeight;
-       (this->uveDX->bounds.position.y + this->uveDX->bounds.size.y) > drawY;
+       (this->uveDX->bounds.y + this->uveDX->bounds.h) > drawY;
        drawY += this->tileHeight) {
     int currentColumn = startColumn;
 
     for (int drawX = drawStartX;
-         drawX < (this->uveDX->bounds.position.x + this->uveDX->bounds.size.x);
+         drawX < (this->uveDX->bounds.x + this->uveDX->bounds.w);
          drawX += this->tileWidth) {
       if (auto surf = this->getTileSurface(currentColumn, startRow))
         surf->blit(drawX, drawY, nullptr, 1.0);

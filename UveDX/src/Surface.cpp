@@ -63,26 +63,26 @@ Surface::~Surface() {
 
 void Surface::update() {}
 
-void Surface::blit(
-    int dstX,
-    int dstY,
-    const sf::IntRect* srcRect,
-    double scale
-) {
+void Surface::blit(int dstX, int dstY, const Rect* srcRect, double scale) {
   if (!this->texture || !this->sprite)
     return;
 
-  sf::IntRect textureRect;
+  Rect textureRect;
 
   if (srcRect == nullptr)
-    textureRect = sf::IntRect(
-        {0, 0}, {static_cast<int>(this->texture->getSize().x),
-                 static_cast<int>(this->texture->getSize().y)}
-    );
+    textureRect = Rect{
+        0,
+        0,
+        static_cast<int>(this->texture->getSize().x),
+        static_cast<int>(this->texture->getSize().y),
+    };
   else
     textureRect = *srcRect;
 
-  this->sprite->setTextureRect(textureRect);
+  this->sprite->setTextureRect({
+      {textureRect.x, textureRect.y},
+      {textureRect.w, textureRect.h},
+  });
 
   this->sprite->setPosition({
       static_cast<float>(dstX - this->offsetX),
@@ -97,21 +97,20 @@ void Surface::blit(
   this->uveDX->window.draw(*this->sprite);
 }
 
-void Surface::blitWithColor(sf::IntRect* rect, sf::Color color) {
-  sf::RectangleShape rectangle(sf::Vector2f(
+void Surface::blitWithColor(Rect* rect, Color color) {
+  sf::RectangleShape rectangle{sf::Vector2f{
       static_cast<float>(this->width), static_cast<float>(this->height)
-  ));
+  }};
   rectangle.setPosition({0.0f, 0.0f});
-  rectangle.setFillColor(color);
+  rectangle.setFillColor(sf::Color{color.toRGBA()});
 
   if (rect) {
-    rectangle.setSize(sf::Vector2f(
-        static_cast<float>(rect->size.x), static_cast<float>(rect->size.y)
-    ));
-    rectangle.setPosition(sf::Vector2f(
-        static_cast<float>(rect->position.x),
-        static_cast<float>(rect->position.y)
-    ));
+    rectangle.setSize(
+        sf::Vector2f{static_cast<float>(rect->w), static_cast<float>(rect->h)}
+    );
+    rectangle.setPosition(
+        sf::Vector2f{static_cast<float>(rect->x), static_cast<float>(rect->y)}
+    );
   }
 
   this->uveDX->window.draw(rectangle);

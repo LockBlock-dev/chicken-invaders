@@ -36,20 +36,20 @@ void Background::update() {
 
   this->scrollOffset = (this->scrollOffset + 480) % 480;
 
-  sf::IntRect rect{
-      sf::Vector2i{0, this->scrollOffset},
-      sf::Vector2i{
-          static_cast<int>(global::game->surface_salmonsky->getWidth()),
-          static_cast<int>(global::game->surface_salmonsky->getHeight()) -
-              this->scrollOffset
-      }
+  Rect rect{
+      0,
+      this->scrollOffset,
+      static_cast<int>(global::game->surface_salmonsky->getWidth()),
+      static_cast<int>(global::game->surface_salmonsky->getHeight()) -
+          this->scrollOffset,
+
   };
 
   global::game->surface_salmonsky->blit(0, 0, &rect, 1.0);
 
   if (this->scrollOffset > 0) {
-    rect.position.y = 0;
-    rect.size.y = this->scrollOffset;
+    rect.y = 0;
+    rect.h = this->scrollOffset;
 
     global::game->surface_salmonsky->blit(
         0,

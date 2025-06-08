@@ -6,6 +6,7 @@
 #include "DelaySprite.hpp"
 #include "DelayText.hpp"
 #include "IntroChicken.hpp"
+#include "UveDX/Color.hpp"
 #include "UveDX/Sprite.hpp"
 #include "UveDX/UveTimer.hpp"
 #include "constants.hpp"
@@ -61,7 +62,7 @@ Game::Game()
       messenger(nullptr),
       // original game uses BGR 0xFFDC00
       color_lightBlue(0x00DCFFFF),
-      color_white(sf::Color::White),
+      color_white(Color::White),
       font_alphabet(nullptr),
       font_alphabet_small(nullptr),
       font_3x7(nullptr),
@@ -899,20 +900,28 @@ void Game::drawProgressBar(
     unsigned int totalWidth,
     unsigned int barHeight
 ) {
-  sf::IntRect rect{
-      {startX - 2, startY - 2},
-      {static_cast<int>(totalWidth + 4), static_cast<int>(barHeight + 4)},
+  Rect rect{
+      startX - 2,
+      startY - 2,
+      static_cast<int>(totalWidth + 4),
+      static_cast<int>(barHeight + 4),
   };
 
   this->uveDX->backSurface->blitWithColor(&rect, this->color_lightBlue);
 
-  rect.size = {rect.size.x - 2, rect.size.y - 2};
-  rect.position = {rect.position.x + 1, rect.position.y + 1};
+  rect.w -= 2;
+  rect.h -= 2;
 
-  this->uveDX->backSurface->blitWithColor(&rect, sf::Color::Black);
+  rect.x += 1;
+  rect.y += 1;
 
-  rect.size = {static_cast<int>(progressWidth), rect.size.y - 2};
-  rect.position = {rect.position.x + 1, rect.position.y + 1};
+  this->uveDX->backSurface->blitWithColor(&rect, Color::Black);
+
+  rect.w = static_cast<int>(progressWidth);
+  rect.h -= 2;
+
+  rect.x += 1;
+  rect.y += 1;
 
   this->uveDX->backSurface->blitWithColor(&rect, this->color_white);
 }
@@ -939,22 +948,21 @@ bool Game::handlePauseScreen() {
 void Game::renderPauseOverlay() {
   UveDX::UveTimer timer{this->uveDX->timer.getInterval()};
 
-  //   this->window.clear(sf::Color::Black);
-
-  sf::IntRect rect{
-      {0, 0},
-      {static_cast<int>(this->uveDX->getWidth()),
-       static_cast<int>(this->uveDX->getHeight())},
+  Rect rect{
+      0,
+      0,
+      static_cast<int>(this->uveDX->getWidth()),
+      static_cast<int>(this->uveDX->getHeight()),
   };
 
   for (int i = 0; 245 - i > 1; i = (i + 245) / 2) {
-    rect.position.y = 0;
-    rect.size.y = i;
+    rect.y = 0;
+    rect.h = i;
 
     this->uveDX->backSurface->blitWithColor(&rect);
 
-    rect.position.y = static_cast<int>(this->uveDX->getHeight()) - i;
-    rect.size.y = static_cast<int>(this->uveDX->getHeight()) - rect.position.y;
+    rect.y = static_cast<int>(this->uveDX->getHeight()) - i;
+    rect.h = static_cast<int>(this->uveDX->getHeight()) - rect.y;
 
     this->uveDX->backSurface->blitWithColor(&rect);
 

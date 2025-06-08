@@ -5,6 +5,7 @@
 
 #include "GameController.hpp"
 #include "Messenger.hpp"
+#include "UveDX/Color.hpp"
 #include "UveDX/Font.hpp"
 #include "UveDX/Sound.hpp"
 #include "UveDX/Surface.hpp"
@@ -85,8 +86,8 @@ class Game {
   UveDX::Sound* sound_harley1;
   GameController* gameController;
   Messenger* messenger;
-  sf::Color color_lightBlue;
-  sf::Color color_white;
+  Color color_lightBlue;
+  Color color_white;
   UveDX::Font* font_alphabet;
   UveDX::Font* font_alphabet_small;
   UveDX::Font* font_3x7;

@@ -46,7 +46,7 @@ class UveDX : public UveListOwner {
   unsigned int getWidth() const;
   unsigned int getHeight() const;
 
-  void setBackSurfaceClipRegion(const sf::IntRect* bounds = nullptr);
+  void setBackSurfaceClipRegion(const Rect* bounds = nullptr);
 
   sf::RenderWindow window;
   Surface* backSurface;
@@ -70,7 +70,7 @@ class UveDX : public UveListOwner {
   unsigned int totalFramesRendered;
   unsigned int pixelFormat;
   UveTimer timer;
-  sf::IntRect bounds;
+  Rect bounds;
 };
 
 }  // namespace UveDX
