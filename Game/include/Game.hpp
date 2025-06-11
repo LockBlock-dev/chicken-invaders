@@ -86,8 +86,8 @@ class Game {
   UveDX::Sound* sound_harley1;
   GameController* gameController;
   Messenger* messenger;
-  Color color_lightBlue;
-  Color color_white;
+  UveDX::Color color_lightBlue;
+  UveDX::Color color_white;
   UveDX::Font* font_alphabet;
   UveDX::Font* font_alphabet_small;
   UveDX::Font* font_3x7;

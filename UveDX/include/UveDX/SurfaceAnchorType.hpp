@@ -1,5 +1,6 @@
 #pragma once
 
+namespace UveDX {
 enum class SurfaceAnchorType {
   TopLeftDefault = 0,
   BottomLeft = 1,
@@ -12,3 +13,4 @@ enum class SurfaceAnchorType {
   TopCenter = 8,
   TopRight = 9,
 };
+}

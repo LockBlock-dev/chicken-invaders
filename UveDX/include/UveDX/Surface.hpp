@@ -16,7 +16,14 @@ class Surface : public UveBase {
   ~Surface() override;
 
   void update() override;
-  void blit(int dstX, int dstY, const Rect* rect, double scale);
+  void blit(int dstX, int dstY, const Rect* rect = nullptr, double scale = 1.0);
+  void blitEx(
+      int dstX,
+      int dstY,
+      const Rect* rect,
+      double scale = 1.0,
+      Color color = Color::White
+  );
   void blitWithColor(Rect* rect = nullptr, Color color = Color::Black);
   void createAsBackSurface();
   void loadBMP(const std::string& filename, unsigned int x, unsigned int y);

@@ -7,7 +7,6 @@
 #include "UveDX/UveBase.hpp"
 
 namespace UveDX {
-
 class SurfaceChain : public UveBase {
  public:
   enum class SurfaceLinkType {

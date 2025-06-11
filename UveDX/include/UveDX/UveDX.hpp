@@ -20,6 +20,7 @@ class UveDX : public UveListOwner {
   };
 
   UveDX(
+      const std::string& windowTitle,
       bool isFullscreen,
       unsigned int width,
       unsigned int height,
@@ -35,8 +36,11 @@ class UveDX : public UveListOwner {
       unsigned int offsetX,
       unsigned int offsetY
   );
-  void
-  onError(const std::string& title, const std::string& message, int code = -1);
+  void onError(
+      const std::string& title,
+      const std::string& message,
+      int code = -1
+  );
   void showError(
       const std::string& title,
       const std::string& message,

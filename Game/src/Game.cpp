@@ -62,7 +62,7 @@ Game::Game()
       messenger(nullptr),
       // original game uses BGR 0xFFDC00
       color_lightBlue(0x00DCFFFF),
-      color_white(Color::White),
+      color_white(UveDX::Color::White),
       font_alphabet(nullptr),
       font_alphabet_small(nullptr),
       font_3x7(nullptr),
@@ -80,7 +80,8 @@ Game::~Game() {
 void Game::init() {
   if (!this->uveDX) {
     this->uveDX = new UveDX::UveDX{
-        false, constants::screenWidth, constants::screenHeight, 16
+        "Chicken Invaders",      false, constants::screenWidth,
+        constants::screenHeight, 16,
     };
 
     this->uveDX->timer.setInterval(38);
@@ -230,7 +231,9 @@ void Game::loadGameResources() {
   this->drawProgressBar(218, 230, 12, 200, 20);
   this->uveDX->frame();
 
-  this->surface_salmonsky->setAnchorPoint(SurfaceAnchorType::TopLeftDefault);
+  this->surface_salmonsky->setAnchorPoint(
+      UveDX::SurfaceAnchorType::TopLeftDefault
+  );
 
   this->surface_chain_chickenb = new UveDX::SurfaceChain{
       this->uveDX,
@@ -321,7 +324,7 @@ void Game::loadGameResources() {
   this->uveDX->frame();
 
   this->surface_chain_exhaust->applyAnchorPointToAllSurfaces(
-      SurfaceAnchorType::TopCenter
+      UveDX::SurfaceAnchorType::TopCenter
   );
 
   this->surface_chain_shield = new UveDX::SurfaceChain{
@@ -915,7 +918,7 @@ void Game::drawProgressBar(
   rect.x += 1;
   rect.y += 1;
 
-  this->uveDX->backSurface->blitWithColor(&rect, Color::Black);
+  this->uveDX->backSurface->blitWithColor(&rect, UveDX::Color::Black);
 
   rect.w = static_cast<int>(progressWidth);
   rect.h -= 2;

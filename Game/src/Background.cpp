@@ -45,7 +45,7 @@ void Background::update() {
 
   };
 
-  global::game->surface_salmonsky->blit(0, 0, &rect, 1.0);
+  global::game->surface_salmonsky->blit(0, 0, &rect);
 
   if (this->scrollOffset > 0) {
     rect.y = 0;
@@ -55,7 +55,7 @@ void Background::update() {
         0,
         static_cast<int>(global::game->surface_salmonsky->getHeight()) -
             this->scrollOffset,
-        &rect, 1.0
+        &rect
     );
   }
 }

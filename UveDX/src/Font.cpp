@@ -72,7 +72,7 @@ void Font::blitText(
       x += this->spaceWidth;
     else if (c >= 33) {
       if (auto surface = this->surfaces.at(static_cast<size_t>(c - 33))) {
-        surface->blit(x, y, nullptr, 1.0);
+        surface->blit(x, y);
 
         x += this->charSpacing + surface->getWidth();
       }

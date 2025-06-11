@@ -2,6 +2,7 @@
 
 #include "UveDX/Color.hpp"
 
+namespace UveDX {
 Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
     : r(red), g(green), b(blue), a(alpha) {}
 
@@ -21,3 +22,4 @@ const Color Color::Red{255, 0, 0};
 const Color Color::Green{0, 255, 0};
 const Color Color::Blue{0, 0, 255};
 const Color Color::White{255, 255, 255};
+}  // namespace UveDX

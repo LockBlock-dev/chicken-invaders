@@ -1,6 +1,8 @@
 #include "UveDX/Surface.hpp"
 
+#include <SFML/Graphics/Color.hpp>
 #include <format>
+#include "UveDX/Color.hpp"
 #include "UveDX/RoundedRectangleShape.hpp"
 #include "UveDX/UveDX.hpp"
 
@@ -64,6 +66,16 @@ Surface::~Surface() {
 void Surface::update() {}
 
 void Surface::blit(int dstX, int dstY, const Rect* srcRect, double scale) {
+  this->blitEx(dstX, dstY, srcRect, scale);
+}
+
+void Surface::blitEx(
+    int dstX,
+    int dstY,
+    const Rect* srcRect,
+    double scale,
+    Color color
+) {
   if (!this->texture || !this->sprite)
     return;
 
@@ -93,6 +105,8 @@ void Surface::blit(int dstX, int dstY, const Rect* srcRect, double scale) {
       static_cast<float>(scale),
       static_cast<float>(scale),
   });
+
+  this->sprite->setColor(sf::Color{color.toRGBA()});
 
   this->uveDX->window.draw(*this->sprite);
 }

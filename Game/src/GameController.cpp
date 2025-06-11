@@ -72,7 +72,7 @@ void GameController::update() {
 
   switch (this->previousState) {
     case GameState::Menu: {
-      global::game->surface_logo_small->blit(320, 75, nullptr, 1.0);
+      global::game->surface_logo_small->blit(320, 75);
 
       global::game->font_3x7->blitText(10, 440, "a-d move left-right");
 

@@ -1,7 +1,5 @@
 #include "Chicken.hpp"
 
-#include <cstring>
-
 #include "Bonus.hpp"
 #include "BoundaryBouncer.hpp"
 #include "ChickenLeg.hpp"

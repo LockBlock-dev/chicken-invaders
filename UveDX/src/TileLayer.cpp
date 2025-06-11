@@ -61,7 +61,7 @@ void TileLayer::update() {
          drawX < (this->uveDX->bounds.x + this->uveDX->bounds.w);
          drawX += this->tileWidth) {
       if (auto surf = this->getTileSurface(currentColumn, startRow))
-        surf->blit(drawX, drawY, nullptr, 1.0);
+        surf->blit(drawX, drawY);
 
       ++currentColumn;
     }

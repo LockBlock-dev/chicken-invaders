@@ -177,13 +177,11 @@ void Player::update() {
         this->uveDX->totalFramesRendered % 2 + 2 * this->playerId
     );
 
-    exhaust_surface->blit(exhaustLeftPositionX, exhaustPositionY, nullptr, 1.0);
+    exhaust_surface->blit(exhaustLeftPositionX, exhaustPositionY);
 
     int exhaustRightPositionX = this->sprite_x + 10 - exhaustOffset;
 
-    exhaust_surface->blit(
-        exhaustRightPositionX, exhaustPositionY, nullptr, 1.0
-    );
+    exhaust_surface->blit(exhaustRightPositionX, exhaustPositionY);
 
     if (this->shieldTimeout > 0) {
       --this->shieldTimeout;
@@ -192,7 +190,7 @@ void Player::update() {
 
       global::game->surface_chain_shield
           ->getSurf(this->boundaryBouncer.currentSurfaceIndex)
-          ->blit(this->sprite_x, this->sprite_y, nullptr, 1.0);
+          ->blit(this->sprite_x, this->sprite_y);
     }
 
     UveDX::Sprite::update();
@@ -238,14 +236,11 @@ void Player::drawInterface() {
     missileOffsetDirection = -10;
 
   for (size_t i = 0; i < this->lives; ++i)
-    global::game->surface_heart->blit(
-        12 * i + 590 * this->playerId + 10, 15, nullptr, 1.0
-    );
+    global::game->surface_heart->blit(12 * i + 590 * this->playerId + 10, 15);
 
   for (size_t j = 0; j < this->missilesCount; ++j)
     global::game->surface_chain_missile->getSurf(0)->blit(
-        j * missileOffsetDirection + 620 * this->playerId + 10, 460, nullptr,
-        1.0
+        j * missileOffsetDirection + 620 * this->playerId + 10, 460
     );
 
   if (this->playerId > 0)

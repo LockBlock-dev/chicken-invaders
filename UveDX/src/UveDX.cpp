@@ -11,15 +11,14 @@
 namespace UveDX {
 
 UveDX::UveDX(
+    const std::string& windowTitle,
     bool isFullscreen,
     unsigned int width,
     unsigned int height,
     unsigned int bpp
 )
     : UveListOwner(this),
-      window(
-          sf::RenderWindow(sf::VideoMode({width, height}), "Chicken Invaders")
-      ),
+      window(sf::RenderWindow(sf::VideoMode({width, height}), windowTitle)),
       backSurface(new Surface{this}),
       uveSound(nullptr),
       uveInput(nullptr),
