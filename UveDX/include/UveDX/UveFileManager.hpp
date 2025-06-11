@@ -20,7 +20,10 @@ class UveFileManager : public UveBase {
 
   void update() override;
   void loadAssetsList(const std::string& path);
-  std::fstream openFile(const std::string& path, unsigned int* outFileSize);
+  std::fstream openFile(
+      const std::string& path,
+      unsigned int* outFileSize = nullptr
+  );
   void checkFile(const std::string& path);
   bool checkFileExists(const std::string& path);
   bool verifyFileExists(const std::string& path);

@@ -65,8 +65,10 @@ void UveFileManager::loadAssetsList(const std::string& path) {
   this->loaded = true;
 }
 
-std::fstream
-UveFileManager::openFile(const std::string& path, unsigned int* outFileSize) {
+std::fstream UveFileManager::openFile(
+    const std::string& path,
+    unsigned int* outFileSize
+) {
   std::fstream s;
 
   this->checkFile(path);
@@ -85,14 +87,14 @@ UveFileManager::openFile(const std::string& path, unsigned int* outFileSize) {
       }
     }
   } else {
-    s.open(filename, s.binary | s.in);
+    s.open(path, s.binary | s.in);
 
     if (outFileSize)
       *outFileSize = static_cast<unsigned int>(getFileSize(s));
   }
 
   if (this->bypassAssetsList) {
-    AssetFileHeader* header = new AssetFileHeader;
+    AssetFileHeader* header = new AssetFileHeader{};
 
     std::strncpy(header->filename, path.c_str(), sizeof(header->filename) - 1);
 

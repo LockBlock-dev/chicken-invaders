@@ -2,3 +2,5 @@
 Language: Cpp
 BasedOnStyle: Chromium
 AlignAfterOpenBracket: BlockIndent
+BreakAfterReturnType: Automatic
+PenaltyReturnTypeOnItsOwnLine: 9999
