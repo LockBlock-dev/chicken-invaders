@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 project(
     "ChickenInvaders1"
-    VERSION 0.5.0
+    VERSION 0.7.0
     LANGUAGES CXX
 )
 

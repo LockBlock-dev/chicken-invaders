@@ -14,7 +14,7 @@ class Animator : public UveDX::UveBase {
       const std::string& filename,
       unsigned int frameDataBufferSize
   );
-  ~Animator();
+  ~Animator() override;
 
   void update() override;
   void loadFromFile(const std::string& filename);

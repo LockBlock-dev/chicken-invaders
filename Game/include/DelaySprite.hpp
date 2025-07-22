@@ -13,7 +13,7 @@ class DelaySprite : public UveDX::Sprite {
       int displayDuration
   );
 
-  virtual void update() override;
+  void update() override;
 
  private:
   int delayBeforeDisplay;

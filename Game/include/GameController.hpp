@@ -14,7 +14,7 @@
 class GameController : public UveDX::UveListOwner, public StateBase<GameState> {
  public:
   GameController(UveDX::UveDX* uveDX);
-  ~GameController();
+  ~GameController() override;
 
   void update() override;
   void readScoresFile();

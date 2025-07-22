@@ -8,7 +8,7 @@ class Sprite : public UveBase {
  public:
   Sprite(UveDX* uveDX, int x, int y, Surface* surface);
 
-  virtual void update() override;
+  void update() override;
   bool checkCollisionsWith(Sprite* other) const;
   void setSurface(Surface* surface);
 

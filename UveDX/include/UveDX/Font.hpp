@@ -16,7 +16,7 @@ class Font : public UveBase {
   };
 
   Font(UveDX* uveDX, const std::string& filename);
-  ~Font();
+  ~Font() override;
 
   void update() override;
   void blitText(

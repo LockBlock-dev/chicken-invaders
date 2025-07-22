@@ -9,7 +9,7 @@ namespace UveDX {
 class Sound : public UveBase {
  public:
   Sound(UveDX* uveDX, const std::string& filename);
-  ~Sound();
+  ~Sound() override;
 
   void update() override;
   void play();

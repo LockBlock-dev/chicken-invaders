@@ -16,7 +16,7 @@ struct AssetFileHeader {
 class UveFileManager : public UveBase {
  public:
   UveFileManager(UveDX* uveDX);
-  ~UveFileManager();
+  ~UveFileManager() override;
 
   void update() override;
   void loadAssetsList(const std::string& path);
@@ -27,6 +27,11 @@ class UveFileManager : public UveBase {
   void checkFile(const std::string& path);
   bool checkFileExists(const std::string& path);
   bool verifyFileExists(const std::string& path);
+
+  static void createWADFile(
+      const std::string& assetsFolderPath,
+      const std::string& outputFilePath
+  );
 
  private:
   bool loaded;

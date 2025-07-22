@@ -16,7 +16,7 @@ class SurfaceChain : public UveBase {
   };
 
   SurfaceChain(UveDX* uveDX, const std::string& filename);
-  ~SurfaceChain();
+  ~SurfaceChain() override;
 
   void update() override;
   void scaleAllSurfaces(double scale);
