@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 project(
     "ChickenInvaders1"
-    VERSION 0.7.0
+    VERSION 0.7.1
     LANGUAGES CXX
 )
 
@@ -43,7 +43,7 @@ if(WITH_DISCORD)
         
         # Force include cstdint for compilers that support this feature
         if(MSVC)
-            target_compile_options(discord_cpp_wrapper PRIVATE /FI"cstdint")
+            target_compile_options(discord_cpp_wrapper PRIVATE "/FIcstdint")
         else()
             target_compile_options(discord_cpp_wrapper PRIVATE -include cstdint)
         endif()

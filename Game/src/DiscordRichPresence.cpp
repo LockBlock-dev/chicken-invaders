@@ -2,7 +2,7 @@
 
 #include "DiscordRichPresence.hpp"
 
-#include "UveDX.hpp"
+#include "UveDX/UveDX.hpp"
 #include "constants.hpp"
 
 DiscordRichPresence::DiscordRichPresence(UveDX::UveDX* uveDX)

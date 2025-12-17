@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 project(
     "UveDX"
-    VERSION 0.7.0
+    VERSION 0.7.1
     LANGUAGES CXX
 )
 
@@ -31,7 +31,7 @@ if (NOT tinyfiledialogs_FOUND)
     FetchContent_Declare(
         tinyfiledialogs
         GIT_REPOSITORY http://git.code.sf.net/p/tinyfiledialogs/code
-        GIT_TAG b071fb40ad9b321408d480a6d1433bf21be01578
+        GIT_TAG 5fdb74764a5026d059517911fc085a1cd9da8cee
         GIT_SHALLOW ON
         EXCLUDE_FROM_ALL
         SYSTEM
